@@ -10,9 +10,17 @@ import Container from "@mui/material/Container";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {formatDateTime} from "../utils/formats";
+import Button from "@mui/material/Button";
 
 export default function Kanban() {
     const [tasks, setTasks] = useState([]);
+
+    // TODO: just to test backend API 401 redirect, will remove
+    const handleClick = () => {
+        axios.get("/api/tasks")
+            .then(() => console.log("ok"))
+            .catch(() => console.error("fail"));
+    }
 
     useEffect(() => {
         const getAllTasks = async () => {
@@ -54,6 +62,7 @@ export default function Kanban() {
                         ))}
                     </TableBody>
                 </Table>
+                <Button onClick={handleClick}>Try delete user session and then click.</Button>
             </Paper>
         </Container>
     );

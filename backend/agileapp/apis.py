@@ -1,6 +1,5 @@
 import json
 
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
@@ -14,7 +13,19 @@ def home_view(request, *args, **kwargs):
     return render(request, "index.html")
 
 
-@login_required
+# a self-defined decorator on all APIs that require user login
+def check_login_status(api_func):
+    def wrapper_func(request, *args, **kwargs):
+        exempt_paths = ("/api/userinfo", "/api/login", "/api/logout", "/api/register")
+        if not request.user.is_authenticated and request.path not in exempt_paths:
+            return HttpResponse(status=401)
+        else:
+            return api_func(request, *args, **kwargs)
+
+    return wrapper_func
+
+
+@check_login_status
 @require_http_methods(["GET", "POST", "PUT", "DELETE"])
 def tasks_api(request):
     tasks = [

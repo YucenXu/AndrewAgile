@@ -49,6 +49,6 @@ export function AuthConsumer() {
 export default function RequireAuth({children}) {
     const {auth} = AuthConsumer();
     const location = useLocation();
-    return auth.username ? children :
+    return auth?.username ? children :
         <Navigate to="/login" replace state={{path: location.pathname}}/>;
 }

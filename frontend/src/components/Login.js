@@ -30,22 +30,16 @@ export default function Login() {
                 navigate(state?.path ?? "/", {replace: true});
             })
             .catch(err => {
-                switch (err.response.status) {
-                    case 401:
-                        setLoginError("Username or password is incorrect.");
-                        break;
-                    case 400:
-                        console.log("Request payload: " + JSON.stringify(payload));
-                        break;
-                    default:
-                        console.error(err);
-                        break;
+                if (err.response.status === 400) {
+                    setLoginError(err.response.data.msg);
+                } else {
+                    console.error(err);
                 }
             });
     };
 
     // useAuth hook is async, redirect after confirming login status
-    if (auth.username) {
+    if (auth?.username) {
         return <Navigate to={state?.path ?? "/"} replace/>;
     }
 

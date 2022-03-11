@@ -5,11 +5,9 @@ import App from './App';
 import reportWebVitals from './utils/reportWebVitals';
 import theme from "./utils/theme";
 import {ThemeProvider} from "@mui/material";
-import axios from "axios";
+import initAxiosSetting from "./utils/axiosUtil";
 
-// axios csrf setting, use X-CSRFToken header instead of hidden form param
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken"
+initAxiosSetting();
 
 ReactDOM.render(
     <React.StrictMode>

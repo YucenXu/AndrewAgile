@@ -42,14 +42,16 @@ def register_api(request):
 def login_api(request):
     req = json.loads(request.body)
     if "username" not in req or "password" not in req:
-        return HttpResponse(status=400)
+        err = {"msg": "Missing username or password."}
+        return HttpResponse(json.dumps(err), content_type="application/json", status=400)
 
     username = req["username"]
     password = req["password"]
     user = authenticate(username=username, password=password)
 
     if not user:
-        return HttpResponse(status=401)
+        err = {"msg": "Username or password is incorrect."}
+        return HttpResponse(json.dumps(err), content_type="application/json", status=400)
     else:
         login(request, user)
         return redirect("/api/userinfo")
@@ -74,4 +76,4 @@ def user_info(request):
         }
         return HttpResponse(json.dumps(resp), content_type="application/json")
     else:
-        return HttpResponse(status=401)
+        return HttpResponse(status=404)
