@@ -129,7 +129,7 @@ export default function Register() {
                         sx={{mt: 3}}
                         fullWidth
                     >
-                        Register
+                        REGISTER
                     </Button>
                 </Box>
             </Box>

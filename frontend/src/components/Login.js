@@ -84,7 +84,7 @@ export default function Login() {
                         sx={{mt: 2, mb: 2}}
                         fullWidth
                     >
-                        Login
+                        LOGIN
                     </Button>
                 </Box>
                 <Button
@@ -93,7 +93,7 @@ export default function Login() {
                     sx={{mt: 1}}
                     fullWidth
                 >
-                    Register
+                    REGISTER
                 </Button>
             </Box>
         </Container>
