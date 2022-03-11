@@ -82,5 +82,5 @@ Suggested package versions, can be slightly different.
 
 We use some Django code from professor's class demos.
 
-We use some template code from [MUI exmaples](https://github.com/mui/material-ui/tree/master/docs/data/material/getting-started/templates).
+We use some template code from [MUI examples](https://github.com/mui/material-ui/tree/master/docs/data/material/getting-started/templates).
 
