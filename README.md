@@ -53,14 +53,14 @@ Suggested package versions, can be slightly different.
 
 ## Production
 
-1. Builds the frontend app for production.
+1. Build the frontend app for production.
 
    ```shell
    cd frontend
    npm run build
    ```
 
-2. Move build to the backend directory.
+2. Move the build folder to the backend directory.
 
    ```shell
    cd frontend
