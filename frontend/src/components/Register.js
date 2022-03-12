@@ -7,14 +7,14 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Alert from "@mui/material/Alert";
 import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 import axios from "axios";
 import {AuthConsumer} from "../hooks/useAuth";
 
 export default function Register() {
     const navigate = useNavigate();
     const [registerError, setRegisterError] = useState('')
-    const {setAuth} = AuthConsumer();
+    const {auth, setAuth} = AuthConsumer();
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -44,6 +44,11 @@ export default function Register() {
                 }
             });
     };
+
+    // disable register when user is logged in
+    if (auth?.username) {
+        return <Navigate to="/" replace/>;
+    }
 
     return (
         <Container component="main" maxWidth="xs">
