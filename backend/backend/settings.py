@@ -47,6 +47,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # a self-defined middleware on all APIs that require user login
+    'backend.utils.LoginStatusMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'

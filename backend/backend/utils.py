@@ -1,13 +1,14 @@
 from django.http import HttpResponse
 
 
-# a self-defined decorator on all APIs that require user login
-def check_login_status(api_func):
-    def wrapper_func(request, *args, **kwargs):
-        exempt_paths = ("/api/userinfo", "/api/login", "/api/logout", "/api/register")
-        if not request.user.is_authenticated and request.path not in exempt_paths:
+# a self-defined middleware on all APIs that require user login
+class LoginStatusMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self.exempt_paths = ("/api/userinfo", "/api/login", "/api/logout", "/api/register")
+
+    def __call__(self, request):
+        if not request.user.is_authenticated and request.path not in self.exempt_paths:
             return HttpResponse(status=401)
         else:
-            return api_func(request, *args, **kwargs)
-
-    return wrapper_func
+            return self.get_response(request)

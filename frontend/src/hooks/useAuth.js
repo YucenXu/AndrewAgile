@@ -1,4 +1,4 @@
-import React from "react";
+import {createContext, useContext} from "react";
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Navigate, useLocation} from "react-router-dom";
@@ -14,7 +14,7 @@ export const initialAuth = {
     },
 };
 
-const authContext = React.createContext(initialAuth);
+const authContext = createContext(initialAuth);
 
 function useAuth() {
     const [auth, setAuth] = useState(initialAuth.auth);
@@ -43,7 +43,7 @@ export function AuthProvider({children}) {
 }
 
 export function AuthConsumer() {
-    return React.useContext(authContext);
+    return useContext(authContext);
 }
 
 export default function RequireAuth({children}) {
