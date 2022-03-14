@@ -8,7 +8,10 @@ class LoginStatusMiddleware:
         self.exempt_paths = ("/api/userinfo", "/api/login", "/api/logout", "/api/register")
 
     def __call__(self, request):
-        if not request.user.is_authenticated and request.path not in self.exempt_paths:
+        if not request.user.is_authenticated and self._is_protected_api(request.path):
             return HttpResponse(status=401)
         else:
             return self.get_response(request)
+
+    def _is_protected_api(self, path):
+        return path.startswith("/api") and path not in self.exempt_paths

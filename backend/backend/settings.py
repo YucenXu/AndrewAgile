@@ -125,3 +125,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     BASE_DIR / 'ui_build' / 'static',
 ]
+
+# A collected folder of all static files, including the main app and tha admin app.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
