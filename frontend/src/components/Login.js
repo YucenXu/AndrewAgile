@@ -7,14 +7,24 @@ import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert';
 import axios from "axios";
 import {Navigate, useLocation, useNavigate} from 'react-router-dom';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {AuthConsumer} from "../hooks/useAuth";
 
 export default function Login() {
     const navigate = useNavigate();
     const {state} = useLocation();
     const [loginError, setLoginError] = useState('');
+    const [show, setShow] = useState(false);
     const {auth, setAuth} = AuthConsumer();
+
+    // A workaround to "late-render" login page,
+    // because the auth hook is async, login page
+    // may flash shortly before the real page. So
+    // a short delay may help improve user experience.
+    useEffect(() => {
+        const timeId = setTimeout(() => setShow(true), 100);
+        return () => clearTimeout(timeId);
+    }, []);
 
     const handleSubmit = event => {
         event.preventDefault();
@@ -43,7 +53,7 @@ export default function Login() {
         return <Navigate to={state?.path ?? "/"} replace/>;
     }
 
-    return (
+    return (show &&
         <Container component="main" maxWidth="xs">
             <Box sx={{
                 mt: 20,

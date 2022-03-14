@@ -24,15 +24,15 @@ Suggested package versions, can be slightly different.
 
    ```shell
    cd backend
-   python manage.py makemigrations
-   python manage.py migrate
+   python3 manage.py makemigrations
+   python3 manage.py migrate
    ```
 
 2. Start the backend server, code changes will trigger reload.
 
    ```shell
    cd backend
-   python manage.py runserver
+   python3 manage.py runserver
    ```
 
 3. Install frontend node packages. Then start the frontend app, code changes will trigger reload.
@@ -52,7 +52,7 @@ Suggested package versions, can be slightly different.
 
 1. Add an inbound security rule for the instance: protocol TCP, port 80, allowed source 0.0.0.0/0
 
-3. Install dependent packages.
+3. Install dependent packages within the instance.
 
    ```shell
    sudo apt update
@@ -93,7 +93,7 @@ Suggested package versions, can be slightly different.
 
 7. Add your instance's public IP address to the `ALLOWED_HOSTS` list in `s22_team_26/backend/backend/settings.py` line 27.
 
-8. Congure the Apache HTTP server.
+8. Configure the Apache HTTP server.
 
    ```shell
    sudo vim /etc/apache2/apache2.conf
@@ -144,6 +144,7 @@ Suggested package versions, can be slightly different.
    sudo chmod -R g+w s22_team_26/backend
    sudo apache2ctl restart
    ```
+   Now the web app should be running at `http://<ip-address>/`.
 
 ## Developers
 
@@ -158,4 +159,4 @@ We used some Django code from professor's class demos.
 
 We used some template code from [MUI examples](https://github.com/mui/material-ui/tree/master/docs/data/material/getting-started/templates).
 
-We referred to [EC2-Django-Guide.pdf](https://canvas.cmu.edu/courses/27323/files/7787426?module_item_id=5020227) when deploying the web app.
+We referred to [EC2-Django-Guide](https://canvas.cmu.edu/courses/27323/files/7787426?module_item_id=5020227) when deploying the web app.
