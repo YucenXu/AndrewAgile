@@ -64,6 +64,7 @@ const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})
 
 export default function Home({children}) {
     const [open, setOpen] = useState(true);
+    const [unread, setUnread] = useState(3);
     const toggleDrawer = () => setOpen(!open);
     const {auth} = AuthConsumer();
 
@@ -92,8 +93,8 @@ export default function Home({children}) {
                     >
                         Andrew Agile Platform
                     </Typography>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={3} color="secondary">
+                    <IconButton color="inherit" onClick={() => setUnread(0)}>
+                        <Badge badgeContent={unread} color="secondary">
                             <NotificationsIcon/>
                         </Badge>
                     </IconButton>

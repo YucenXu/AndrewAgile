@@ -27,7 +27,7 @@ export default function Register() {
 
         axios.post("/api/register", payload)
             .then(resp => {
-                setAuth(resp.data);
+                setAuth({...resp.data, isChecked: true});
                 navigate("/", {replace: true});
             })
             .catch(err => {
@@ -50,7 +50,7 @@ export default function Register() {
         return <Navigate to="/" replace/>;
     }
 
-    return (
+    return (auth?.isChecked &&
         <Container component="main" maxWidth="xs">
             <Box sx={{
                 mt: 20,

@@ -50,7 +50,7 @@ Suggested package versions, can be slightly different.
 
 1. Choose an IaaS provider, for example [AWS EC2](https://aws.amazon.com/ec2/), and create a new instance.
 
-1. Add an inbound security rule for the instance: protocol TCP, port 80, allowed source 0.0.0.0/0
+1. Add an inbound security rule for the instance: `protocol TCP, port 80, allowed source 0.0.0.0/0`
 
 3. Install dependent packages within the instance.
 

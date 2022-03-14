@@ -20,10 +20,10 @@ const MenuBar = () => {
         event.preventDefault();
         axios.post("/api/logout")
             .then(() => {
-                setAuth(initialAuth.auth);
+                setAuth({...initialAuth.auth, isChecked: true});
                 navigate("/login", {replace: true});
             })
-            .catch(err => console.error(err));
+            .catch(console.error);
     };
 
     return (

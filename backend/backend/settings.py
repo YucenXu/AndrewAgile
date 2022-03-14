@@ -24,7 +24,11 @@ SECRET_KEY = 'django-insecure-ss+zd+n+)7ercmk5(r9u-taea2479+a3x0@b3e4%etqqqlq=u-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Allowed hosts whitelist
 ALLOWED_HOSTS = []
+
+# Disable the Cross-Origin Opener Policy (COOP) header
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 # Application definition
 

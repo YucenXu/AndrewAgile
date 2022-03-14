@@ -5,10 +5,11 @@ import {Navigate, useLocation} from "react-router-dom";
 
 export const initialAuth = {
     auth: {
-        "username": "",
-        "email": "",
-        "firstname": "",
-        "lastname": "",
+        isChecked: false,
+        username: "",
+        email: "",
+        firstname: "",
+        lastname: "",
     },
     setAuth: () => {
     },
@@ -21,12 +22,13 @@ function useAuth() {
 
     useEffect(() => {
         const getUserInfo = async () => {
-            const resp = await axios.get("/api/userinfo");
-            setAuth(await resp.data);
+            const resp = await axios.get("/api/userinfo")
+            setAuth({...await resp.data, isChecked: true});
         };
 
         getUserInfo()
             .catch(() => {
+                setAuth({...initialAuth.auth, isChecked: true});
             });
     }, []);
 

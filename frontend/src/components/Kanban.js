@@ -29,7 +29,7 @@ export default function Kanban() {
         };
 
         getAllTasks()
-            .catch(err => console.error(err));
+            .catch(console.error);
     }, []);
 
     return (
