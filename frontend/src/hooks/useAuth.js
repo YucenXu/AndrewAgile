@@ -22,7 +22,7 @@ function useAuth() {
 
     useEffect(() => {
         const getUserInfo = async () => {
-            const resp = await axios.get("/api/userinfo")
+            const resp = await axios.get("/api/userinfo");
             setAuth({...await resp.data, isChecked: true});
         };
 
