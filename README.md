@@ -50,9 +50,9 @@ See the [deployment guide](deployment.md) for details.
 
 ## Developers
 
-+ Nianyi Guo
++ [Nianyi Guo](https://github.com/jujujulia123)
 + [Yucen Xu](https://github.com/YucenXu)
-+ Zhiqi Li 
++ [Zhiqi Li](https://github.com/Angelica-Lee) 
 + [Peng Zhao](https://github.com/zp9763)
 
 ## Acknowledge
