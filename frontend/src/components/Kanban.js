@@ -10,25 +10,19 @@ import Container from "@mui/material/Container";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {formatDateTime} from "../utils/formats";
-import Button from "@mui/material/Button";
 
 export default function Kanban() {
-    const [tasks, setTasks] = useState([]);
-
-    // TODO: just to test backend API 401 redirect, will remove
-    const handleClick = () => {
-        axios.get("/api/tasks")
-            .then(() => console.log("ok"))
-            .catch(() => console.error("fail"));
-    }
+    const [projects, setProjects] = useState([]);
 
     useEffect(() => {
-        const getAllTasks = async () => {
-            const resp = await axios.get("/api/tasks");
-            setTasks(await resp.data);
+        const getAllProjectsByWorkspace = async () => {
+            const workspaces = (await axios.get("/api/workspaces")).data;
+            const resp = await axios.get(`/api/workspace/${workspaces[0].id}/projects`)
+            const projects = await resp.data
+            setProjects(projects);
         };
 
-        getAllTasks()
+        getAllProjectsByWorkspace()
             .catch(console.error);
     }, []);
 
@@ -36,33 +30,32 @@ export default function Kanban() {
         <Container maxWidth="sx" sx={{mt: 12}}>
             <Paper sx={{p: 3, display: 'flex', flexDirection: 'column'}}>
                 <Typography component="h2" variant="h6" color="primary">
-                    Project Tasks
+                    Projects under the default workspace
                 </Typography>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Priority</TableCell>
-                            <TableCell>Assignee</TableCell>
-                            <TableCell>Reporter</TableCell>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Description</TableCell>
+                            <TableCell>Workspace ID</TableCell>
+                            <TableCell>Owner</TableCell>
                             <TableCell>Created Time</TableCell>
-                            <TableCell>Last Updated Time</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {tasks.map(task => (
-                            <TableRow key={task.id}>
-                                <TableCell>{task.title}</TableCell>
-                                <TableCell>{task.priority}</TableCell>
-                                <TableCell>{task.assignee}</TableCell>
-                                <TableCell>{task.reporter}</TableCell>
-                                <TableCell>{formatDateTime(task.createdAt)}</TableCell>
-                                <TableCell>{formatDateTime(task.lastUpdatedAt)}</TableCell>
+                        {projects.map(project => (
+                            <TableRow key={project.id}>
+                                <TableCell>{project.id}</TableCell>
+                                <TableCell>{project.name}</TableCell>
+                                <TableCell>{project.description}</TableCell>
+                                <TableCell>{project.workspaceId}</TableCell>
+                                <TableCell>{project.owner}</TableCell>
+                                <TableCell>{formatDateTime(project.createdAt)}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
-                <Button onClick={handleClick}>Try delete user session and then click.</Button>
             </Paper>
         </Container>
     );

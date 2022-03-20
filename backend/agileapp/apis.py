@@ -38,8 +38,10 @@ def workspace_projects(request, wid):
                 "id": project.id,
                 "name": project.name,
                 "description": project.description,
-                "workspace_id": project.workspace.id,
+                "workspaceId": project.workspace.id,
                 "owner": project.owner.username,
+                "createdAt": str(project.created_at),
+                "lastUpdatedAt": str(project.last_updated_at),
             }
             for project in projects
         ]

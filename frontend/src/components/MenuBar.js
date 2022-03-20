@@ -40,11 +40,11 @@ const MenuBar = () => {
                 </ListItemIcon>
                 <ListItemText primary="Progress"/>
             </ListItemButton>
-            <ListItemButton component="a" href="/team">
+            <ListItemButton component="a" href="/access">
                 <ListItemIcon>
                     <PeopleIcon/>
                 </ListItemIcon>
-                <ListItemText primary="Team"/>
+                <ListItemText primary="Access"/>
             </ListItemButton>
             <ListItemButton component="a" href="/help">
                 <ListItemIcon>
