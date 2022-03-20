@@ -12,6 +12,7 @@ import { Dialog, DialogTitle } from '@mui/material';
 export default function SpacingGrid() {
   const columnType = ['Backlog', 'Todo', 'In Progress', 'Done']
   const [projectId, setProjectId] = React.useState(0);
+  const [workspaceId, setWorkspaceId] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const [task, setTask] = React.useState(0)
 
@@ -19,6 +20,10 @@ export default function SpacingGrid() {
   const handleChangeProject = (event) => {
     setProjectId(Number(event.target.value));
   };
+
+  const handleChangeWorkspace = (event) => {
+    setWorkspaceId(Number(event.target.value));
+  }
 
   const handleClickTask = (taskId) => (event) => {
     setOpen(true);
@@ -33,19 +38,16 @@ export default function SpacingGrid() {
     <Box>
       <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "80vw"}} style={{alignItems: "left"}}>
         <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "20vw"}} style={{alignItems: "left"}}>
-          <FormControl sx={{mt: 8, ml: "1vw", width: 200}}>
-            <InputLabel variant="standard" htmlFor="uncontrolled-native">
-              Workspace
-            </InputLabel>
+          <FormControl variant="standard" sx={{mt: 8, ml: "1vw", width: 200}}>
+            <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
             <NativeSelect
-              defaultValue={30}
-              inputProps={{
-                name: 'workspace',
-                id: 'uncontrolled-native',
-              }}
+              labelId="id-select-workspace-label"
+              label="workspaceId"
+              value={workspaceId}
+              onChange={handleChangeWorkspace}
             >
             {[0,1,2].map((value) => (
-              <option value={{value}}>Workspace-{value}</option>
+              <option value={value}>Workspace-{value}</option>
               ))}
             </NativeSelect>
           </FormControl>
@@ -53,9 +55,9 @@ export default function SpacingGrid() {
 
         <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "20vw"}} style={{alignItems: "left"}}>
           <FormControl variant="standard" sx={{mt: 8, ml: "1vw", width: 200}}>
-            <InputLabel id="id-select-poject-label">Project</InputLabel>
+            <InputLabel id="id-select-project-label">Project</InputLabel>
             <NativeSelect
-              labelId="id-select-poject-label"
+              labelId="id-select-project-label"
               label="projectId"
               value={projectId}
               onChange={handleChangeProject}
@@ -106,6 +108,8 @@ export default function SpacingGrid() {
         <DialogTitle id="scroll-dialog-title">Task-{task}</DialogTitle>
       </Dialog>
 
+      {/* For debugging, will delete */}
+      <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Project-{projectId} Current Workspace-{workspaceId}</Typography>
     </Box>
       
       
