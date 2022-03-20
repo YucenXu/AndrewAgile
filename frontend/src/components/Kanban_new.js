@@ -10,7 +10,7 @@ import { Dialog, DialogTitle } from '@mui/material';
 
 
 export default function SpacingGrid() {
-  const columnType = ['Backlog', 'Todo', 'In Progress', 'Done']
+  const columnTypes = ['Backlog', 'Todo', 'In Progress', 'Done']
   const [projectId, setProjectId] = React.useState(0);
   const [workspaceId, setWorkspaceId] = React.useState(0);
   const [open, setOpen] = React.useState(false);
@@ -36,9 +36,10 @@ export default function SpacingGrid() {
 
   return (
     <Box>
-      <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "80vw"}} style={{alignItems: "left"}}>
-        <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "20vw"}} style={{alignItems: "left"}}>
-          <FormControl variant="standard" sx={{mt: 8, ml: "1vw", width: 200}}>
+      {/* Dropdown menus */}
+      <Grid container spacing={2} sx={{mt: "13vh", mx: "auto", width: "80vw", height: "12vh"}} style={{backgroundColor: '#6495ed', alignItems: "left"}}>
+        <Grid container spacing={2} sx={{mt:"1vh", mx: "0.5vw", width: "19vw", height: "10vh"}} style={{backgroundColor: '#ccccff', alignItems: "left"}}>
+          <FormControl variant="standard" sx={{ my:"0.5vh", ml: "1vw", width: "15vw"}} style={{backgroundColor: '#9fe2bf'}}>
             <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
             <NativeSelect
               labelId="id-select-workspace-label"
@@ -53,8 +54,8 @@ export default function SpacingGrid() {
           </FormControl>
         </Grid>
 
-        <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "20vw"}} style={{alignItems: "left"}}>
-          <FormControl variant="standard" sx={{mt: 8, ml: "1vw", width: 200}}>
+        <Grid container spacing={2} sx={{mt:"1vh", mx: "0.5vw", width: "19vw", height: "10vh"}} style={{backgroundColor: '#ccccff', alignItems: "left"}}>
+          <FormControl variant="standard" sx={{ my:"0.5vh", ml: "1vw", width: "15vw"}} style={{backgroundColor: '#9fe2bf'}}>
             <InputLabel id="id-select-project-label">Project</InputLabel>
             <NativeSelect
               labelId="id-select-project-label"
@@ -69,20 +70,25 @@ export default function SpacingGrid() {
           </FormControl>
         </Grid>
         
-        <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "20vw"}} style={{alignItems: "left"}}></Grid>
-        <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "20vw"}} style={{alignItems: "left"}}></Grid>
+        <Grid container spacing={2} sx={{mt:"1vh", mx: "0.5vw", width: "19vw", height: "10vh"}} style={{backgroundColor: '#ccccff', alignItems: "left"}}></Grid>
+        <Grid container spacing={2} sx={{mt:"1vh", mx: "0.5vw", width: "19vw", height: "10vh"}} style={{backgroundColor: '#ccccff', alignItems: "left"}}></Grid>
       </Grid>
 
-
-      <Grid container spacing={2} sx={{mt: 2, mx: "auto", width: "80vw"}} style={{alignItems: "center"}}>
-        {columnType.map((value) => (
-            <Grid container spacing={2} sx={{ mx: "auto", ml: "1vw", my: 2, width: "19vw", height: 350}} style={{backgroundColor: '#d5d8dc', overflow: 'auto', alignItems: "center"}}>
-              <Grid item xs>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                  {value}
-                </Typography>
+      {/* Board */}
+      <Grid container sx={{mx: "auto", my: "1vh", width: "80vw", height: "70vh"}} style={{backgroundColor: '#6495ed', alignItems: "center"}}>
+        {columnTypes.map((columnType) => (
+          // Column
+          <Grid container spacing={2} sx={{mx: "0.5vw", my: "1vh", width: "19vw", height: "68vh"}} style={{backgroundColor: '#ccccff', alignItems: "center"}}>
+            {/* title */}
+            <Grid item xs sx={{ width: "19vw", height: "8vh"}} style={{backgroundColor: '#9fe2bf'}}>
+              <Typography sx={{ ml:"0.2vw", fontSize: 14, fontWeight: 700}} color="text.secondary" gutterBottom>
+                  {columnType}
+              </Typography>
+            </Grid>
+            {/* tasks */}
+            <Grid item spacing={2} sx={{width: "19vw", height: "60vh"}} style={{backgroundColor: '#d5d8dc', overflow: 'auto', alignItems: "center"}}>
               {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((taskId) => (
-                  <Card sx={{mt: 1, width: 150}}>
+                  <Card sx={{mb: 1, width: 150}}>
                     <CardActionArea type="submit" onClick={handleClickTask(taskId)}>
                         <CardContent>
                             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -93,8 +99,8 @@ export default function SpacingGrid() {
                   </Card>
                 
               ))}
-              </Grid>
             </Grid>
+          </Grid>
         ))}
       </Grid>
 
