@@ -21,7 +21,7 @@ Suggested package versions, can be slightly different.
 
    ```shell
    cd backend
-   python3 manage.py makemigrations
+   python3 manage.py makemigrations userapp agileapp
    python3 manage.py migrate
    python3 manage.py shell < backend/init_db.py  # once-only
    ```
