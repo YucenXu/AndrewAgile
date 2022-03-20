@@ -105,7 +105,7 @@ export default function Home({children}) {
                         height: 37,
                         bgcolor: "secondary.main",
                     }}>
-                        {auth.firstname[0] + auth.lastname[0]}
+                        {(auth.firstname[0] + auth.lastname[0]).toUpperCase()}
                     </Avatar>
                 </Toolbar>
             </AppBar>

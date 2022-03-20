@@ -6,7 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Progress from "./components/Progress";
-import Team from "./components/Team";
+import Access from "./components/Access";
 import Help from "./components/Help";
 import Kanban from "./components/Kanban";
 import Kanban_new from './components/Kanban_new';
@@ -32,10 +32,10 @@ export default function App() {
                             </Home>
                         </RequireAuth>
                     }/>
-                    <Route path="/team" element={
+                    <Route path="/access" element={
                         <RequireAuth>
                             <Home>
-                                <Team/>
+                                <Access/>
                             </Home>
                         </RequireAuth>
                     }/>
