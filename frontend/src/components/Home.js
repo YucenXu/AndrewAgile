@@ -16,7 +16,7 @@ import MenuBar from './MenuBar';
 import {AuthConsumer} from "../hooks/useAuth";
 import {useState} from "react";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const AppBar = styled(MuiAppBar, {shouldForwardProp: (prop) => prop !== 'open'})(
     ({theme, open}) => ({
