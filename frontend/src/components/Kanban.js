@@ -81,9 +81,13 @@ export default function Kanban() {
 
       {/* Search Bar, Create Button */}
       <Grid container sx={{my: "1vh", mx: "auto", width: "80vw", height: "6vh"}} style={{backgroundColor: ''}}>
-        <SearchBar></SearchBar>
-        <Grid item sx={{width: "43.5vw"}}></Grid>
-        <Button variant="contained" sx={{mr:"0.5vw", width: "10vw", height: "6vh"}} onClick={handleCreate}>Create</Button>
+        <Grid item  sx={{width: "25vw"}}>
+          <SearchBar></SearchBar>
+        </Grid>
+        <Grid item sx={{width: "44.5vw"}}></Grid>
+        <Grid item  sx={{width: "10vw"}}>
+          <Button variant="contained" sx={{mr:"0.5vw", width: "10vw", height: "6vh"}} onClick={handleCreate}>Create</Button>
+        </Grid>
       </Grid>
 
       {/* Board */}

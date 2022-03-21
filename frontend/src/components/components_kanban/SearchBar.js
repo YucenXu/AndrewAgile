@@ -60,21 +60,21 @@ export default function SearchBar() {
         <Box>
         <Grid container component="form" sx={{ mx: "0.5vw", width: "25vw", height: "6vh", border: 2, borderColor: '#1976d2', borderRadius: 1, backgroundColor:"#"}} direction="column" justifyContent="center">
             <Grid container sx={{width: "2vw", height: "5vh", mx: "auto", my: "auto", backgroundColor:""}} direction="column" justifyContent="center">
-                <SearchIcon sx={{mt: "1vh", fontSize: 22}}/>
+                <SearchIcon sx={{width: "2vw", mt: "0.5vh"}}/>
             </Grid>
-            <Grid container sx={{width: "18vw", height: "5vh", mx:"auto", mb: "0.5vh", backgroundColor:"#"}}>
+            <Grid container sx={{width: "18vw", height: "5vh", mx:"auto", backgroundColor:"#"}}>
                 <InputBase 
                         placeholder="Search Task…"
-                        inputProps={{ style: {textAlign: 'left', fontSize: 20} }}
+                        inputProps={{ style: {textAlign: 'left', fontSize: "1.5vw"} }}
                         onChange={handleSearch}
                         onCancelSearch={handleCancelSearch}
                         fullWidth={true}
                         value={searchText}
+                        sx={{height: "5vh"}}
                 />
             </Grid>
-
-            <Grid item sx={{width: "2vw", height: "5vh", mx: "auto", backgroundColor:""}} direction="column" justifyContent="center">
-                <CloseOutlinedIcon sx={{mt:"1vh", fontSize: 22}} onClick={handleCancelSearch} ></CloseOutlinedIcon>
+            <Grid container sx={{width: "2vw", height: "5vh", mx: "auto", my: "auto", backgroundColor:""}} direction="column" justifyContent="center">
+                <CloseOutlinedIcon sx={{width: "2vw", mt: "0.5vh"}}/>
             </Grid>
         </Grid>
 
