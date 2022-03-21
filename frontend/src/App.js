@@ -9,7 +9,6 @@ import Progress from "./components/Progress";
 import Access from "./components/Access";
 import Help from "./components/Help";
 import Kanban from "./components/Kanban";
-import Kanban_new from './components/Kanban_new';
 
 export default function App() {
     return (
@@ -21,7 +20,7 @@ export default function App() {
                     <Route exact path="/" element={
                         <RequireAuth>
                             <Home>
-                                <Kanban_new/>
+                                <Kanban/>
                             </Home>
                         </RequireAuth>
                     }/>
