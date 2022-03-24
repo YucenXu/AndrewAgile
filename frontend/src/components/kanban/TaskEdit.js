@@ -1,8 +1,8 @@
 import React from 'react';
-import { Dialog, DialogActions } from "@mui/material";
-import { Grid } from "@mui/material";
-import { Button } from "@mui/material";
-import { TextField } from "@mui/material";
+import {Dialog, DialogActions} from "@mui/material";
+import {Grid} from "@mui/material";
+import {Button} from "@mui/material";
+import {TextField} from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -15,8 +15,7 @@ import Select from '@mui/material/Select';
 export default function TaskEdit(props) {
     const [assignee, setAssignee] = React.useState(0);
     const [reporter, setReporter] = React.useState(0);
-    const [label, setLabel] = React.useState("default");
-    const [labelLength, setLabelLength] = React.useState("6ch");
+    const [status, setStatus] = React.useState('Backlog');
     const [priority, setPriority] = React.useState(0);
     const [priorityColor, setPriorityColor] = React.useState("#ffcdd2")
 
@@ -44,19 +43,10 @@ export default function TaskEdit(props) {
         setReporter(event.target.value)
     }
 
-    const handleSetLabel = (event) => {
+    const handleSetStatus = (event) => {
         // Todo
-        let label = event.target.value
-        setLabel(label);
-
-        let labelLength = label.length
-        if (labelLength < 8) {
-            setLabelLength("8ch")
-        } else if (labelLength > 15) {
-            setLabelLength("15ch")
-        } else {
-            setLabelLength(labelLength + "ch")
-        }
+        let status = event.target.value
+        setStatus(status)
     }
 
     const handleSetPriority = (event) => {
@@ -75,9 +65,7 @@ export default function TaskEdit(props) {
                 setPriorityColor("#dcedc8")
                 break
         }
-
     }
-
 
     return (
         <Dialog
@@ -87,13 +75,13 @@ export default function TaskEdit(props) {
             aria-labelledby="scroll-dialog-title"
             aria-describedby="scroll-dialog-description"
             maxWidth="lg"
-            PaperProps={{ sx: { height: "80%", width: "60%" } }}
+            PaperProps={{sx: {height: "80%", width: "60%"}}}
         >
             {/* <DialogTitle sx={{ height: "5%", backgroundColor: "#aebfbe" }}>Task-{props.taskId}</DialogTitle> */}
             {/* Bar */}
-            <AppBar sx={{ position: "relative" }}>
+            <AppBar sx={{position: "relative"}}>
                 <Toolbar>
-                    <Typography sx={{ ml: 2, flex: 1, fontWeight: "bold" }} variant="h6" component="div">
+                    <Typography sx={{ml: 2, flex: 1, fontWeight: "bold"}} variant="h6" component="div">
                         Task-{props.taskId}
                     </Typography>
 
@@ -103,31 +91,34 @@ export default function TaskEdit(props) {
                         onClick={handleCloseTask}
                         aria-label="close"
                     >
-                        <CloseIcon />
+                        <CloseIcon/>
                     </IconButton>
                 </Toolbar>
             </AppBar>
 
             {/* Project Info */}
-            <Grid container sx={{ mt: "1%", mb: "2%", width: "100%", height: "15%", backgroundColor: "#" }} direction="row" alignItems="center" >
-                <Grid item sx={{ mx: "3%", width: "8vw" }} >
-                    <Typography sx={{ fontSize: "1.5vw", fontWeight: "bold", backgroundColor: "#1976d2", color: "#ffffff" }} align="center">Project</Typography>
+            <Grid container sx={{mt: "1%", mb: "2%", width: "100%", height: "15%", backgroundColor: "#"}}
+                  direction="row" alignItems="center">
+                <Grid item sx={{mx: "3%", width: "8vw"}}>
+                    <Typography
+                        sx={{fontSize: "1.5vw", fontWeight: "bold", backgroundColor: "#1976d2", color: "#ffffff"}}
+                        align="center">Project</Typography>
                 </Grid>
-                <Grid item sx={{ width: "20%" }} >
-                    <Typography sx={{ fontSize: "1.5vw", fontWeight: "bold" }}>project-0</Typography>
+                <Grid item sx={{width: "20%"}}>
+                    <Typography sx={{fontSize: "1.5vw", fontWeight: "bold"}}>project-0</Typography>
                 </Grid>
             </Grid>
 
             {/* Task Info */}
 
-            <Grid container sx={{ width: "100%", height: "100%", backgroundColor: "#" }}>
+            <Grid container sx={{width: "100%", height: "100%", backgroundColor: "#"}}>
                 {/* Description */}
-                <Grid container sx={{ width: "48%", height: "100%", backgroundColor: "#" }}>
-                    <Grid container sx={{ mx: "auto", width: "95%", height: "55%", backgroundColor: "#" }}>
+                <Grid container sx={{width: "48%", height: "100%", backgroundColor: "#"}}>
+                    <Grid container sx={{mx: "auto", width: "95%", height: "55%", backgroundColor: "#"}}>
                         <TextField
                             id="description"
                             label="Description"
-                            sx={{ mx: "auto", width: "90%" }}
+                            sx={{mx: "auto", width: "90%"}}
                             placeholder="Description..."
                             rows={5}
                             multiline
@@ -136,54 +127,70 @@ export default function TaskEdit(props) {
                     </Grid>
 
                     {/* Activity */}
-                    <Grid container sx={{ mx: "auto", width: "95%", height: "40%", backgroundColor: "#" }}>
-                        <Typography sx={{ mx: "5%", fontSize:"1.5vw", fontWeight: "bold", color: "#1976d2"}}>
+                    <Grid container sx={{mx: "auto", width: "95%", height: "40%", backgroundColor: "#"}}>
+                        <Typography sx={{mx: "5%", fontSize: "1.5vw", fontWeight: "bold", color: "#1976d2"}}>
                             Activity
                         </Typography>
 
-                        <Typography sx={{ mx: "5%", fontSize:"0.8vw"}}>
-                            Nianyi assigned this task to Peng   -09:25 AM 02/25/22
+                        <Typography sx={{mx: "5%", fontSize: "0.8vw"}}>
+                            Nianyi assigned this task to Peng -09:25 AM 02/25/22
                         </Typography>
 
-                        <Typography sx={{ mx: "5%", fontSize:"0.8vw"}}>
-                            Peng started working on this task.  -12:43 PM 02/26/22
+                        <Typography sx={{mx: "5%", fontSize: "0.8vw"}}>
+                            Peng started working on this task. -12:43 PM 02/26/22
                         </Typography>
 
-                        <Typography sx={{ mx: "5%", fontSize:"0.8vw"}}>
-                            Peng changed priority to level 2.   -02:12 PM 02/26/22
+                        <Typography sx={{mx: "5%", fontSize: "0.8vw"}}>
+                            Peng changed priority to level 2. -02:12 PM 02/26/22
                         </Typography>
 
                     </Grid>
                 </Grid>
 
                 {/* Detail */}
-                <Grid container sx={{ mx: "auto", width: "48%", height: "100%", border: 2, borderColor: "#1976d2", borderRadius: 1, backgroundColor: "#" }}>
+                <Grid container sx={{
+                    mx: "auto",
+                    width: "48%",
+                    height: "100%",
+                    border: 2,
+                    borderColor: "#1976d2",
+                    borderRadius: 1,
+                    backgroundColor: "#"
+                }}>
                     {/* Index Column */}
-                    <Grid container sx={{ ml: "5%", width: "35%", height: "100%", backgroundColor: "#", fontWeight: "bold" }}>
-                        <Grid container sx={{ width: "100%", height: "16%" }} style={{ fontSize: "1.2vw" }} direction="row" alignItems="center">
+                    <Grid container
+                          sx={{ml: "5%", width: "35%", height: "100%", backgroundColor: "#", fontWeight: "bold"}}>
+                        <Grid container sx={{width: "100%", height: "16%"}} style={{fontSize: "1.2vw"}} direction="row"
+                              alignItems="center">
                             Assignee
                         </Grid>
-                        <Grid container sx={{ width: "100%", height: "16%" }} style={{ fontSize: "1.2vw" }} direction="row" alignItems="center">
+                        <Grid container sx={{width: "100%", height: "16%"}} style={{fontSize: "1.2vw"}} direction="row"
+                              alignItems="center">
                             Reporter
                         </Grid>
-                        <Grid container sx={{ width: "100%", height: "16%" }} style={{ fontSize: "1.2vw" }} direction="row" alignItems="center">
-                            Label
+                        <Grid container sx={{width: "100%", height: "16%"}} style={{fontSize: "1.2vw"}} direction="row"
+                              alignItems="center">
+                            Status
                         </Grid>
-                        <Grid container sx={{ width: "100%", height: "16%" }} style={{ fontSize: "1.2vw" }} direction="row" alignItems="center">
+                        <Grid container sx={{width: "100%", height: "16%"}} style={{fontSize: "1.2vw"}} direction="row"
+                              alignItems="center">
                             Priority
                         </Grid>
-                        <Grid container sx={{ width: "100%", height: "16%"}} style={{ fontSize: "1.2vw" }} direction="row" alignItems="center">
+                        <Grid container sx={{width: "100%", height: "16%"}} style={{fontSize: "1.2vw"}} direction="row"
+                              alignItems="center">
                             Createed at
                         </Grid>
-                        <Grid container sx={{ width: "100%", height: "16%" }} style={{ fontSize: "1.2vw" }} direction="row" alignItems="center">
+                        <Grid container sx={{width: "100%", height: "16%"}} style={{fontSize: "1.2vw"}} direction="row"
+                              alignItems="center">
                             Last updated at
                         </Grid>
                     </Grid>
 
                     {/* Value Column */}
-                    <Grid container sx={{ mx: "1%", width: "58%", height: "100%", backgroundColor: "#" }}>
+                    <Grid container sx={{mx: "1%", width: "58%", height: "100%", backgroundColor: "#"}}>
                         {/* Assignee */}
-                        <Grid container sx={{ width: "80%", height: "16%", backgroundColor: "#" }} direction="row" alignItems="center">
+                        <Grid container sx={{width: "80%", height: "16%", backgroundColor: "#"}} direction="row"
+                              alignItems="center">
                             <FormControl variant="standard" fullWidth>
                                 <Select
                                     id="id-select-assignee"
@@ -199,7 +206,8 @@ export default function TaskEdit(props) {
                         </Grid>
 
                         {/* Reporter */}
-                        <Grid container sx={{ width: "80%", height: "16%", backgroundColor: "#" }} direction="row" alignItems="center">
+                        <Grid container sx={{width: "80%", height: "16%", backgroundColor: "#"}} direction="row"
+                              alignItems="center">
                             <FormControl variant="standard" fullWidth>
                                 <Select
                                     id="id-select-reporter"
@@ -214,42 +222,56 @@ export default function TaskEdit(props) {
                             </FormControl>
                         </Grid>
 
-                        {/* Label */}
-                        <Grid container sx={{ width: "80%", height: "16%", backgroundColor: "#" }} direction="row" alignItems="center">
+                        {/* Status */}
+                        <Grid container sx={{width: "80%", height: "16%", backgroundColor: "#"}} direction="row"
+                              alignItems="center">
                             <FormControl variant="standard">
-                                <input
-                                    type="text"
-                                    width="10"
-                                    style={{ fontSize: "1.5vw", width: labelLength, border: 0, backgroundColor: "#cfd8dc", textAlign: "center" }}
-                                    value={label}
-                                    onChange={handleSetLabel}
-                                />
+                                <select
+                                    id="id-select-status"
+                                    style={{fontSize: "1.5vw", width: "12ch", border: 0, textAlign: "left"}}
+                                    value={status}
+                                    onChange={handleSetStatus}
+                                >
+                                    <option value={"Backlog"}>Backlog</option>
+                                    <option value={"Todo"}>{"Todo"}</option>
+                                    <option value={"Inprogress"}>Inprogress</option>
+                                    <option value={"Done"}>Done</option>
+                                </select>
                             </FormControl>
                         </Grid>
 
                         {/* Priority */}
-                        <Grid container sx={{ width: "80%", height: "16%", backgroundColor: "#" }} direction="row" alignItems="center">
+                        <Grid container sx={{width: "80%", height: "16%", backgroundColor: "#"}} direction="row"
+                              alignItems="center">
                             <FormControl variant="standard">
                                 <select
                                     id="id-select-priority"
-                                    style={{ fontSize: "1.5vw", width: "8ch", border: 0, backgroundColor: priorityColor, textAlign: "center" }}
+                                    style={{
+                                        fontSize: "1.5vw",
+                                        width: "8ch",
+                                        border: 0,
+                                        backgroundColor: priorityColor,
+                                        textAlign: "center"
+                                    }}
                                     value={priority}
                                     onChange={handleSetPriority}
                                 >
-                                    <option value={1} style={{ backgroundColor: "#e3f2fd" }}>Level 1</option>
-                                    <option value={2} style={{ backgroundColor: "#e3f2fd" }}>Level 2</option>
-                                    <option value={3} style={{ backgroundColor: "#e3f2fd" }}>Level 3</option>
+                                    <option value={1} style={{backgroundColor: "#e3f2fd"}}>Level 1</option>
+                                    <option value={2} style={{backgroundColor: "#e3f2fd"}}>Level 2</option>
+                                    <option value={3} style={{backgroundColor: "#e3f2fd"}}>Level 3</option>
                                 </select>
                             </FormControl>
                         </Grid>
                         {/* Create Time */}
-                        <Grid container sx={{ width: "80%", height: "16%", backgroundColor: "#" }} direction="row" alignItems="center">
-                            <Typography sx={{ fontSize: "1vw" }}>09:25 AM 02/25/22</Typography>
+                        <Grid container sx={{width: "80%", height: "16%", backgroundColor: "#"}} direction="row"
+                              alignItems="center">
+                            <Typography sx={{fontSize: "1vw"}}>09:25 AM 02/25/22</Typography>
                         </Grid>
 
                         {/* Last Update Time */}
-                        <Grid container sx={{ width: "80%", height: "16%", backgroundColor: "#" }} direction="row" alignItems="center">
-                            <Typography sx={{ fontSize: "1vw" }}>02:12 PM 02/26/22</Typography>
+                        <Grid container sx={{width: "80%", height: "16%", backgroundColor: "#"}} direction="row"
+                              alignItems="center">
+                            <Typography sx={{fontSize: "1vw"}}>02:12 PM 02/26/22</Typography>
                         </Grid>
                     </Grid>
                 </Grid>
