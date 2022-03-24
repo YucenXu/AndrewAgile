@@ -7,36 +7,36 @@ import InputLabel from '@mui/material/InputLabel';
 import NativeSelect from '@mui/material/NativeSelect';
 import Typography from '@mui/material/Typography';
 import { Card, CardContent, CardActionArea } from '@mui/material';
-import { Dialog, DialogTitle } from '@mui/material';
 import SearchBar from './kanban/SearchBar';
+import TaskEdit from './kanban/TaskEdit';
 
 export default function Kanban() {
   const columnTypes = ['Backlog', 'Todo', 'In Progress', 'Done']
   const [projectId, setProjectId] = React.useState(0);
   const [workspaceId, setWorkspaceId] = React.useState(0);
   const [open, setOpen] = React.useState(false);
-  const [task, setTask] = React.useState(0)
+  const [taskId, setTaskId] = React.useState(0)
 
 
   const handleChangeProject = (event) => {
+    // Todo
     setProjectId(Number(event.target.value));
   };
 
   const handleChangeWorkspace = (event) => {
+    // Todo
     setWorkspaceId(Number(event.target.value));
   }
 
   const handleClickTask = (taskId) => (event) => {
+    // Todo
     setOpen(true);
-    setTask(Number(taskId));
+    setTaskId(Number(taskId));
   };
 
-  const handleCloseTask = () => {
-    setOpen(false);
-  }
-
   const handleCreate = () => {
-    alert("create task");
+    // Todo
+    setOpen(true);
   }
 
   return (
@@ -120,15 +120,8 @@ export default function Kanban() {
         ))}
       </Grid>
 
-      <Dialog
-        open={open}
-        onClose={handleCloseTask}
-        scroll="paper"
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-      >
-        <DialogTitle id="scroll-dialog-title">Task-{task}</DialogTitle>
-      </Dialog>
+      {/* Task Popup Dialog */}
+      <TaskEdit open={open} setOpen={setOpen} taskId={taskId}></TaskEdit>
 
       {/* For debugging, will delete */}
       <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId}  Current Project-{projectId}</Typography>
