@@ -8,19 +8,18 @@ import PeopleIcon from '@mui/icons-material/People'
 import HelpIcon from '@mui/icons-material/Help'
 import LogoutIcon from '@mui/icons-material/Logout'
 import List from '@mui/material/List'
-import { useNavigate } from 'react-router-dom'
 import { AuthConsumer, initialAuth } from '../hooks/useAuth'
 import axios from 'axios'
 
 const MenuBar = () => {
-  const navigate = useNavigate()
   const { setAuth } = AuthConsumer()
 
   const handleClick = event => {
     event.preventDefault()
     axios.post('/api/logout').then(() => {
-      setAuth({ ...initialAuth.auth, isChecked: true })
-      navigate('/login', { replace: true })
+      setAuth({ ...initialAuth.auth })
+      // reload the web page to trigger Google OAuth2
+      window.location.reload()
     }).catch(console.error)
   }
 

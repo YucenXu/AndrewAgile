@@ -1,9 +1,7 @@
 import './App.css'
 import React from 'react'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
-import RequireAuth, { AuthProvider } from './hooks/useAuth'
-import Login from './components/Login'
-import Register from './components/Register'
+import { AuthProvider } from './hooks/useAuth'
 import Home from './components/Home'
 import Progress from './components/Progress'
 import Access from './components/Access'
@@ -15,35 +13,25 @@ export default function App () {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/register" element={<Register/>}/>
           <Route exact path="/" element={
-            <RequireAuth>
-              <Home>
-                <Kanban/>
-              </Home>
-            </RequireAuth>
+            <Home>
+              <Kanban/>
+            </Home>
           }/>
           <Route path="/progress" element={
-            <RequireAuth>
-              <Home>
-                <Progress/>
-              </Home>
-            </RequireAuth>
+            <Home>
+              <Progress/>
+            </Home>
           }/>
           <Route path="/access" element={
-            <RequireAuth>
-              <Home>
-                <Access/>
-              </Home>
-            </RequireAuth>
+            <Home>
+              <Access/>
+            </Home>
           }/>
           <Route path="/help" element={
-            <RequireAuth>
-              <Home>
-                <Help/>
-              </Home>
-            </RequireAuth>
+            <Home>
+              <Help/>
+            </Home>
           }/>
         </Routes>
       </BrowserRouter>

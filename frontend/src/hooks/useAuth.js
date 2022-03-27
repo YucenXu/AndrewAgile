@@ -1,11 +1,9 @@
 import { createContext, useContext } from 'react'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Navigate, useLocation } from 'react-router-dom'
 
 export const initialAuth = {
   auth: {
-    isChecked: false,
     username: '',
     email: '',
     firstname: '',
@@ -23,11 +21,11 @@ function useAuth () {
   useEffect(() => {
     const getUserInfo = async () => {
       const resp = await axios.get('/api/userinfo')
-      setAuth({ ...await resp.data, isChecked: true })
+      setAuth(await resp.data)
     }
 
     getUserInfo().catch(() => {
-      setAuth({ ...initialAuth.auth, isChecked: true })
+      setAuth({ ...initialAuth.auth })
     })
   }, [])
 
@@ -49,7 +47,5 @@ export function AuthConsumer () {
 
 export default function RequireAuth ({ children }) {
   const { auth } = AuthConsumer()
-  const location = useLocation()
-  return auth?.username ? children :
-    <Navigate to="/login" replace state={{ path: location.pathname }}/>
+  return auth?.username ? children : null
 }

@@ -31,3 +31,4 @@ staticfiles
 
 # secret
 *.pem
+*.ini

@@ -13,7 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import MenuBar from './MenuBar'
-import { AuthConsumer } from '../hooks/useAuth'
+import RequireAuth, { AuthConsumer } from '../hooks/useAuth'
 import { useState } from 'react'
 
 const drawerWidth = 200
@@ -69,71 +69,73 @@ export default function Home ({ children }) {
   const { auth } = AuthConsumer()
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar position="absolute" open={open}>
-        <Toolbar sx={{ pr: '24px' }}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer}
-            sx={{
-              marginRight: '36px',
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon/>
-          </IconButton>
-          <Typography
-            component="h1"
-            variant="h5"
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}
-          >
-            Andrew Agile Platform
-          </Typography>
-          <IconButton color="inherit" onClick={() => setUnread(0)}>
-            <Badge badgeContent={unread} color="secondary">
-              <NotificationsIcon/>
-            </Badge>
-          </IconButton>
-          <Avatar sx={{
-            ml: 2,
-            mr: 1,
-            width: 37,
-            height: 37,
-            bgcolor: 'secondary.main',
+    <RequireAuth>
+      <Box sx={{ display: 'flex' }}>
+        <AppBar position="absolute" open={open}>
+          <Toolbar sx={{ pr: '24px' }}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={toggleDrawer}
+              sx={{
+                marginRight: '36px',
+                ...(open && { display: 'none' }),
+              }}
+            >
+              <MenuIcon/>
+            </IconButton>
+            <Typography
+              component="h1"
+              variant="h5"
+              color="inherit"
+              noWrap
+              sx={{ flexGrow: 1 }}
+            >
+              Andrew Agile Platform
+            </Typography>
+            <IconButton color="inherit" onClick={() => setUnread(0)}>
+              <Badge badgeContent={unread} color="secondary">
+                <NotificationsIcon/>
+              </Badge>
+            </IconButton>
+            <Avatar sx={{
+              ml: 2,
+              mr: 1,
+              width: 37,
+              height: 37,
+              bgcolor: 'secondary.main',
+            }}>
+              {(auth.firstname[0] + auth.lastname[0]).toUpperCase()}
+            </Avatar>
+          </Toolbar>
+        </AppBar>
+        <Drawer variant="permanent" open={open}>
+          <Toolbar sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            px: [1],
           }}>
-            {(auth.firstname[0] + auth.lastname[0]).toUpperCase()}
-          </Avatar>
-        </Toolbar>
-      </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <Toolbar sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          px: [1],
+            <IconButton onClick={toggleDrawer}>
+              <ChevronLeftIcon/>
+            </IconButton>
+          </Toolbar>
+          <Divider/>
+          <MenuBar/>
+        </Drawer>
+        <Box component="main" sx={{
+          backgroundColor: (theme) =>
+            theme.palette.mode === 'light'
+              ? theme.palette.grey[100]
+              : theme.palette.grey[900],
+          flexGrow: 1,
+          height: '100vh',
+          overflow: 'auto',
         }}>
-          <IconButton onClick={toggleDrawer}>
-            <ChevronLeftIcon/>
-          </IconButton>
-        </Toolbar>
-        <Divider/>
-        <MenuBar/>
-      </Drawer>
-      <Box component="main" sx={{
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'light'
-            ? theme.palette.grey[100]
-            : theme.palette.grey[900],
-        flexGrow: 1,
-        height: '100vh',
-        overflow: 'auto',
-      }}>
-        {children}
+          {children}
+        </Box>
       </Box>
-    </Box>
+    </RequireAuth>
   )
 }
