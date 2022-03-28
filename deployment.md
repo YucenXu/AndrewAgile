@@ -122,14 +122,7 @@ Add one entry to "Authorized redirect URIs": `http://<hostname>/oauth/complete/g
 
 Make a copy of the [config.ini.sample](backend/config.ini.sample) file and rename the copy as `config.ini`.
 
-Update with your own secrets for Django, GoogleOAuth2 and MySQL. Then mount it to the cloud instance.
-
-```shell
-sftp –i <aws-key>.pem ubuntu@<ip-address>
-cd s22_team_26/backend
-put config.ini
-exit
-```
+Update with your own secrets for Django, GoogleOAuth2 and MySQL in `config.ini`.
 
 Finally, switch the configuration file to the production version in [settings.py](backend/backend/settings.py).
 
