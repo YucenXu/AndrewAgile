@@ -2,32 +2,32 @@ import * as React from 'react'
 import InputLabel from '@mui/material/InputLabel'
 import { Grid, Button, NativeSelect, Avatar, Card, FormControl, Box } from '@mui/material'
 import Container from '@mui/material/Container'
-import SearchBar from './kanban/SearchBar'
-import List from '@mui/material/List';
-import Modal from './access/Modal';
-import UserRole from './access/UserRole';
+import SearchBar from './access/SearchBar'
+import List from '@mui/material/List'
+import Modal from './access/Modal'
+import UserRole from './access/UserRole'
 
-export default function Access() {
+export default function Access () {
   const [workspaceId, setWorkspaceId] = React.useState(0)
-  const [access, setAccess] = React.useState('');
-  const [showModal, setShowModal] = React.useState(false);
+  const [access, setAccess] = React.useState('')
+  const [showModal, setShowModal] = React.useState(false)
   const people = [
     {
       name: 'Peng Zhao',
-      role: 'admin'
+      role: 'admin',
     },
     {
       name: 'Nianyi Guo',
-      role: 'admin'
+      role: 'admin',
     },
     {
       name: 'Yucen Xu',
-      role: 'admin'
+      role: 'admin',
     },
     {
       name: 'Zhiqi Li',
-      role: 'admin'
-    }
+      role: 'admin',
+    },
   ]
   const users = ['Peng Zhao', 'Nianyi Guo', 'Yucen Xu', 'Zhiqi Li']
 
@@ -39,9 +39,9 @@ export default function Access() {
   return (
     <Container maxWidth="sx" sx={{ mt: 12 }}>
       <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-        style={{ backgroundColor: '', alignItems: 'left' }}>
+            style={{ backgroundColor: '', alignItems: 'left' }}>
         <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-          style={{ backgroundColor: '' }}>
+                     style={{ backgroundColor: '' }}>
           <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
           <NativeSelect
             labelId="id-select-workspace-label"
@@ -66,14 +66,15 @@ export default function Access() {
         </Grid>
       </Grid>
 
-      <Grid container sx={{ my: '5vh', mx: 'auto', height: '50vh' }} style={{ backgroundColor: '', justifyContent: 'left' }}>
-        <List sx={{ my: '2vh', width: '60vw', height: '10vh' }} >
+      <Grid container sx={{ my: '5vh', mx: 'auto', height: '50vh' }}
+            style={{ backgroundColor: '', justifyContent: 'left' }}>
+        <List sx={{ my: '2vh', width: '60vw', height: '10vh' }}>
           {people.map((user) => (
-            <UserRole name={user.name} role={user.role} />
+            <UserRole name={user.name} role={user.role}/>
           ))}
         </List>
       </Grid>
-      <Modal show={showModal} onClose={() => setShowModal(false)} names={people.name} />
+      <Modal show={showModal} onClose={() => setShowModal(false)} names={people.name}/>
     </Container>
   )
 }
