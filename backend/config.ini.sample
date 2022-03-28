@@ -5,8 +5,12 @@
 # Warning: Changing secret keys invalidates existing sessions, so may need to delete your DB
 
 [Django]
-Secret : @dv8n!%%c5ob+qjg6zeox3&pv^o5w=q%%0i6ji4+ntlm$6n+3@%%^
+secret = @dv8n!%%c5ob+qjg6zeox3&pv^o5w=q%%0i6ji4+ntlm$6n+3@%%^
 
 [GoogleOAuth2]
-Key : 140651303030-l46n05gma8a6v3da95pvbkdnfoidl357.apps.googleusercontent.com
-Secret : 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
+key = 771416912063-at7l8culi6839a00q7dcpqqpj6ncour5.apps.googleusercontent.com
+secret = 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
+
+[MySQL]
+user = admin
+password = admin
