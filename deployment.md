@@ -217,7 +217,7 @@ Edit the SSL configuration file.
 sudo vim /etc/apache2/sites-available/default-ssl.conf
 ```
 
-Set the following parameters and remember the SSLCertificate path.
+Set the server parameters and remember the SSLCertificate path.
 
 ```
 ServerName  <full-domain-name>
