@@ -15,7 +15,7 @@ sudo -H apt install python3-pip
 sudo -H pip3 install django
 sudo -H pip3 install social-auth-app-django
 
-# npm and react
+# node and npm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 nvm install node
 nvm use node
