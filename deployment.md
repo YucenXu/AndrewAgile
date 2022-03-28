@@ -29,6 +29,9 @@ sudo -H pip3 install mysqlclient
 sudo apt install apache2 
 sudo apt install libapache2-mod-wsgi-py3
 
+# SSL certbot
+sudo -H apt-get install python3-certbot-apache
+
 sudo reboot
 ```
 
@@ -52,6 +55,7 @@ Login to the database and perform CRUD operations (if needed).
 
 ```shell
 mysql -u <username> -p
+# prompt for password
 ```
 
 ```mysql
@@ -102,9 +106,12 @@ python3 manage.py collectstatic
 
 Purchase a domain name at [GoDaddy](https://www.godaddy.com/), set your instance's public IP address in the "Type A" DNS record.
 
-Add an inbound security rule for the instance: protocol TCP, port 80, allowed source 0.0.0.0/0
+Add two inbound security rules for the instance:
 
-Add your purchased hostname to the `ALLOWED_HOSTS` list in [settings.py](backend/backend/settings.py).
++ HTTP protocol, port 80, allowed source 0.0.0.0/0
++ HTTPS protocol, port 443, allowed source 0.0.0.0/0
+
+Add an arbitrary hostname, for example "www" to your purchased domain name to form your **fully qualified domain name** `<hostname>.<domain-name>`. Then add the full domain name to the `ALLOWED_HOSTS` list in [settings.py](backend/backend/settings.py).
 
 ## Google OAuth2
 
@@ -114,7 +121,10 @@ Visit "APIs & Services -> OAuth consent screen", create an external app.
 
 Visit "APIs & Services -> Credentials", create an OAuth client ID of "Web application" type.
 
-Add one entry to "Authorized redirect URIs": `http://<hostname>/oauth/complete/google-oauth2/`
+Add two entries to "Authorized redirect URIs":
+
++  `http://<full-domain-name>/oauth/complete/google-oauth2/`
++  `https://<full-domain-name>/oauth/complete/google-oauth2/`
 
 > Note: It may take 5 minutes to a few hours for the Google OAuth2 setting to take effect.
 
@@ -185,5 +195,43 @@ sudo chmod -R g+w s22_team_26/backend
 sudo apache2ctl restart
 ```
 
-Now the web app should be running at `http://<hostname>/`.
+Now the web app should be running at `http://<full-domain-name>/`.
+
+## SSL protocol
+
+Create a certificate file provided by a CA.
+
+```shell
+sudo -H certbot --apache
+# prompt for your full domain name and traffic direction choice
+# better to choose option 1 to facilitate debugging
+
+sudo a2enmod ssl
+cd /etc/apache2/sites-enabled
+sudo ln -s ../sites-available/default-ssl.conf
+```
+
+Edit the SSL configuration file.
+
+```shell
+sudo vim /etc/apache2/sites-available/default-ssl.conf
+```
+
+Set the following parameters and remember the SSLCertificate path.
+
+```
+ServerName  <full-domain-name>
+ServerAlias  <domain-name>
+SSLCertificateFile  <cert-path>/...
+SSLCertificateKeyFile  <cert-path>/...
+```
+
+Fix permissions on the cert directory and restart Apache server.
+
+```shell
+sudo chgrp -R www-data <cert-path>
+sudo apache2ctl restart
+```
+
+Now the web app should be running at `https://<full-domain-name>/`.
 
