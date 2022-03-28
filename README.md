@@ -1,4 +1,4 @@
-# 17637 S22 Team 26 - Andrew Agile Platform
+# 17637 S22 Team 26 - AndrewAgile
 
 ## Overview
 
@@ -11,7 +11,9 @@ Tech stack: [Django](https://www.djangoproject.com/), [React](https://reactjs.or
 Suggested package versions, can be slightly different.
 
 + python 3.9.2
-+ django 4.0
+  + django 4.0
+  + social-auth-app-django 5.0.0
+
 + node 17.6.0
 + npm 8.5.1
 
@@ -23,7 +25,7 @@ Suggested package versions, can be slightly different.
    cd backend
    python3 manage.py makemigrations userapp agileapp
    python3 manage.py migrate
-   python3 manage.py shell < backend/init_db.py  # once-only
+   python3 manage.py shell < backend/init_db.py
    ```
 
 2. Start the backend server, code changes will trigger reload.
@@ -43,6 +45,10 @@ Suggested package versions, can be slightly different.
 
 4. Open browser at http://localhost:3000/ to develop and test.
 
+> Note: If you are logged out at localhost:3000, please go to localhost:8000 to login again.
+>
+> Then return to localhost:3000 for frontend development.
+
 
 ## Production
 
@@ -60,3 +66,4 @@ See the [deployment guide](deployment.md) for details.
 We used some Django code from Professor Eppinger's class demos.
 
 We used some MUI template code from their official documentation.
+

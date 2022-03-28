@@ -1,0 +1,16 @@
+# If you need to generate a new secret key, use the get_random_secret_key() function:
+#    from django.core.management.utils import get_random_secret_key
+#    print(get_random_secret_key())
+# Warning: The % character is special to ConfigParser - use %% if your secret has % chars
+# Warning: Changing secret keys invalidates existing sessions, so may need to delete your DB
+
+[Django]
+secret = @dv8n!%%c5ob+qjg6zeox3&pv^o5w=q%%0i6ji4+ntlm$6n+3@%%^
+
+[GoogleOAuth2]
+key = 771416912063-at7l8culi6839a00q7dcpqqpj6ncour5.apps.googleusercontent.com
+secret = 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
+
+[MySQL]
+user = admin
+password = admin
