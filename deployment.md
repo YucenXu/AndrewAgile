@@ -74,7 +74,7 @@ npm run build
 rm -rf ../backend/ui_build && mv build ../backend/ui_build
 ```
 
-Replace the default database engine with MySQL in `s22_team_26/backend/backend/settings.py`.
+Replace the default database engine with MySQL in [settings.py](backend/backend/settings.py).
 
 ```python
 DATABASES = {
@@ -104,7 +104,7 @@ Purchase a domain name at [GoDaddy](https://www.godaddy.com/), set your instance
 
 Add an inbound security rule for the instance: protocol TCP, port 80, allowed source 0.0.0.0/0
 
-Add your purchased hostname to the `ALLOWED_HOSTS` list in `s22_team_26/backend/backend/settings.py`.
+Add your purchased hostname to the `ALLOWED_HOSTS` list in [settings.py](backend/backend/settings.py).
 
 ## Google OAuth2
 
@@ -120,7 +120,7 @@ Add one entry to "Authorized redirect URIs": `http://<hostname>/oauth/complete/g
 
 ## Config secrets
 
-Make a copy of the `s22_team_26/backend/config.ini.sample` file and rename the copy as `config.ini`.
+Make a copy of the [config.ini.sample](backend/config.ini.sample) file and rename the copy as `config.ini`.
 
 Update with your own secrets for Django, GoogleOAuth2 and MySQL. Then mount it to the cloud instance.
 
@@ -131,7 +131,7 @@ put config.ini
 exit
 ```
 
-Finally, switch the configuration file in `s22_team_26/backend/backend/settings.py`.
+Finally, switch the configuration file to the production version in [settings.py](backend/backend/settings.py).
 
 ```python
 CONFIG.read(BASE_DIR / "config.ini")
