@@ -9,12 +9,14 @@ import Typography from '@mui/material/Typography'
 import { Card, CardContent, CardActionArea } from '@mui/material'
 import SearchBar from './kanban/SearchBar'
 import TaskEdit from './kanban/TaskEdit'
+import TaskCreate from './kanban/TaskCreate'
 
 export default function Kanban () {
   const columnTypes = ['Backlog', 'Todo', 'In Progress', 'Done']
   const [projectId, setProjectId] = React.useState(0)
   const [workspaceId, setWorkspaceId] = React.useState(0)
-  const [open, setOpen] = React.useState(false)
+  const [editOpen, setEditOpen] = React.useState(false)
+  const [createOpen, setCreateOpen] = React.useState(false)
   const [taskId, setTaskId] = React.useState(0)
 
   const handleChangeProject = (event) => {
@@ -29,13 +31,13 @@ export default function Kanban () {
 
   const handleClickTask = (taskId) => (event) => {
     // Todo
-    setOpen(true)
+    setEditOpen(true)
     setTaskId(Number(taskId))
   }
 
-  const handleCreate = () => {
+  const handleClickCreate = () => {
     // Todo
-    setOpen(true)
+    setCreateOpen(true)
   }
 
   return (
@@ -93,7 +95,7 @@ export default function Kanban () {
         <Grid item sx={{ width: '44.5vw' }}></Grid>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-                  onClick={handleCreate}>Create</Button>
+                  onClick={handleClickCreate}>Create</Button>
         </Grid>
       </Grid>
 
@@ -129,8 +131,11 @@ export default function Kanban () {
         ))}
       </Grid>
 
-      {/* Task Popup Dialog */}
-      <TaskEdit open={open} setOpen={setOpen} taskId={taskId}></TaskEdit>
+      {/* Task Edit Popup Dialog */}
+      <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} projectId={projectId}></TaskEdit>
+
+      {/* Task Create Popup Dialog */}
+      <TaskCreate open={createOpen} setCreateOpen={setCreateOpen} projectId={projectId}></TaskCreate>
 
       {/* For debugging, will delete */}
       <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current
