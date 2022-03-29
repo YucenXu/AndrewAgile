@@ -115,44 +115,11 @@ export default function TaskEdit(props) {
       {/* Task Info */}
 
       <Grid container sx={{ width: '100%', height: '100%', backgroundColor: '#' }}>
-        {/* Description */}
-        <Grid container sx={{ width: '48%', height: '100%', backgroundColor: '#' }}>
-          <Grid container sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#' }}>
-            <TextField
-              id="description"
-              label="Description"
-              sx={{ mx: 'auto', width: '90%' }}
-              placeholder="Description..."
-              rows={5}
-              multiline
-              focused
-            />
-          </Grid>
 
-          {/* Activity */}
-          <Grid container sx={{ mx: 'auto', width: '95%', height: '40%', backgroundColor: '#' }}>
-            <Typography sx={{ mx: '5%', fontSize: '1.5vw', fontWeight: 'bold', color: '#1976d2' }}>
-              Activity
-            </Typography>
-
-            <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
-              Nianyi assigned this task to Peng -09:25 AM 02/25/22
-            </Typography>
-
-            <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
-              Peng started working on this task. -12:43 PM 02/26/22
-            </Typography>
-
-            <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
-              Peng changed priority to level 2. -02:12 PM 02/26/22
-            </Typography>
-
-          </Grid>
-        </Grid>
 
         {/* Detail */}
         <Grid container sx={{
-          mx: 'auto',
+          ml: '3%',
           width: '48%',
           height: '100%',
           border: 2,
@@ -309,6 +276,41 @@ export default function TaskEdit(props) {
               alignItems="center">
               <Typography sx={{ fontSize: '1vw' }}>02:12 PM 02/26/22</Typography>
             </Grid>
+          </Grid>
+        </Grid>
+
+        {/* Description */}
+        <Grid container sx={{ width: '48%', height: '100%', backgroundColor: '#' }}>
+          <Grid container sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#' }}>
+            <TextField
+              id="description"
+              label="Description"
+              sx={{ mx: 'auto', width: '90%' }}
+              placeholder="Description..."
+              rows={5}
+              multiline
+              focused
+            />
+          </Grid>
+
+          {/* Activity */}
+          <Grid container sx={{ mx: 'auto', width: '95%', height: '40%', backgroundColor: '#' }}>
+            <Typography sx={{ mx: '5%', fontSize: '1.5vw', fontWeight: 'bold', color: '#1976d2' }}>
+              Activity
+            </Typography>
+
+            <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
+              Nianyi assigned this task to Peng -09:25 AM 02/25/22
+            </Typography>
+
+            <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
+              Peng started working on this task. -12:43 PM 02/26/22
+            </Typography>
+
+            <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
+              Peng changed priority to level 2. -02:12 PM 02/26/22
+            </Typography>
+
           </Grid>
         </Grid>
 

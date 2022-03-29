@@ -10,13 +10,15 @@ import { Card, CardContent, CardActionArea } from '@mui/material'
 import SearchBar from './kanban/SearchBar'
 import TaskEdit from './kanban/TaskEdit'
 import TaskCreate from './kanban/TaskCreate'
+import ProjectCreate from './kanban/ProjectCreate'
 
-export default function Kanban () {
+export default function Kanban() {
   const columnTypes = ['Backlog', 'Todo', 'In Progress', 'Done']
   const [projectId, setProjectId] = React.useState(0)
   const [workspaceId, setWorkspaceId] = React.useState(0)
   const [editOpen, setEditOpen] = React.useState(false)
-  const [createOpen, setCreateOpen] = React.useState(false)
+  const [createProjectOpen, setCreateProjectOpen] = React.useState(false)
+  const [createTaskOpen, setCreateTaskOpen] = React.useState(false)
   const [taskId, setTaskId] = React.useState(0)
 
   const handleChangeProject = (event) => {
@@ -29,26 +31,32 @@ export default function Kanban () {
     setWorkspaceId(Number(event.target.value))
   }
 
+  const handleClickCreateProject = () => {
+    // Todo
+    setCreateProjectOpen(true)
+  }
+
   const handleClickTask = (taskId) => (event) => {
     // Todo
     setEditOpen(true)
     setTaskId(Number(taskId))
   }
 
-  const handleClickCreate = () => {
+  const handleClickCreateTask = () => {
     // Todo
-    setCreateOpen(true)
+    setCreateTaskOpen(true)
   }
 
   return (
     <Box>
       {/* Dropdown menus */}
+      {/* Workspace Dropdown */}
       <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
-            style={{ backgroundColor: '', alignItems: 'left' }}>
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}>
+        style={{ backgroundColor: '', alignItems: 'left' }}>
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
+          style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-                       style={{ backgroundColor: '' }}>
+            style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
             <NativeSelect
               labelId="id-select-workspace-label"
@@ -63,10 +71,11 @@ export default function Kanban () {
           </FormControl>
         </Grid>
 
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}>
+        {/* Project Dropdown */}
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
+          style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-                       style={{ backgroundColor: '' }}>
+            style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-project-label">Project</InputLabel>
             <NativeSelect
               labelId="id-select-project-label"
@@ -81,10 +90,14 @@ export default function Kanban () {
           </FormControl>
         </Grid>
 
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}></Grid>
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}></Grid>
+        {/* Project Create Button */}
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
+          style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+          <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
+            onClick={handleClickCreateProject}>Create</Button>
+        </Grid>
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
+          style={{ backgroundColor: '#', alignItems: 'left' }}></Grid>
       </Grid>
 
       {/* Search Bar, Create Button */}
@@ -95,7 +108,7 @@ export default function Kanban () {
         <Grid item sx={{ width: '44.5vw' }}></Grid>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-                  onClick={handleClickCreate}>Create</Button>
+            onClick={handleClickCreateTask}>Create</Button>
         </Grid>
       </Grid>
 
@@ -106,7 +119,7 @@ export default function Kanban () {
           <Paper sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }} style={{ backgroundColor: '#eaecee' }}>
             {/* title */}
             <Grid item xs sx={{ mt: '1vh', width: '19vw', height: '6vh' }} direction="row" display="flex"
-                  justify="center">
+              justify="center">
               <Typography sx={{ ml: '2vw', my: 'auto', width: '12vw', fontSize: 18, fontWeight: 700 }} color="#424949">
                 {columnType}
               </Typography>
@@ -114,7 +127,7 @@ export default function Kanban () {
             <Divider></Divider>
             {/* tasks */}
             <Grid item spacing={2} sx={{ my: '0.5vh', width: '19vw', height: '53vh' }}
-                  style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
+              style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
               {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((taskId) => (
                 <Card sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
                   <CardActionArea type="submit" onClick={handleClickTask(taskId)}>
@@ -131,11 +144,14 @@ export default function Kanban () {
         ))}
       </Grid>
 
+      {/* Project Create Popup Dialog */}
+      <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} workspaceId={workspaceId}></ProjectCreate>
+
       {/* Task Edit Popup Dialog */}
       <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} projectId={projectId}></TaskEdit>
 
       {/* Task Create Popup Dialog */}
-      <TaskCreate open={createOpen} setCreateOpen={setCreateOpen} projectId={projectId}></TaskCreate>
+      <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} projectId={projectId}></TaskCreate>
 
       {/* For debugging, will delete */}
       <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current

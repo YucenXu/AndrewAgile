@@ -22,19 +22,13 @@ export default function TaskCreate(props) {
     const [priorityColor, setPriorityColor] = React.useState('#ffcdd2')
 
     const handleCloseTask = () => {
-        props.setCreateOpen(false)
-        setTaskName("")
-    }
-
-    const handleDeleteTask = () => {
-        // Todo
-        props.setCreateOpen(false)
+        props.setCreateTaskOpen(false)
         setTaskName("")
     }
 
     const handleSaveTask = () => {
         // Todo
-        props.setCreateOpen(false)
+        props.setCreateTaskOpen(false)
         setTaskName("")
     }
 
@@ -125,25 +119,9 @@ export default function TaskCreate(props) {
             {/* Task Info */}
 
             <Grid container sx={{ width: '100%', height: '100%', backgroundColor: '#' }}>
-                {/* Description */}
-                <Grid container sx={{ width: '48%', height: '100%', backgroundColor: '#' }}>
-                    <Grid container sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#' }}>
-                        <TextField
-                            id="description"
-                            label="Description"
-                            sx={{ mx: 'auto', width: '90%' }}
-                            placeholder="Description..."
-                            rows={5}
-                            multiline
-                            focused
-                        />
-                    </Grid>
-
-                </Grid>
-
                 {/* Detail */}
                 <Grid container sx={{
-                    mx: 'auto',
+                    ml: '3%',
                     width: '48%',
                     height: '100%',
                     border: 2,
@@ -152,7 +130,6 @@ export default function TaskCreate(props) {
                     backgroundColor: '#',
                 }}>
                     {/* Index Column */}
-
                     <Grid container
                         sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
                         <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
@@ -190,7 +167,7 @@ export default function TaskCreate(props) {
                                 id="id-task-name"
                                 label="task-name"
                                 sx={{ width: '90%' }}
-                                placeholder="Task Name..."
+                                placeholder="Task Name"
                                 value={taskName}
                                 onChange={handleChangeTaskName}
                                 inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
@@ -249,7 +226,7 @@ export default function TaskCreate(props) {
                                     <option value={'story'}>Story</option>
                                     <option value={'issue'}>Issue</option>
                                     <option value={'action'}>Action</option>
-                                    <option value={'project'}>Project</option>
+                                    {/* <option value={'project'}>Project</option> */}
                                 </select>
                             </FormControl>
                         </Grid>
@@ -303,10 +280,23 @@ export default function TaskCreate(props) {
                     </Grid>
                 </Grid>
 
+                {/* Description */}
+                <Grid container sx={{ width: '48%', height: '100%', backgroundColor: '#' }}>
+                    <Grid container sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#' }}>
+                        <TextField
+                            id="description"
+                            label="Description"
+                            sx={{ mx: 'auto', width: '90%' }}
+                            placeholder="Description..."
+                            rows={8}
+                            multiline
+                            focused
+                        />
+                    </Grid>
+                </Grid>
             </Grid>
 
             <DialogActions>
-                <Button onClick={handleDeleteTask}>Delete</Button>
                 <Button variant="contained" onClick={handleSaveTask}>Save</Button>
             </DialogActions>
         </Dialog>
