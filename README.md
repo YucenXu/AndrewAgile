@@ -1,4 +1,4 @@
-# 17637 S22 Team 26: [AndrewAgile](https://www.andrewagile.com/)
+# 17637 S22 Team 26 [AndrewAgile](https://www.andrewagile.com/)
 
 ## Overview
 
