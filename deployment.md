@@ -1,10 +1,8 @@
 # Deployment
 
-## Cloud instance
+## AWS EC2
 
-Choose an IaaS provider, for example [AWS EC2](https://aws.amazon.com/ec2/), and create a new Ubuntu instance.
-
-Connect to the instance and install dependent packages.
+Create a new Ubuntu instance on [AWS EC2](https://aws.amazon.com/ec2/). Connect to the instance and install dependencies.
 
 ```shell
 sudo apt update
@@ -15,103 +13,47 @@ sudo -H apt install python3-pip
 sudo -H pip3 install django
 sudo -H pip3 install social-auth-app-django
 
-# node and npm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-nvm install node
-nvm use node
-
-# mysql database
-sudo apt install mysql-server
+# mysql client
 sudo apt install libmysqlclient-dev
 sudo -H pip3 install mysqlclient
+sudo apt install mysql-client-core-8.0
 
 # apache server
-sudo apt install apache2 
+sudo apt install apache2
 sudo apt install libapache2-mod-wsgi-py3
 
-# SSL certbot
+# ssl certificate
 sudo -H apt-get install python3-certbot-apache
 
 sudo reboot
 ```
 
-## MySQL database
+Purchase a domain name at [GoDaddy](https://www.godaddy.com/), set your instance's public IP address in the "Type A" DNS record.
 
-Create a MySQL admin and the project database.
+Choose an arbitrary hostname, for example "www" to your purchased domain name to form your **fully qualified domain name** `<hostname>.<domain-name>`. 
+
+Add two inbound security rules in the EC2 instance:
+
++ type HTTP, port 80, allowed source 0.0.0.0/0
++ type HTTPS, port 443, allowed source 0.0.0.0/0
+
+## AWS RDS
+
+Create a new (or using exist) MySQL instance on [AWS RDS](https://aws.amazon.com/rds/).
+
+Add one inbound security rule in the RDS instance: type MYSQL/Aurora, port 3306, allowed source should be the security group of your EC2 instance.
+
+Then connect to RDS within EC2 to create a new database for this project.
 
 ```shell
-sudo mysql
-```
-
-```mysql
-create user <username>@localhost identified by <password>;
-grant all privileges on *.* to <username>@localhost;
-create database django character set utf8mb4;
-# drop database django;
-quit;
-```
-
-Login to the database and perform CRUD operations (if needed).
-
-```shell
-mysql -u <username> -p
+mysql -h <host> -P 3306 -u <user> -p
 # prompt for password
 ```
 
 ```mysql
-use django;
-show tables;
-select * from <tablename>;
+create database django character set utf8mb4;
 quit;
 ```
-
-## Frontend & backend 
-
-Git clone this repository under current directory `/home/ubuntu/`.
-
-Build the frontend app for production. Then move the build folder to backend directory.
-
-```shell
-cd s22_team_26/frontend
-npm install
-npm run build
-rm -rf ../backend/ui_build && mv build ../backend/ui_build
-```
-
-Replace the default database engine with MySQL in [settings.py](backend/backend/settings.py).
-
-```python
-DATABASES = {
-    'default': {
-        'OPTIONS': {'charset': 'utf8mb4'},
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
-        'USER': CONFIG.get("MySQL", "user"),
-        'PASSWORD': CONFIG.get("MySQL", "password"),
-    }
-}
-```
-
-Migrate the backend database and collect static files.
-
-```shell
-cd s22_team_26/backend
-python3 manage.py makemigrations userapp agileapp
-python3 manage.py migrate
-# python3 manage.py shell < backend/init_db.py
-python3 manage.py collectstatic
-```
-
-## Config networks
-
-Purchase a domain name at [GoDaddy](https://www.godaddy.com/), set your instance's public IP address in the "Type A" DNS record.
-
-Add two inbound security rules for the instance:
-
-+ HTTP protocol, port 80, allowed source 0.0.0.0/0
-+ HTTPS protocol, port 443, allowed source 0.0.0.0/0
-
-Add an arbitrary hostname, for example "www" to your purchased domain name to form your **fully qualified domain name** `<hostname>.<domain-name>`. Then add the full domain name to the `ALLOWED_HOSTS` list in [settings.py](backend/backend/settings.py).
 
 ## Google OAuth2
 
@@ -128,16 +70,68 @@ Add two entries to "Authorized redirect URIs":
 
 > Note: It may take 5 minutes to a few hours for the Google OAuth2 setting to take effect.
 
-## Config secrets
+## Frontend
 
-Make a copy of the [config.ini.sample](backend/config.ini.sample) file and rename the copy as `config.ini`.
+In your local dev environment, build the React bundle in production mode.
 
-Update with your own secrets for Django, GoogleOAuth2 and MySQL in `config.ini`.
+```shell
+cd s22_team_26/frontend
+npm install
+npm run build
+rm -rf ../backend/ui_build && mv build ../backend/ui_build
+```
 
-Finally, switch the configuration file to the production version in [settings.py](backend/backend/settings.py).
+Push all the UI changes to the GitHub repository.
 
-```python
-CONFIG.read(BASE_DIR / "config.ini")
+```shell
+cd s22_team_26
+git add .
+git commit -m "update UI build"
+git push
+```
+
+## Backend
+
+In EC2 instance, git clone the repository under current directory `/home/ubuntu/`.
+
+Make a few changes to [settings.py](backend/backend/settings.py):
+
++ Add the full domain name to the `ALLOWED_HOSTS` list.
+
++ Replace the default database engine with MySQL.
+
+  ```python
+  DATABASES = {
+      'default': {
+          'ENGINE': 'django.db.backends.mysql',
+          'OPTIONS': {'charset': 'utf8mb4', 'sql_mode': 'traditional'},
+          'NAME': 'django',
+          'USER': CONFIG.get("MySQL", "user"),
+          'PASSWORD': CONFIG.get("MySQL", "password"),
+          'HOST': CONFIG.get("MySQL", "host"),
+          'PORT': CONFIG.get("MySQL", "port"),
+      }
+  }
+  ```
+
++ Make a copy of the [config.ini.sample](backend/config.ini.sample) file and rename the copy as `config.ini`.
+
+  Update with your own secrets for Django, GoogleOAuth2 and MySQL in `config.ini`.
+
+  Switch the configuration file to the production version.
+  
+  ```python
+  CONFIG.read(BASE_DIR / "config.ini")
+  ```
+
+Finally, migrate the backend database and collect static files.
+
+```shell
+cd s22_team_26/backend
+python3 manage.py makemigrations userapp agileapp
+python3 manage.py migrate
+# python3 manage.py shell < backend/init_db.py
+python3 manage.py collectstatic
 ```
 
 ## Apache server
@@ -197,9 +191,9 @@ sudo apache2ctl restart
 
 Now the web app should be running at `http://<full-domain-name>/`.
 
-## SSL protocol
+## HTTPS
 
-Create a certificate file provided by a CA.
+Create a SSL certificate file provided by a CA.
 
 ```shell
 sudo -H certbot --apache

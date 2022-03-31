@@ -12,5 +12,7 @@ key = 771416912063-at7l8culi6839a00q7dcpqqpj6ncour5.apps.googleusercontent.com
 secret = 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
 
 [MySQL]
-user = admin
-password = admin
+host =
+port =
+user =
+password =

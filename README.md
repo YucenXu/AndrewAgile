@@ -1,4 +1,4 @@
-# 17637 S22 Team 26 - [AndrewAgile](https://www.andrewagile.com/)
+# 17637 S22 Team 26: [AndrewAgile](https://www.andrewagile.com/)
 
 ## Overview
 
@@ -10,12 +10,13 @@ Tech stack: [Django](https://www.djangoproject.com/), [React](https://reactjs.or
 
 Suggested package versions, can be slightly different.
 
-+ python 3.9.2
-  + django 4.0
-  + social-auth-app-django 5.0.0
-
-+ node 17.6.0
-+ npm 8.5.1
++ python 3.8+
+  + django 4.0+
+  + social-auth-app-django 5.0.x
+  + mysqlclient 2.1.x
+  
++ node 17.6+
++ npm 8.5+
 
 ## Local Dev
 
