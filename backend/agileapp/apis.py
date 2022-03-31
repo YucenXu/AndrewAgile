@@ -38,10 +38,10 @@ def workspaces_api(request, wid):
     if request.method == "GET":
         workspace = Workspace.objects.filter(id=wid)[0]
         resp = {
-                "id": workspace.id,
-                "name": workspace.name,
-                "description": workspace.description,
-            }
+            "id": workspace.id,
+            "name": workspace.name,
+            "description": workspace.description,
+        }
         return HttpResponse(json.dumps(resp), content_type="application/json")
     else:
         pass
@@ -75,14 +75,14 @@ def project_api(request, pid):
     if request.method == "GET":
         project = Project.objects.filter(id=pid)[0]
         resp = {
-                "id": project.id,
-                "name": project.name,
-                "description": project.description,
-                "workspaceId": project.workspace.id,
-                "owner": project.owner.username,
-                "createdAt": str(project.created_at),
-                "lastUpdatedAt": str(project.last_updated_at),
-            }
+            "id": project.id,
+            "name": project.name,
+            "description": project.description,
+            "workspaceId": project.workspace.id,
+            "owner": project.owner.username,
+            "createdAt": str(project.created_at),
+            "lastUpdatedAt": str(project.last_updated_at),
+        }
         return HttpResponse(json.dumps(resp), content_type="application/json")
     else:
         pass
@@ -117,4 +117,22 @@ def project_tasks(request, pid):
 @login_required
 @require_http_methods(["GET", "PUT", "DELETE"])
 def task_api(request, tid):
-    pass
+    if request.method == "GET":
+        task = Task.objects.filter(id=tid)[0]
+        resp = {
+            "id": task.id,
+            "type": task.type,
+            "priority": task.priority,
+            "status": task.status,
+            "title": task.title,
+            "description": task.description,
+            "project": task.project.id,
+            "assignee": task.assignee.id,
+            "reporter": task.reporter.id,
+            "createdAt": str(task.created_at),
+            "lastUpdatedAt": str(task.last_updated_at),
+        }
+
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+    else:
+        pass
