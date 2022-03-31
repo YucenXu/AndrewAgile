@@ -112,7 +112,7 @@ export default function TaskCreate(props) {
                         align="center">Project</Typography>
                 </Grid>
                 <Grid item sx={{ width: '20%' }}>
-                    <Typography sx={{ fontSize: '1.5vw', fontWeight: 'bold' }}>project-{props.projectId}</Typography>
+                    <Typography sx={{ fontSize: '1.5vw', fontWeight: 'bold' }}>{props.curProject.name}</Typography>
                 </Grid>
             </Grid>
 

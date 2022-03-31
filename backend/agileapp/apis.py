@@ -33,6 +33,21 @@ def all_workspaces(request):
 
 
 @login_required
+@require_GET
+def workspaces_api(request, wid):
+    if request.method == "GET":
+        workspace = Workspace.objects.filter(id=wid)[0]
+        resp = {
+                "id": workspace.id,
+                "name": workspace.name,
+                "description": workspace.description,
+            }
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+    else:
+        pass
+
+
+@login_required
 @require_http_methods(["GET", "POST"])
 def workspace_projects(request, wid):
     if request.method == "GET":
@@ -57,13 +72,46 @@ def workspace_projects(request, wid):
 @login_required
 @require_http_methods(["GET", "PUT", "DELETE"])
 def project_api(request, pid):
-    pass
+    if request.method == "GET":
+        project = Project.objects.filter(id=pid)[0]
+        resp = {
+                "id": project.id,
+                "name": project.name,
+                "description": project.description,
+                "workspaceId": project.workspace.id,
+                "owner": project.owner.username,
+                "createdAt": str(project.created_at),
+                "lastUpdatedAt": str(project.last_updated_at),
+            }
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+    else:
+        pass
 
 
 @login_required
 @require_http_methods(["GET", "POST"])
 def project_tasks(request, pid):
-    pass
+    if request.method == "GET":
+        tasks = Task.objects.filter(project__id=pid)
+        resp = [
+            {
+                "id": task.id,
+                "type": task.type,
+                "priority": task.priority,
+                "status": task.status,
+                "title": task.title,
+                "description": task.description,
+                "project": task.project.id,
+                "assignee": task.assignee.id,
+                "reporter": task.reporter.id,
+                "createdAt": str(task.created_at),
+                "lastUpdatedAt": str(task.last_updated_at),
+            }
+            for task in tasks
+        ]
+        return HttpResponse(json.dumps(resp), content_type="application/json")
+    else:
+        pass
 
 
 @login_required

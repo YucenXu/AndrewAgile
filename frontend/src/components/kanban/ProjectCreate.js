@@ -77,8 +77,8 @@ export default function ProjectCreate(props) {
                         sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
                         align="center">Workspace</Typography>
                 </Grid>
-                <Grid item sx={{ width: '20%' }}>
-                    <Typography sx={{ fontSize: '1.5vw', fontWeight: 'bold' }}>Workspace-{props.workspaceId}</Typography>
+                <Grid item sx={{ width: '60%' }}>
+                    <Typography sx={{ fontSize: '1.5vw', fontWeight: 'bold' }}>{props.curWorkspace.name}</Typography>
                 </Grid>
             </Grid>
 
