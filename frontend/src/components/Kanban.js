@@ -19,6 +19,7 @@ export default function Kanban() {
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
   const [allTasks, setAllTasks] = React.useState([])
+  const [allUsers, setAllUsers] = React.useState([])
   const taskStatus = ['Backlog', 'Todo', 'InProgress', 'Done']
 
   // Store user action
@@ -32,8 +33,8 @@ export default function Kanban() {
   const [createProjectOpen, setCreateProjectOpen] = React.useState(false)
   const [createTaskOpen, setCreateTaskOpen] = React.useState(false)
   const [taskId, setTaskId] = React.useState(0)
-
-
+  const [refresh, setRefresh] = React.useState(true)
+  
   const getallWorkspaces = () => {
     axios.get('/api/workspaces').catch(err => {
       // Todo
@@ -55,6 +56,14 @@ export default function Kanban() {
       // Todo
     }).then(response => {
       setAllTasks(response.data)
+    })
+  }
+
+  const getAllUsers = () => {
+    axios.get('api/users').catch(err => {
+      // Todo
+    }).then(response => {
+      setAllUsers(response.data)
     })
   }
 
@@ -109,7 +118,8 @@ export default function Kanban() {
     getallWorkspaces()
     getAllProjects()
     getAllTasks()
-  }, [workspaceId, projectId])
+    getAllUsers()
+  }, [workspaceId, projectId, refresh])
 
   return (
     <Box>
@@ -194,12 +204,11 @@ export default function Kanban() {
               style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
               {allTasks.map((task) => {
                 if (task.status == status.toLowerCase()) {
-                  // alert()
                   return <Card sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
                     <CardActionArea type="submit" onClick={handleClickTask(task.id)}>
                       <CardContent>
                         <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>
-                          Task-{task.id}
+                          {task.title}
                         </Typography>
                       </CardContent>
                     </CardActionArea>
@@ -215,15 +224,15 @@ export default function Kanban() {
       <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}></ProjectCreate>
 
       {/* Task Edit Popup Dialog */}
-      <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} curProject={curProject}></TaskEdit>
+      <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} setTaskId={setTaskId} curProject={curProject} allUsers={allUsers} refresh={refresh} setRefresh={setRefresh}></TaskEdit>
 
       {/* Task Create Popup Dialog */}
-      <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}></TaskCreate>
+      <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject} allUsers={allUsers}></TaskCreate>
 
 
 
       {/* For debugging, will delete */}
-      <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current Project-{projectId}</Typography>
+      <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current Project-{projectId} Current Task-{taskId}</Typography>
 
       {allProjects.map((project) => (
         <div>
