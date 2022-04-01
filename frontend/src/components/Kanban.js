@@ -4,85 +4,173 @@ import Paper from '@mui/material/Paper'
 import { Button, Divider, FormControl } from '@mui/material'
 import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
-import NativeSelect from '@mui/material/NativeSelect'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import { Card, CardContent, CardActionArea } from '@mui/material'
 import SearchBar from './kanban/SearchBar'
 import TaskEdit from './kanban/TaskEdit'
+import TaskCreate from './kanban/TaskCreate'
+import ProjectCreate from './kanban/ProjectCreate'
+import axios from 'axios'
 
 export default function Kanban () {
-  const columnTypes = ['Backlog', 'Todo', 'In Progress', 'Done']
-  const [projectId, setProjectId] = React.useState(0)
-  const [workspaceId, setWorkspaceId] = React.useState(0)
-  const [open, setOpen] = React.useState(false)
-  const [taskId, setTaskId] = React.useState(0)
+  // Call API to GET
+  const [allWorkspaces, setAllWorkspaces] = React.useState([])
+  const [allProjects, setAllProjects] = React.useState([])
+  const [allTasks, setAllTasks] = React.useState([])
+  const [allUsers, setAllUsers] = React.useState([])
+  const taskStatus = ['Backlog', 'Todo', 'InProgress', 'Done']
 
-  const handleChangeProject = (event) => {
-    // Todo
-    setProjectId(Number(event.target.value))
+  // Store user action
+  const [workspaceId, setWorkspaceId] = React.useState(0)
+  const [curWorkspace, setCurWorkspace] = React.useState({})
+  const [projectId, setProjectId] = React.useState(0)
+  const [curProject, setCurProject] = React.useState({})
+
+  const [editOpen, setEditOpen] = React.useState(false)
+  const [createProjectOpen, setCreateProjectOpen] = React.useState(false)
+  const [createTaskOpen, setCreateTaskOpen] = React.useState(false)
+  const [taskId, setTaskId] = React.useState(0)
+  const [refresh, setRefresh] = React.useState(true)
+
+  const getallWorkspaces = () => {
+    axios.get('/api/workspaces').catch(err => {
+      // Todo
+    }).then(response => {
+      setAllWorkspaces(response.data)
+    })
+  }
+
+  const getAllProjects = () => {
+    axios.get('/api/workspace/' + workspaceId + '/projects').catch(err => {
+      // Todo
+    }).then(response => {
+      setAllProjects(response.data)
+    })
+  }
+
+  const getAllTasks = () => {
+    axios.get('/api/project/' + projectId + '/tasks').catch(err => {
+      // Todo
+    }).then(response => {
+      setAllTasks(response.data)
+    })
+  }
+
+  const getAllUsers = () => {
+    axios.get('api/users').catch(err => {
+      // Todo
+    }).then(response => {
+      setAllUsers(response.data)
+    })
   }
 
   const handleChangeWorkspace = (event) => {
+    let id = Number(event.target.value)
+    setWorkspaceId(id)
+    axios.get('/api/workspace/' + id).catch(err => {
+      // Todo
+    }).then(response => {
+      setCurWorkspace(response.data)
+      setProjectId(0)
+      setCurProject({})
+    })
+  }
+
+  const handleChangeProject = (event) => {
+    let id = Number(event.target.value)
+    setProjectId(id)
+    axios.get('/api/project/' + id).catch(err => {
+      // Todo
+    }).then(response => {
+      setCurProject(response.data)
+    })
+  }
+
+  const handleClickCreateProject = () => {
     // Todo
-    setWorkspaceId(Number(event.target.value))
+    if (workspaceId == 0) {
+      alert('Select a workspace first')
+    } else {
+      setCreateProjectOpen(true)
+    }
   }
 
   const handleClickTask = (taskId) => (event) => {
     // Todo
-    setOpen(true)
+    setEditOpen(true)
     setTaskId(Number(taskId))
   }
 
-  const handleCreate = () => {
+  const handleClickCreateTask = () => {
     // Todo
-    setOpen(true)
+    if (workspaceId == 0 || projectId == 0) {
+      alert('Select a workspace and project first')
+    } else {
+      setCreateTaskOpen(true)
+      setTaskId(Number(taskId))
+    }
   }
+
+  React.useEffect(() => {
+    getallWorkspaces()
+    getAllProjects()
+    getAllTasks()
+    getAllUsers()
+  }, [workspaceId, projectId, refresh])
 
   return (
     <Box>
       {/* Dropdown menus */}
       <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
             style={{ backgroundColor: '', alignItems: 'left' }}>
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}>
+        {/* Workspace Dropdown */}
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
                        style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
-            <NativeSelect
+            <Select
               labelId="id-select-workspace-label"
               label="workspaceId"
               value={workspaceId}
               onChange={handleChangeWorkspace}
             >
-              {[0, 1, 2].map((value) => (
-                <option value={value}>Workspace-{value}</option>
+              {allWorkspaces.map((workspace) => (
+                <MenuItem value={workspace.id}>{workspace.name}</MenuItem>
               ))}
-            </NativeSelect>
+            </Select>
           </FormControl>
         </Grid>
 
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}>
+        {/* Project Dropdown */}
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
                        style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-project-label">Project</InputLabel>
-            <NativeSelect
+            <Select
               labelId="id-select-project-label"
               label="projectId"
               value={projectId}
               onChange={handleChangeProject}
             >
-              {[0, 1, 2].map((value) => (
-                <option value={value}>Project-{value}</option>
+              {allProjects.map((project) => (
+                <MenuItem value={project.id}>{project.name}</MenuItem>
               ))}
-            </NativeSelect>
+            </Select>
           </FormControl>
         </Grid>
 
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}></Grid>
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '19vw', height: '10vh' }}
-              style={{ backgroundColor: '', alignItems: 'left' }}></Grid>
+        {/* Project Create Button */}
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
+              style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+          <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
+                  onClick={handleClickCreateProject}>Create</Button>
+        </Grid>
+        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
+              style={{ backgroundColor: '#', alignItems: 'left' }}></Grid>
       </Grid>
 
       {/* Search Bar, Create Button */}
@@ -93,48 +181,69 @@ export default function Kanban () {
         <Grid item sx={{ width: '44.5vw' }}></Grid>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-                  onClick={handleCreate}>Create</Button>
+                  onClick={handleClickCreateTask}>Create</Button>
         </Grid>
       </Grid>
 
       {/* Board */}
       <Grid container sx={{ my: '2vh', mx: 'auto', width: '80vw', height: '60vh' }} style={{ alignItems: 'center' }}>
-        {columnTypes.map((columnType) => (
+        {taskStatus.map((status) => (
           // Column
           <Paper sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }} style={{ backgroundColor: '#eaecee' }}>
             {/* title */}
             <Grid item xs sx={{ mt: '1vh', width: '19vw', height: '6vh' }} direction="row" display="flex"
                   justify="center">
               <Typography sx={{ ml: '2vw', my: 'auto', width: '12vw', fontSize: 18, fontWeight: 700 }} color="#424949">
-                {columnType}
+                {status}
               </Typography>
             </Grid>
             <Divider></Divider>
             {/* tasks */}
             <Grid item spacing={2} sx={{ my: '0.5vh', width: '19vw', height: '53vh' }}
                   style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((taskId) => (
-                <Card sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
-                  <CardActionArea type="submit" onClick={handleClickTask(taskId)}>
-                    <CardContent>
-                      <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>
-                        Task{taskId}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              ))}
+              {allTasks.map((task) => {
+                if (task.status == status.toLowerCase()) {
+                  return <Card sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
+                    <CardActionArea type="submit" onClick={handleClickTask(task.id)}>
+                      <CardContent>
+                        <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>
+                          {task.title}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                }
+              })}
             </Grid>
           </Paper>
         ))}
       </Grid>
 
-      {/* Task Popup Dialog */}
-      <TaskEdit open={open} setOpen={setOpen} taskId={taskId}></TaskEdit>
+      {/* Project Create Popup Dialog */}
+      <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen}
+                     curWorkspace={curWorkspace}></ProjectCreate>
+
+      {/* Task Edit Popup Dialog */}
+      <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} setTaskId={setTaskId} curProject={curProject}
+                allUsers={allUsers} refresh={refresh} setRefresh={setRefresh}></TaskEdit>
+
+      {/* Task Create Popup Dialog */}
+      <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
+                  allUsers={allUsers}></TaskCreate>
+
 
       {/* For debugging, will delete */}
       <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current
-        Project-{projectId}</Typography>
+        Project-{projectId} Current Task-{taskId}</Typography>
+
+      {allProjects.map((project) => (
+        <div>
+          {/* <p>project id: {project.id}</p> */}
+          <p>project name: {project.name}</p>
+          {/* <p>project desc: {project.description}</p> */}
+        </div>
+      ))}
+
     </Box>
 
   )

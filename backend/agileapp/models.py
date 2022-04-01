@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+# an empty model for abstract class MutableModelSerializer
+class EmptyModel(models.Model):
+    pass
+
+
 class Workspace(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField(max_length=300)
@@ -10,7 +15,7 @@ class Workspace(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Workspace: name=%s" % self.name
+        return "Workspace: id=%d, name=%s" % (self.id, self.name)
 
 
 class UserRole(models.TextChoices):
@@ -41,8 +46,8 @@ class Project(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Project: name=%s, workspace=%s, owner=%s" % (
-            self.name, self.workspace.name, self.owner,
+        return "Project: id=%d, name=%s, workspace=%s" % (
+            self.id, self.name, self.workspace.name,
         )
 
 
@@ -79,8 +84,8 @@ class Task(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Task: title=%s, project=%s, type=%s" % (
-            self.title, self.project.name, self.type,
+        return "Task: id=%d, title=%s, project=%s, type=%s" % (
+            self.id, self.title, self.project.name, self.type,
         )
 
 
@@ -92,4 +97,4 @@ class Comment(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Comment: task=%s, user=%s" % (self.task.title, self.user)
+        return "Comment: id=%d, task=%s, user=%s" % (self.id, self.task.title, self.user)
