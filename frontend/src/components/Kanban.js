@@ -14,7 +14,7 @@ import TaskCreate from './kanban/TaskCreate'
 import ProjectCreate from './kanban/ProjectCreate'
 import axios from 'axios'
 
-export default function Kanban() {
+export default function Kanban () {
   // Call API to GET
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
@@ -28,13 +28,12 @@ export default function Kanban() {
   const [projectId, setProjectId] = React.useState(0)
   const [curProject, setCurProject] = React.useState({})
 
-
   const [editOpen, setEditOpen] = React.useState(false)
   const [createProjectOpen, setCreateProjectOpen] = React.useState(false)
   const [createTaskOpen, setCreateTaskOpen] = React.useState(false)
   const [taskId, setTaskId] = React.useState(0)
   const [refresh, setRefresh] = React.useState(true)
-  
+
   const getallWorkspaces = () => {
     axios.get('/api/workspaces').catch(err => {
       // Todo
@@ -92,7 +91,7 @@ export default function Kanban() {
   const handleClickCreateProject = () => {
     // Todo
     if (workspaceId == 0) {
-      alert("Select a workspace first")
+      alert('Select a workspace first')
     } else {
       setCreateProjectOpen(true)
     }
@@ -107,7 +106,7 @@ export default function Kanban() {
   const handleClickCreateTask = () => {
     // Todo
     if (workspaceId == 0 || projectId == 0) {
-      alert("Select a workspace and project first")
+      alert('Select a workspace and project first')
     } else {
       setCreateTaskOpen(true)
       setTaskId(Number(taskId))
@@ -125,12 +124,12 @@ export default function Kanban() {
     <Box>
       {/* Dropdown menus */}
       <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
-        style={{ backgroundColor: '', alignItems: 'left' }}>
+            style={{ backgroundColor: '', alignItems: 'left' }}>
         {/* Workspace Dropdown */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}>
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-            style={{ backgroundColor: '' }}>
+                       style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
             <Select
               labelId="id-select-workspace-label"
@@ -147,9 +146,9 @@ export default function Kanban() {
 
         {/* Project Dropdown */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}>
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-            style={{ backgroundColor: '' }}>
+                       style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-project-label">Project</InputLabel>
             <Select
               labelId="id-select-project-label"
@@ -166,12 +165,12 @@ export default function Kanban() {
 
         {/* Project Create Button */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+              style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateProject}>Create</Button>
+                  onClick={handleClickCreateProject}>Create</Button>
         </Grid>
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}></Grid>
+              style={{ backgroundColor: '#', alignItems: 'left' }}></Grid>
       </Grid>
 
       {/* Search Bar, Create Button */}
@@ -182,7 +181,7 @@ export default function Kanban() {
         <Grid item sx={{ width: '44.5vw' }}></Grid>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateTask}>Create</Button>
+                  onClick={handleClickCreateTask}>Create</Button>
         </Grid>
       </Grid>
 
@@ -193,7 +192,7 @@ export default function Kanban() {
           <Paper sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }} style={{ backgroundColor: '#eaecee' }}>
             {/* title */}
             <Grid item xs sx={{ mt: '1vh', width: '19vw', height: '6vh' }} direction="row" display="flex"
-              justify="center">
+                  justify="center">
               <Typography sx={{ ml: '2vw', my: 'auto', width: '12vw', fontSize: 18, fontWeight: 700 }} color="#424949">
                 {status}
               </Typography>
@@ -201,7 +200,7 @@ export default function Kanban() {
             <Divider></Divider>
             {/* tasks */}
             <Grid item spacing={2} sx={{ my: '0.5vh', width: '19vw', height: '53vh' }}
-              style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
+                  style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
               {allTasks.map((task) => {
                 if (task.status == status.toLowerCase()) {
                   return <Card sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
@@ -221,18 +220,21 @@ export default function Kanban() {
       </Grid>
 
       {/* Project Create Popup Dialog */}
-      <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}></ProjectCreate>
+      <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen}
+                     curWorkspace={curWorkspace}></ProjectCreate>
 
       {/* Task Edit Popup Dialog */}
-      <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} setTaskId={setTaskId} curProject={curProject} allUsers={allUsers} refresh={refresh} setRefresh={setRefresh}></TaskEdit>
+      <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} setTaskId={setTaskId} curProject={curProject}
+                allUsers={allUsers} refresh={refresh} setRefresh={setRefresh}></TaskEdit>
 
       {/* Task Create Popup Dialog */}
-      <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject} allUsers={allUsers}></TaskCreate>
-
+      <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
+                  allUsers={allUsers}></TaskCreate>
 
 
       {/* For debugging, will delete */}
-      <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current Project-{projectId} Current Task-{taskId}</Typography>
+      <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current
+        Project-{projectId} Current Task-{taskId}</Typography>
 
       {allProjects.map((project) => (
         <div>
