@@ -196,7 +196,7 @@ export default function Kanban() {
                 if (task.status == status.toLowerCase()) {
                   // alert()
                   return <Card sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
-                    <CardActionArea type="submit" onClick={handleClickTask(taskId)}>
+                    <CardActionArea type="submit" onClick={handleClickTask(task.id)}>
                       <CardContent>
                         <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>
                           Task-{task.id}
@@ -205,7 +205,7 @@ export default function Kanban() {
                     </CardActionArea>
                   </Card>
                 }
-            })}
+              })}
             </Grid>
           </Paper>
         ))}

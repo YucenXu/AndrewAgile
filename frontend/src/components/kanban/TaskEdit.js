@@ -11,14 +11,56 @@ import CloseIcon from '@mui/icons-material/Close'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
+import axios from 'axios'
 
 export default function TaskEdit(props) {
-  const [assignee, setAssignee] = React.useState(0)
-  const [reporter, setReporter] = React.useState(0)
-  const [status, setStatus] = React.useState('Backlog')
-  const [priority, setPriority] = React.useState(0)
-  const [priorityColor, setPriorityColor] = React.useState('#ffcdd2')
+  const [curTask, setCurTask] = React.useState({})
+  const [curAssignee, setCurAssignee] = React.useState({})
+  const [curReporter, setCurReporter] = React.useState({})
+  const [assignee, setAssignee] = React.useState({})
+  const [reporter, setReporter] = React.useState({})
+  const [type, setType] = React.useState()
+  const [status, setStatus] = React.useState()
+  const [priority, setPriority] = React.useState()
+  const [priorityColor, setPriorityColor] = React.useState()
 
+
+  const getCurTask = () => {
+    axios.get('/api/task/' + props.taskId).catch(err => {
+      // Todo
+    }).then(response => {
+      let task = response.data
+      setCurTask(task)
+      setType(task.type)
+      setStatus(task.status)
+      setPriority(task.priority)
+      setPriorityColor(getPriorityColor(task.priority))
+
+      // get assignee
+      axios.get('/api/user/' + task.assignee).catch(err => {
+        // Todo
+      }).then(response => {
+        let user = response.data
+        setCurAssignee(user)
+        setAssignee(user)
+      })
+
+      // get reporter
+      axios.get('/api/user/' + task.reporter).catch(err => {
+        // Todo
+      }).then(response => {
+        let user = response.data
+        setCurReporter(user)
+        setReporter(user)
+      })
+
+
+    })
+  }
+
+  const getUser = (id) => {
+
+  }
   const handleCloseTask = () => {
     props.setEditOpen(false)
   }
@@ -35,12 +77,12 @@ export default function TaskEdit(props) {
 
   const handleSelectAssignee = (event) => {
     // Todo
-    setAssignee(event.target.value)
+    setAssignee(getUser(event.target.value))
   }
 
   const handleSelectReporter = (event) => {
     // Todo
-    setReporter(event.target.value)
+    setReporter(getUser(event.target.value))
   }
 
   const handleSetStatus = (event) => {
@@ -52,23 +94,25 @@ export default function TaskEdit(props) {
   const handleSetPriority = (event) => {
     // Todo
     let priority = event.target.value
-    setPriority(priority)
+    setPriorityColor(getPriorityColor(priority))
+  }
 
+  const getPriorityColor = (priority) => {
     switch (priority) {
-      case '1':
-        setPriorityColor('#ffcdd2')
-        break
-      case '2':
-        setPriorityColor('#ffcc80')
-        break
-      case '3':
-        setPriorityColor('#fff59d')
-        break
-      case '4':
-        setPriorityColor('#dcedc8')
-        break
+      case 'critical':
+        return '#ffcdd2'
+      case 'important':
+        return '#ffcc80'
+      case 'normal':
+        return '#fff59d'
+      case 'low':
+        return '#dcedc8'
     }
   }
+
+  React.useEffect(() => {
+    getCurTask()
+  }, [props.taskId])
 
   return (
     <Dialog
@@ -168,13 +212,14 @@ export default function TaskEdit(props) {
               <FormControl variant="standard" fullWidth>
                 <Select
                   id="id-select-assignee"
-                  value={assignee}
+                  value={assignee.id}
                   onChange={handleSelectAssignee}
                 >
-                  <MenuItem value={0}>Nianyi Guo</MenuItem>
-                  <MenuItem value={1}>Zhiqi Li</MenuItem>
-                  <MenuItem value={2}>Peng Zhao</MenuItem>
-                  <MenuItem value={3}>Yucen Xu</MenuItem>
+                  <MenuItem value={1}>Nianyi Guo</MenuItem>
+                  <MenuItem value={2}>Zhiqi Li</MenuItem>
+                  <MenuItem value={3}>Peng Zhao</MenuItem>
+                  <MenuItem value={4}>Yucen Xu</MenuItem>
+                  <MenuItem value={5}>userE</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -185,13 +230,14 @@ export default function TaskEdit(props) {
               <FormControl variant="standard" fullWidth>
                 <Select
                   id="id-select-reporter"
-                  value={reporter}
+                  value={reporter.id}
                   onChange={handleSelectReporter}
                 >
-                  <MenuItem value={0}>Nianyi Guo</MenuItem>
-                  <MenuItem value={1}>Zhiqi Li</MenuItem>
-                  <MenuItem value={2}>Peng Zhao</MenuItem>
-                  <MenuItem value={3}>Yucen Xu</MenuItem>
+                  <MenuItem value={1}>Nianyi Guo</MenuItem>
+                  <MenuItem value={2}>Zhiqi Li</MenuItem>
+                  <MenuItem value={3}>Peng Zhao</MenuItem>
+                  <MenuItem value={4}>Yucen Xu</MenuItem>
+                  <MenuItem value={5}>userE</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -208,7 +254,7 @@ export default function TaskEdit(props) {
                     border: 0,
                     textAlign: 'left',
                   }}
-                  value={status}
+                  value={type}
                   onChange={handleSetStatus}
                 >
                   <option value={'story'}>Story</option>
@@ -234,10 +280,10 @@ export default function TaskEdit(props) {
                   value={status}
                   onChange={handleSetStatus}
                 >
-                  <option value={'Backlog'}>Backlog</option>
-                  <option value={'Todo'}>Todo</option>
-                  <option value={'Inprogress'}>In Progress</option>
-                  <option value={'Done'}>Done</option>
+                  <option value={'backlog'}>Backlog</option>
+                  <option value={'todo'}>Todo</option>
+                  <option value={'inprogress'}>In Progress</option>
+                  <option value={'done'}>Done</option>
                 </select>
               </FormControl>
             </Grid>
@@ -258,23 +304,23 @@ export default function TaskEdit(props) {
                   value={priority}
                   onChange={handleSetPriority}
                 >
-                  <option value={1} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
-                  <option value={2} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
-                  <option value={3} style={{ backgroundColor: '#e3f2fd' }}>Normal</option>
-                  <option value={4} style={{ backgroundColor: '#e3f2fd' }}>Low</option>
+                  <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
+                  <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
+                  <option value={'normal'} style={{ backgroundColor: '#e3f2fd' }}>Normal</option>
+                  <option value={'low'} style={{ backgroundColor: '#e3f2fd' }}>Low</option>
                 </select>
               </FormControl>
             </Grid>
             {/* Create Time */}
             <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
               alignItems="center">
-              <Typography sx={{ fontSize: '1vw' }}>09:25 AM 02/25/22</Typography>
+              <Typography sx={{ fontSize: '1vw' }}>{new Date(curTask.createdAt).toLocaleString()}</Typography>
             </Grid>
 
             {/* Last Update Time */}
             <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
               alignItems="center">
-              <Typography sx={{ fontSize: '1vw' }}>02:12 PM 02/26/22</Typography>
+              <Typography sx={{ fontSize: '1vw' }}>{new Date(curTask.lastUpdatedAt).toLocaleString()}</Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -286,7 +332,7 @@ export default function TaskEdit(props) {
               id="description"
               label="Description"
               sx={{ mx: 'auto', width: '90%' }}
-              placeholder="Description..."
+              placeholder={curTask.description}
               rows={5}
               multiline
               focused
@@ -313,7 +359,6 @@ export default function TaskEdit(props) {
 
           </Grid>
         </Grid>
-
       </Grid>
 
       <DialogActions>
@@ -321,5 +366,6 @@ export default function TaskEdit(props) {
         <Button variant="contained" onClick={handleSaveTask}>Save</Button>
       </DialogActions>
     </Dialog>
+
   )
 }
