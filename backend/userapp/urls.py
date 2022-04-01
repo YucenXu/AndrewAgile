@@ -4,5 +4,6 @@ from userapp import apis
 urlpatterns = [
     path('logout', apis.logout_api),
     path('userinfo', apis.user_info),
-    path('user/<int:uid>', apis.user_api),
+    path('users', apis.all_users),
+    path('user/<str:uid>', apis.user_api),
 ]

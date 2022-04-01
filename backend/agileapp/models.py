@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+# an empty model for abstract class MutableModelSerializer
+class EmptyModel(models.Model):
+    pass
+
+
 class Workspace(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField(max_length=300)
