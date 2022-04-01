@@ -33,7 +33,7 @@ class TaskEdit extends Component {
       this.setState({ priorityColor: this.getPriorityColor(task.priority) })
 
       // get assignee
-      axios.get('/api/user/' + task.assignee).catch(err => {
+      axios.get('/api/user/' + task.assignee.username).catch(err => {
         // Todo
       }).then(response => {
         let user = response.data;
@@ -41,7 +41,7 @@ class TaskEdit extends Component {
       })
 
       // get reporter
-      axios.get('/api/user/' + task.reporter).catch(err => {
+      axios.get('/api/user/' + task.reporter.username).catch(err => {
         // Todo
       }).then(response => {
         let user = response.data;
