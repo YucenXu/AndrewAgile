@@ -98,7 +98,7 @@ export default function Kanban() {
     }
   }
 
-  const handleClickTask = (taskId) => (event) => {
+  const handleClickTask = (taskId) => () => {
     // Todo
     setEditOpen(true)
     setTaskId(Number(taskId))
@@ -239,19 +239,6 @@ export default function Kanban() {
       {/* Task Create Popup Dialog */}
       <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
         allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}></TaskCreate>
-
-
-      {/* For debugging, will delete */}
-      <Typography sx={{ fontSize: 14 }} color="text.secondary">Current Workspace-{workspaceId} Current
-        Project-{projectId} Current Task-{taskId}</Typography>
-
-      {allProjects.map((project) => (
-        <div>
-          {/* <p>project id: {project.id}</p> */}
-          <p>project name: {project.name}</p>
-          {/* <p>project desc: {project.description}</p> */}
-        </div>
-      ))}
 
     </Box>
 

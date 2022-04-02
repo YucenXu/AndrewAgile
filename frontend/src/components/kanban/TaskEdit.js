@@ -18,9 +18,16 @@ class TaskEdit extends Component {
     super(props)
     this.props = props
     this.state = {
-      curTaskId: this.props.taskId,
-      curTask: {},
-      priorityColor: '',
+      title: "",
+      assignee: "",
+      reporter: "",
+      type: "",
+      status: "",
+      priority: "",
+      priorityColor: "",
+      createdAt: "",
+      lastUpdatedAt: "",
+      description: ""
     }
   }
 
@@ -29,23 +36,17 @@ class TaskEdit extends Component {
       // Todo
     }).then(response => {
       let task = response.data
-      this.setState({ curTask: task })
-      this.setState({ priorityColor: this.getPriorityColor(task.priority) })
-
-      // get assignee
-      axios.get('/api/user/' + task.assignee.username).catch(err => {
-        // Todo
-      }).then(response => {
-        let user = response.data
-        this.setState({ assignee: user.username })
-      })
-
-      // get reporter
-      axios.get('/api/user/' + task.reporter.username).catch(err => {
-        // Todo
-      }).then(response => {
-        let user = response.data
-        this.setState({ reporter: user.username })
+      this.setState({
+        title: task.title,
+        assignee: task.assignee.username,
+        reporter: task.reporter.username,
+        type: task.type,
+        status: task.status,
+        priority: task.priority,
+        priorityColor: this.getPriorityColor(task.priority),
+        createdAt: task.createdAt,
+        lastUpdatedAt: task.lastUpdatedAt,
+        description: task.description
       })
     })
   }
@@ -56,18 +57,17 @@ class TaskEdit extends Component {
   }
 
   handleDeleteTask = () => {
-    // Todo
-    axios.delete('/api/task/' + this.state.curTask.id).catch(err => {
+    axios.delete('/api/task/' + this.props.taskId).catch(err => {
       // Todo
     }).then(() => {
       this.props.setTaskId(0)
       this.props.setRefresh(this.props.refresh + 1)
       this.props.setEditOpen(false)
+      this.clearState()
     })
   }
 
   handleSaveTask = (event) => {
-    // Todo
     event.preventDefault()
     const form = new FormData(event.target)
     const params = ['assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
@@ -75,18 +75,22 @@ class TaskEdit extends Component {
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    axios.put('/api/task/' + this.state.curTask.id, payload).catch(err => {
+    axios.put('/api/task/' + this.props.taskId, payload).catch(err => {
       // Todo
     }).then(() => {
       this.props.setTaskId(0)
       this.props.setEditOpen(false)
+      this.props.setRefresh(this.props.refresh + 1)
+      this.clearState()
     })
   }
 
-  handleSetPriorityColor = (event) => {
-    // Todo
+  handleSetPriority = (event) => {
     let priority = event.target.value
-    this.setState({ priorityColor: this.getPriorityColor(priority) })
+    this.setState({
+      priority: priority,
+      priorityColor: this.getPriorityColor(priority)
+    })
   }
 
   getPriorityColor = (priority) => {
@@ -100,6 +104,22 @@ class TaskEdit extends Component {
       case 'low':
         return '#dcedc8'
     }
+  }
+
+  clearState = () => {
+    this.setState({
+      title: "",
+      assignee: "",
+      reporter: "",
+      type: "",
+      status: "",
+      priority: "",
+      priorityColor: "",
+      createdAt: "",
+      lastUpdatedAt: "",
+      description: ""
+    }
+    )
   }
 
   componentDidUpdate(prevProps) {
@@ -126,7 +146,7 @@ class TaskEdit extends Component {
           <AppBar sx={{ position: 'relative' }}>
             <Toolbar>
               <Typography sx={{ flex: 1, fontWeight: 'bold' }} variant="h6" component="div">
-                {this.state.curTask.title}
+                {this.state.title}
               </Typography>
 
               <IconButton
@@ -211,7 +231,8 @@ class TaskEdit extends Component {
                   <Select
                     name="assigneeId"
                     id="assigneeId"
-                    defaultValue={this.state.assignee}
+                    value={this.state.assignee}
+                    onChange={event => this.setState({ assignee: event.target.value })}
                     fullWidth
                     variant="standard"
                   >
@@ -230,7 +251,8 @@ class TaskEdit extends Component {
                   <Select
                     name="reporterId"
                     id="reporterId"
-                    defaultValue={this.state.reporter}
+                    value={this.state.reporter}
+                    onChange={event => this.setState({ reporter: event.target.value })}
                     fullWidth
                     variant="standard"
                   >
@@ -254,7 +276,8 @@ class TaskEdit extends Component {
                       border: 0,
                       textAlign: 'left',
                     }}
-                    defaultValue={this.state.curTask.type}
+                    value={this.state.type}
+                    onChange={event => this.setState({ type: event.target.value })}
                   >
                     <option value={'story'}>Story</option>
                     <option value={'issue'}>Issue</option>
@@ -274,7 +297,8 @@ class TaskEdit extends Component {
                       border: 0,
                       textAlign: 'left',
                     }}
-                    defaultValue={this.state.curTask.status}
+                    value={this.state.status}
+                    onChange={event => this.setState({ status: event.target.value })}
                   >
                     <option value={'backlog'}>Backlog</option>
                     <option value={'todo'}>Todo</option>
@@ -296,8 +320,8 @@ class TaskEdit extends Component {
                       backgroundColor: this.state.priorityColor,
                       textAlign: 'left',
                     }}
-                    onChange={this.handleSetPriorityColor}
-                    defaultValue={this.state.curTask.priority}
+                    value={this.state.priority}
+                    onChange={this.handleSetPriority}
                   >
                     <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
                     <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
@@ -309,14 +333,14 @@ class TaskEdit extends Component {
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
                   alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw' }}>{new Date(this.state.curTask.createdAt).toLocaleString()}</Typography>
+                    sx={{ fontSize: '1vw' }}>{new Date(this.state.createdAt).toLocaleString()}</Typography>
                 </Grid>
 
                 {/* Last Update Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
                   alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw' }}>{new Date(this.state.curTask.lastUpdatedAt).toLocaleString()}</Typography>
+                    sx={{ fontSize: '1vw' }}>{new Date(this.state.lastUpdatedAt).toLocaleString()}</Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -330,7 +354,8 @@ class TaskEdit extends Component {
                   label="Description"
                   sx={{ mx: 'auto', width: '90%' }}
                   placeholder="Task Description..."
-                  defaultValue={this.state.curTask.description}
+                  value={this.state.description}
+                  onChange={event => this.setState({ description: event.target.value })}
                   rows={5}
                   multiline
                   focused
@@ -373,7 +398,6 @@ class TaskEdit extends Component {
             </Grid>
           </Grid>
         </Box>
-        {/* <Typography>Assignee:{this.state.assignee}</Typography> */}
       </Dialog>
     )
   }

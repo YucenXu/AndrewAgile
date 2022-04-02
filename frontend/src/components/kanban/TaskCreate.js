@@ -22,7 +22,6 @@ export default function TaskCreate(props) {
   }
 
   const handleSaveTask = (event) => {
-    // Todo
     event.preventDefault()
     const form = new FormData(event.target)
     const params = ['title', 'assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']

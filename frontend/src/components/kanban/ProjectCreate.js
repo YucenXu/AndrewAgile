@@ -1,6 +1,6 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-import { Dialog, DialogActions } from '@mui/material'
+import { Dialog } from '@mui/material'
 import { Grid } from '@mui/material'
 import { Button } from '@mui/material'
 import { TextField } from '@mui/material'
@@ -20,7 +20,6 @@ export default function ProjectCreate(props) {
   }
 
   const handleSaveProject = (event) => {
-    // Todo
     event.preventDefault()
     const form = new FormData(event.target)
     const params = ['name', 'description', 'owner']
