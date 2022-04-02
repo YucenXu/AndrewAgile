@@ -129,6 +129,16 @@ export default function Kanban() {
     getAllProjects()
   }, [refreshProjects])
 
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      getallWorkspaces()
+      getAllProjects()
+      getAllTasks()
+      getAllUsers()
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [])
+
   return (
     <Box>
       {/* Dropdown menus */}
@@ -241,6 +251,5 @@ export default function Kanban() {
         allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}></TaskCreate>
 
     </Box>
-
   )
 }
