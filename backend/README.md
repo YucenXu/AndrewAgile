@@ -1,6 +1,6 @@
 # Backend API spec
 
-## User
+## User API
 
 ### User logout
 
@@ -77,7 +77,7 @@ Response:
 
 + 404
 
-## Workspace
+## Workspace API
 
 ### Get all workspaces
 
@@ -128,7 +128,7 @@ Response:
 
 + 404
 
-## Project
+## Project API
 
 ### Get all projects of a workspace
 
@@ -181,7 +181,7 @@ Request:
 
 ```python
 {
-    "name": "project name",  # required
+    "name": "project name",  # required, non-blank
     "description": "project description"  # optional
 }
 ```
@@ -255,7 +255,7 @@ Request:
 
 ```python
 {
-    "name": "project name",  # optional
+    "name": "project name",  # optional, non-blank
     "description": "project description"  # optional
 }
 ```
@@ -297,7 +297,7 @@ Method: DELETE
 
 Response: 200
 
-## Task
+## Task API
 
 ### Get all tasks of a project
 
@@ -351,10 +351,10 @@ Request:
     "type": "story",  # required
     "priority": "critical",  # optional, default normal
     "status": "todo",  # optional, default backlog
-    "title": "task title",  # required
+    "title": "task title",  # required, non-blank
     "description": "task description",  # optional
-    "assigneeId": "userA",  # required
-    "reporterId": "userB"  # required
+    "assigneeId": "userA",  # required, non-blank
+    "reporterId": "userB"  # required, non-blank
 }
 ```
 
@@ -480,10 +480,10 @@ Request:
     "type": "story",  # optional
     "priority": "critical",  # optional
     "status": "todo",  # optional
-    "title": "task title",  # optional
+    "title": "task title",  # optional, non-blank
     "description": "task description",  # optional
-    "assigneeId": "userA",  # optional
-    "reporterId": "userB"  # optional
+    "assigneeId": "userA",  # optional, non-blank
+    "reporterId": "userB"  # optional, non-blank
 }
 ```
 
@@ -525,7 +525,7 @@ Method: DELETE
 
 Response: 200
 
-## Comment
+## Comment API
 
 ### Create a new comment
 
@@ -537,7 +537,7 @@ Request:
 
 ```python
 {
-    "content": "my comment"  # required
+    "content": "my comment"  # required, non-blank
 }
 ```
 

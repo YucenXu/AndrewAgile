@@ -45,7 +45,7 @@ class MutableModelSerializer(serializers.ModelSerializer):
         for field in unk_fields:
             del data[field]
 
-        for field_name, field_type, is_required in field_list:
+        for field_name, field_type, is_required, nullable in field_list:
             if field_name not in data and is_required:
                 errors[field_name] = "This field is required."
             elif field_name in data:
@@ -54,13 +54,13 @@ class MutableModelSerializer(serializers.ModelSerializer):
                     choices = [choice[0] for choice in field_type.choices]
                     if str(data[field_name]).lower() in choices:
                         data[field_name] = getattr(field_type, data[field_name].upper())
-                # check field types
+                # check field type
                 if not isinstance(data[field_name], field_type):
                     errors[field_name] = "This field should be %s type." % field_type.__name__
-                # strip string fields and check if blank
-                if field_type == str and isinstance(data[field_name], field_type):
+                # strip string field and check if blank
+                elif field_type == str:
                     data[field_name] = data[field_name].strip()
-                    if not data[field_name]:
+                    if not nullable and not data[field_name]:
                         errors[field_name] = "This string field cannot be blank."
 
         return errors
@@ -115,10 +115,10 @@ class ProjectSerializer(MutableModelSerializer):
 
     def _validate_create(self, data):
         errors = self._validate_fields([
-            ('name', str, True),
-            ('description', str, False),
-            ('workspaceId', int, True),
-            ('owner', User, True),
+            ('name', str, True, False),
+            ('description', str, False, True),
+            ('workspaceId', int, True, None),
+            ('owner', User, True, None),
         ], data)
 
         workspace = Workspace.objects.filter(id=data['workspaceId'])
@@ -128,9 +128,9 @@ class ProjectSerializer(MutableModelSerializer):
 
     def _validate_update(self, data):
         errors = self._validate_fields([
-            ('id', int, True),
-            ('name', str, False),
-            ('description', str, False),
+            ('id', int, True, None),
+            ('name', str, False, False),
+            ('description', str, False, True),
         ], data)
 
         if not Project.objects.filter(id=data['id']):
@@ -155,14 +155,14 @@ class TaskSerializer(MutableModelSerializer):
 
     def _validate_create(self, data):
         errors = self._validate_fields([
-            ('type', TaskType, True),
-            ('priority', TaskPriority, False),
-            ('status', TaskStatus, False),
-            ('title', str, True),
-            ('description', str, False),
-            ('projectId', int, True),
-            ('assigneeId', str, True),
-            ('reporterId', str, True),
+            ('type', TaskType, True, None),
+            ('priority', TaskPriority, False, None),
+            ('status', TaskStatus, False, None),
+            ('title', str, True, False),
+            ('description', str, False, True),
+            ('projectId', int, True, None),
+            ('assigneeId', str, True, False),
+            ('reporterId', str, True, False),
         ], data)
 
         project = Project.objects.filter(id=data['projectId'])
@@ -180,14 +180,14 @@ class TaskSerializer(MutableModelSerializer):
 
     def _validate_update(self, data):
         errors = self._validate_fields([
-            ('id', int, True),
-            ('type', TaskType, False),
-            ('priority', TaskPriority, False),
-            ('status', TaskStatus, False),
-            ('title', str, False),
-            ('description', str, False),
-            ('assigneeId', str, False),
-            ('reporterId', str, False),
+            ('id', int, True, None),
+            ('type', TaskType, False, None),
+            ('priority', TaskPriority, False, None),
+            ('status', TaskStatus, False, None),
+            ('title', str, False, False),
+            ('description', str, False, True),
+            ('assigneeId', str, False, False),
+            ('reporterId', str, False, False),
         ], data)
 
         if not Task.objects.filter(id=data['id']):
@@ -216,9 +216,9 @@ class CommentSerializer(MutableModelSerializer):
 
     def _validate_create(self, data):
         errors = self._validate_fields([
-            ('taskId', int, True),
-            ('user', User, True),
-            ('content', str, True),
+            ('taskId', int, True, None),
+            ('user', User, True, None),
+            ('content', str, True, False),
         ], data)
 
         task = Task.objects.filter(id=data['taskId'])

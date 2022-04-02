@@ -55,6 +55,10 @@ Suggested package versions, can be slightly different.
 
 See the [deployment guide](deployment.md) for details.
 
+## Documentation
+
++ [Backend API spec](backend/README.md)
+
 ## Developers
 
 + [Nianyi Guo](https://github.com/jujujulia123)
