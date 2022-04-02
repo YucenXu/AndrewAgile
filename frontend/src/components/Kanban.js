@@ -129,15 +129,33 @@ export default function Kanban() {
     getAllProjects()
   }, [refreshProjects])
 
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      getallWorkspaces()
-      getAllProjects()
-      getAllTasks()
-      getAllUsers()
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [])
+  // https://overreacted.io/making-setinterval-declarative-with-react-hooks/
+  const useInterval = (callback, delay) => {
+    const savedCallback = React.useRef();
+
+    // Remember the latest callback.
+    React.useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    // Set up the interval.
+    React.useEffect(() => {
+      const tick = () => {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
+
+  useInterval(() => {
+    getallWorkspaces()
+    getAllProjects()
+    getAllTasks()
+    getAllUsers()
+  }, 10000)
 
   return (
     <Box>
@@ -250,6 +268,8 @@ export default function Kanban() {
       <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
         allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}></TaskCreate>
 
+      {/* Debug info, will delete*/}
+      {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
     </Box>
   )
 }
