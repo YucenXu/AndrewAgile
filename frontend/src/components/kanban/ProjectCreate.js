@@ -122,7 +122,7 @@ export default function ProjectCreate(props) {
                   // value={title}
                   // onInput={(event) => this.setTitle(event.target.value)}
                   required
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.-]*$", title: "This field doesn't accept special characters." }}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.- ]*$", title: "This field doesn't accept special characters." }}
                 />
               </Grid>
 

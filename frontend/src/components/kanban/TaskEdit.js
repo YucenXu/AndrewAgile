@@ -179,7 +179,7 @@ class TaskEdit extends Component {
                 sx={{ width: '90%' }}
                 value={this.state.title}
                 onChange={(event) => this.setState({ title: event.target.value })}
-                inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.-]*$", title: "This field doesn't accept special characters." }}
+                inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.- ]*$", title: "This field doesn't accept special characters." }}
                 required
               />
             </Grid>

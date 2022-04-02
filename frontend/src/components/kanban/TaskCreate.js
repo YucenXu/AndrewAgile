@@ -154,7 +154,7 @@ export default function TaskCreate(props) {
                   id="title"
                   sx={{ width: '90%' }}
                   placeholder="Task Title"
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.-]*$", title: "This field doesn't accept special characters." }}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.- ]*$", title: "This field doesn't accept special characters." }}
                   required
                 />
               </Grid>
