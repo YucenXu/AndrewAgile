@@ -11,16 +11,24 @@ import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
+import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 
 class TaskEdit extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.props = props
     this.state = {
-      curTaskId: this.props.taskId,
-      curTask: {},
-      priorityColor: '',
+      title: "",
+      assignee: "",
+      reporter: "",
+      type: "",
+      status: "",
+      priority: "",
+      priorityColor: "",
+      createdAt: "",
+      lastUpdatedAt: "",
+      description: ""
     }
   }
 
@@ -29,23 +37,17 @@ class TaskEdit extends Component {
       // Todo
     }).then(response => {
       let task = response.data
-      this.setState({ curTask: task })
-      this.setState({ priorityColor: this.getPriorityColor(task.priority) })
-
-      // get assignee
-      axios.get('/api/user/' + task.assignee.username).catch(err => {
-        // Todo
-      }).then(response => {
-        let user = response.data
-        this.setState({ assignee: user.username })
-      })
-
-      // get reporter
-      axios.get('/api/user/' + task.reporter.username).catch(err => {
-        // Todo
-      }).then(response => {
-        let user = response.data
-        this.setState({ reporter: user.username })
+      this.setState({
+        title: task.title,
+        assignee: task.assignee.username,
+        reporter: task.reporter.username,
+        type: task.type,
+        status: task.status,
+        priority: task.priority,
+        priorityColor: this.getPriorityColor(task.priority),
+        createdAt: task.createdAt,
+        lastUpdatedAt: task.lastUpdatedAt,
+        description: task.description
       })
     })
   }
@@ -56,37 +58,40 @@ class TaskEdit extends Component {
   }
 
   handleDeleteTask = () => {
-    // Todo
-    axios.delete('/api/task/' + this.state.curTask.id).catch(err => {
+    axios.delete('/api/task/' + this.props.taskId).catch(err => {
       // Todo
     }).then(() => {
       this.props.setTaskId(0)
       this.props.setRefresh(this.props.refresh + 1)
       this.props.setEditOpen(false)
+      this.clearState()
     })
   }
 
   handleSaveTask = (event) => {
-    // Todo
     event.preventDefault()
     const form = new FormData(event.target)
-    const params = ['assignee', 'reporter', 'type', 'status', 'priority', 'description']
+    const params = ['title', 'assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
     const payload = {}
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    axios.put('/api/task/' + this.state.curTask.id, payload).catch(err => {
+    axios.put('/api/task/' + this.props.taskId, payload).catch(err => {
       // Todo
     }).then(() => {
       this.props.setTaskId(0)
       this.props.setEditOpen(false)
+      this.props.setRefresh(this.props.refresh + 1)
+      this.clearState()
     })
   }
 
-  handleSetPriorityColor = (event) => {
-    // Todo
+  handleSetPriority = (event) => {
     let priority = event.target.value
-    this.setState({ priorityColor: this.getPriorityColor(priority) })
+    this.setState({
+      priority: priority,
+      priorityColor: this.getPriorityColor(priority)
+    })
   }
 
   getPriorityColor = (priority) => {
@@ -102,13 +107,29 @@ class TaskEdit extends Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
+  clearState = () => {
+    this.setState({
+      title: "",
+      assignee: "",
+      reporter: "",
+      type: "",
+      status: "",
+      priority: "",
+      priorityColor: "",
+      createdAt: "",
+      lastUpdatedAt: "",
+      description: ""
+    }
+    )
+  }
+
+  componentDidUpdate(prevProps) {
     if (this.props.taskId !== prevProps.taskId && this.props.taskId != 0) {
       this.getCurTask()
     }
   }
 
-  render () {
+  render() {
     return (
 
       <Dialog
@@ -126,7 +147,7 @@ class TaskEdit extends Component {
           <AppBar sx={{ position: 'relative' }}>
             <Toolbar>
               <Typography sx={{ flex: 1, fontWeight: 'bold' }} variant="h6" component="div">
-                {this.state.curTask.title}
+                {this.props.curProject.name}
               </Typography>
 
               <IconButton
@@ -135,24 +156,32 @@ class TaskEdit extends Component {
                 onClick={this.handleCloseTask}
                 aria-label="close"
               >
-                <CloseIcon/>
+                <CloseIcon />
               </IconButton>
             </Toolbar>
           </AppBar>
         </Grid>
 
         <Box component="form" onSubmit={this.handleSaveTask}
-             sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
-          {/* Project Info */}
+          sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
+          {/* Task Title */}
           <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
-                direction="row" alignItems="center">
+            direction="row" alignItems="center">
             <Grid item sx={{ mx: '3%', width: '8vw' }}>
               <Typography
                 sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
-                align="center">Project</Typography>
+                align="center">Task</Typography>
             </Grid>
-            <Grid item sx={{ width: '20%' }}>
-              <Typography sx={{ fontSize: '1.5vw', fontWeight: 'bold' }}>{this.props.curProject.name}</Typography>
+            <Grid item sx={{ ml: "3%", width: '20%' }}>
+              <InputBase
+                name="title"
+                id="title"
+                sx={{ width: '90%' }}
+                value={this.state.title}
+                onChange={(event) => this.setState({ title: event.target.value })}
+                inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.-]*$", title: "This field doesn't accept special characters." }}
+                required
+              />
             </Grid>
           </Grid>
 
@@ -172,33 +201,33 @@ class TaskEdit extends Component {
             }}>
               {/* Index Column */}
               <Grid container
-                    sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
+                sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Assignee
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Reporter
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Type
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Status
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Priority
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Createed at
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Last updated at
                 </Grid>
               </Grid>
@@ -207,13 +236,15 @@ class TaskEdit extends Component {
               <Grid container sx={{ mx: '1%', width: '58%', height: '100%', backgroundColor: '#' }}>
                 {/* Assignee */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Select
-                    name="assignee"
-                    id="assignee"
-                    defaultValue={this.state.assignee}
+                    name="assigneeId"
+                    id="assigneeId"
+                    value={this.state.assignee}
+                    onChange={event => this.setState({ assignee: event.target.value })}
                     fullWidth
                     variant="standard"
+                    required
                   >
                     {
                       this.props.allUsers.map((user) => (
@@ -226,13 +257,15 @@ class TaskEdit extends Component {
 
                 {/* Reporter */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Select
-                    name="reporter"
-                    id="reporter"
-                    defaultValue={this.state.reporter}
+                    name="reporterId"
+                    id="reporterId"
+                    value={this.state.reporter}
+                    onChange={event => this.setState({ reporter: event.target.value })}
                     fullWidth
                     variant="standard"
+                    required
                   >
                     {
                       this.props.allUsers.map((user) => (
@@ -244,7 +277,7 @@ class TaskEdit extends Component {
 
                 {/* Type */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="type"
                     id="type"
@@ -253,8 +286,11 @@ class TaskEdit extends Component {
                       width: '8ch',
                       border: 0,
                       textAlign: 'left',
+                      backgroundColor: '#eeeeee'
                     }}
-                    defaultValue={this.state.curTask.type}
+                    value={this.state.type}
+                    onChange={event => this.setState({ type: event.target.value })}
+                    required
                   >
                     <option value={'story'}>Story</option>
                     <option value={'issue'}>Issue</option>
@@ -264,7 +300,7 @@ class TaskEdit extends Component {
 
                 {/* Status */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="status"
                     id="status"
@@ -273,8 +309,11 @@ class TaskEdit extends Component {
                       width: '12ch',
                       border: 0,
                       textAlign: 'left',
+                      backgroundColor: '#eeeeee'
                     }}
-                    defaultValue={this.state.curTask.status}
+                    value={this.state.status}
+                    onChange={event => this.setState({ status: event.target.value })}
+                    required
                   >
                     <option value={'backlog'}>Backlog</option>
                     <option value={'todo'}>Todo</option>
@@ -285,7 +324,7 @@ class TaskEdit extends Component {
 
                 {/* Priority */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="priority"
                     id="priority"
@@ -296,8 +335,9 @@ class TaskEdit extends Component {
                       backgroundColor: this.state.priorityColor,
                       textAlign: 'left',
                     }}
-                    onChange={this.handleSetPriorityColor}
-                    defaultValue={this.state.curTask.priority}
+                    value={this.state.priority}
+                    onChange={this.handleSetPriority}
+                    required
                   >
                     <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
                     <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
@@ -307,16 +347,16 @@ class TaskEdit extends Component {
                 </Grid>
                 {/* Create Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw' }}>{new Date(this.state.curTask.createdAt).toLocaleString()}</Typography>
+                    sx={{ fontSize: '1vw' }}>{new Date(this.state.createdAt).toLocaleString()}</Typography>
                 </Grid>
 
                 {/* Last Update Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw' }}>{new Date(this.state.curTask.lastUpdatedAt).toLocaleString()}</Typography>
+                    sx={{ fontSize: '1vw' }}>{new Date(this.state.lastUpdatedAt).toLocaleString()}</Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -330,7 +370,8 @@ class TaskEdit extends Component {
                   label="Description"
                   sx={{ mx: 'auto', width: '90%' }}
                   placeholder="Task Description..."
-                  defaultValue={this.state.curTask.description}
+                  value={this.state.description}
+                  onChange={event => this.setState({ description: event.target.value })}
                   rows={5}
                   multiline
                   focused
@@ -362,18 +403,17 @@ class TaskEdit extends Component {
           <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
             <Grid container sx={{ mx: '0vw', width: '40vw', height: '100%' }}></Grid>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-                  alignItems="center">
+              alignItems="center">
               <Button onClick={this.handleDeleteTask}
-                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
+                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
             </Grid>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-                  alignItems="center">
+              alignItems="center">
               <Button type="submit" variant="contained"
-                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
+                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
             </Grid>
           </Grid>
         </Box>
-        {/* <Typography>Assignee:{this.state.assignee}</Typography> */}
       </Dialog>
     )
   }
