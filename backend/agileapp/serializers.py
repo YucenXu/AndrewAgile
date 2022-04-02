@@ -50,10 +50,9 @@ class MutableModelSerializer(serializers.ModelSerializer):
                 errors[field_name] = "This field is required."
             elif field_name in data:
                 if isinstance(field_type, models.enums.ChoicesMeta):
-                    try:
-                        data[field_name] = getattr(field_type, str(data[field_name]).upper())
-                    except AttributeError:
-                        pass
+                    choices = [choice[0] for choice in field_type.choices]
+                    if str(data[field_name]).lower() in choices:
+                        data[field_name] = getattr(field_type, data[field_name].upper())
                 if not isinstance(data[field_name], field_type):
                     errors[field_name] = "This field should be %s type." % field_type.__name__
 
@@ -80,7 +79,8 @@ class MutableModelSerializer(serializers.ModelSerializer):
             self._instance = self.Meta.model.objects.filter(id=self._validated_data['id'])[0]
             for key, value in self._validated_data.items():
                 setattr(self._instance, key, value)
-            setattr(self._instance, "last_updated_at", timezone.now())
+            if len(self._validated_data) > 1 and "last_updated_at" in self._instance.__dict__:
+                setattr(self._instance, "last_updated_at", timezone.now())
         else:
             self._instance = self.Meta.model(**self._validated_data)
         self._instance.save()

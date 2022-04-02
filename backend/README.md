@@ -388,7 +388,7 @@ Response:
   }
   ```
 
-### Get task by ID
+### Get task detail by ID
 
 Path: /api/task/\<int:tid\>
 
