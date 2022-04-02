@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
+import { sanitizeBlank } from '../../utils/formats'
 
 class TaskEdit extends Component {
   constructor(props) {
@@ -178,8 +179,9 @@ class TaskEdit extends Component {
                 id="title"
                 sx={{ width: '90%' }}
                 value={this.state.title}
-                onChange={(event) => this.setState({ title: event.target.value })}
-                inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.- ]*$", title: "This field doesn't accept special characters." }}
+                onChange={(event) =>
+                  this.setState({ title: sanitizeBlank(event.target.value) })}
+                inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
                 required
               />
             </Grid>

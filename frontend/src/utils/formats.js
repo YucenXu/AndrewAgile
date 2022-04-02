@@ -6,3 +6,7 @@ export function formatDateTime (datetimeStr) {
       minute: '2-digit',
     })
 }
+
+export function sanitizeBlank (inputStr) {
+  return /^\s*$/.test(inputStr) ? '' : inputStr
+}

@@ -13,15 +13,20 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
+import { sanitizeBlank } from '../../utils/formats'
 
 export default function ProjectCreate(props) {
+  const [name, setName] = React.useState('')
+
   const handleCloseProject = () => {
+    setName('')
     props.setCreateProjectOpen(false)
   }
 
   const handleSaveProject = (event) => {
     event.preventDefault()
     const form = new FormData(event.target)
+    setName('')
     const params = ['name', 'description']
     const payload = {}
     for (const param of params) {
@@ -119,10 +124,10 @@ export default function ProjectCreate(props) {
                   label="name"
                   sx={{ width: '90%' }}
                   placeholder="Project Name"
-                  // value={title}
-                  // onInput={(event) => this.setTitle(event.target.value)}
+                  value={name}
+                  onChange={event => setName(sanitizeBlank(event.target.value))}
                   required
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.- ]*$", title: "This field doesn't accept special characters." }}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
                 />
               </Grid>
 

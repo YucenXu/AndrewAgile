@@ -13,17 +13,21 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
+import { sanitizeBlank } from '../../utils/formats'
 
 export default function TaskCreate(props) {
+  const [title, setTitle] = React.useState('')
   const [priorityColor, setPriorityColor] = React.useState("#ffcdd2")
 
   const handleCloseTask = () => {
+    setTitle('')
     props.setCreateTaskOpen(false)
   }
 
   const handleSaveTask = (event) => {
     event.preventDefault()
     const form = new FormData(event.target)
+    setTitle('')
     const params = ['title', 'assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
     const payload = {}
     for (const param of params) {
@@ -154,7 +158,9 @@ export default function TaskCreate(props) {
                   id="title"
                   sx={{ width: '90%' }}
                   placeholder="Task Title"
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.- ]*$", title: "This field doesn't accept special characters." }}
+                  value={title}
+                  onChange={event => setTitle(sanitizeBlank(event.target.value))}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
                   required
                 />
               </Grid>
