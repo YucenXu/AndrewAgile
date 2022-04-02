@@ -15,7 +15,7 @@ import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 
 export default function TaskCreate(props) {
-  const [priorityColor, setPriorityColor] = React.useState('#ffcdd2')
+  const [priorityColor, setPriorityColor] = React.useState("#ffcdd2")
 
   const handleCloseTask = () => {
     props.setCreateTaskOpen(false)
@@ -43,17 +43,17 @@ export default function TaskCreate(props) {
     let priority = event.target.value
 
     switch (priority) {
-      case '1':
-        setPriorityColor('#ffcdd2')
+      case 'critical':
+        setPriorityColor("#ffcdd2")
         break
-      case '2':
-        setPriorityColor('#ffcc80')
+      case 'important':
+        setPriorityColor("#ffcc80")
         break
-      case '3':
-        setPriorityColor('#fff59d')
+      case 'normal':
+        setPriorityColor("#fff59d")
         break
-      case '4':
-        setPriorityColor('#dcedc8')
+      case 'low':
+        setPriorityColor("#dcedc8")
         break
     }
   }
