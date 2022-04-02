@@ -106,8 +106,10 @@ export default function Kanban() {
 
   const handleClickCreateTask = () => {
     // Todo
-    if (workspaceId == 0 || projectId == 0) {
-      alert('Select a workspace and project first')
+    if (workspaceId === 0) {
+      alert('Select a workspace first')
+    } else if (projectId === 0) {
+      alert('Select a project first')
     } else {
       setCreateTaskOpen(true)
       setTaskId(Number(taskId))
