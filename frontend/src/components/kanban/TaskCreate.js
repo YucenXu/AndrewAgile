@@ -151,10 +151,11 @@ export default function TaskCreate(props) {
                 alignItems="center">
                 <InputBase
                   name="title"
-                  id="name"
+                  id="title"
                   sx={{ width: '90%' }}
                   placeholder="Task Title"
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.-]*$", title: "This field doesn't accept special characters." }}
+                  required
                 />
               </Grid>
 
@@ -166,6 +167,7 @@ export default function TaskCreate(props) {
                   id="assignee"
                   fullWidth
                   variant="standard"
+                  required
                 >
                   {
                     props.allUsers.map((user) => (
@@ -183,6 +185,7 @@ export default function TaskCreate(props) {
                   id="reporter"
                   fullWidth
                   variant="standard"
+                  required
                 >
                   {
                     props.allUsers.map((user) => (
@@ -203,7 +206,9 @@ export default function TaskCreate(props) {
                     width: '8ch',
                     border: 0,
                     textAlign: 'left',
+                    backgroundColor: '#eeeeee'
                   }}
+                  required
                 >
                   <option value={'story'}>Story</option>
                   <option value={'issue'}>Issue</option>
@@ -222,7 +227,9 @@ export default function TaskCreate(props) {
                     width: '12ch',
                     border: 0,
                     textAlign: 'left',
+                    backgroundColor: '#eeeeee'
                   }}
+                  required
                 >
                   <option value={'backlog'}>Backlog</option>
                   <option value={'todo'}>Todo</option>
@@ -245,6 +252,7 @@ export default function TaskCreate(props) {
                     textAlign: 'left',
                   }}
                   onChange={handleSetPriorityColor}
+                  required
                 >
                   <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
                   <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>

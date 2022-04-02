@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
+import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 
 class TaskEdit extends Component {
@@ -70,7 +71,7 @@ class TaskEdit extends Component {
   handleSaveTask = (event) => {
     event.preventDefault()
     const form = new FormData(event.target)
-    const params = ['assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
+    const params = ['title', 'assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
     const payload = {}
     for (const param of params) {
       payload[param] = form.get(param)
@@ -146,7 +147,7 @@ class TaskEdit extends Component {
           <AppBar sx={{ position: 'relative' }}>
             <Toolbar>
               <Typography sx={{ flex: 1, fontWeight: 'bold' }} variant="h6" component="div">
-                {this.state.title}
+                {this.props.curProject.name}
               </Typography>
 
               <IconButton
@@ -163,16 +164,24 @@ class TaskEdit extends Component {
 
         <Box component="form" onSubmit={this.handleSaveTask}
           sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
-          {/* Project Info */}
+          {/* Task Title */}
           <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
             direction="row" alignItems="center">
             <Grid item sx={{ mx: '3%', width: '8vw' }}>
               <Typography
                 sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
-                align="center">Project</Typography>
+                align="center">Task</Typography>
             </Grid>
-            <Grid item sx={{ width: '20%' }}>
-              <Typography sx={{ fontSize: '1.5vw', fontWeight: 'bold' }}>{this.props.curProject.name}</Typography>
+            <Grid item sx={{ ml: "3%", width: '20%' }}>
+              <InputBase
+                name="title"
+                id="title"
+                sx={{ width: '90%' }}
+                value={this.state.title}
+                onChange={(event) => this.setState({ title: event.target.value })}
+                inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.-]*$", title: "This field doesn't accept special characters." }}
+                required
+              />
             </Grid>
           </Grid>
 
@@ -235,6 +244,7 @@ class TaskEdit extends Component {
                     onChange={event => this.setState({ assignee: event.target.value })}
                     fullWidth
                     variant="standard"
+                    required
                   >
                     {
                       this.props.allUsers.map((user) => (
@@ -255,6 +265,7 @@ class TaskEdit extends Component {
                     onChange={event => this.setState({ reporter: event.target.value })}
                     fullWidth
                     variant="standard"
+                    required
                   >
                     {
                       this.props.allUsers.map((user) => (
@@ -275,9 +286,11 @@ class TaskEdit extends Component {
                       width: '8ch',
                       border: 0,
                       textAlign: 'left',
+                      backgroundColor: '#eeeeee'
                     }}
                     value={this.state.type}
                     onChange={event => this.setState({ type: event.target.value })}
+                    required
                   >
                     <option value={'story'}>Story</option>
                     <option value={'issue'}>Issue</option>
@@ -296,9 +309,11 @@ class TaskEdit extends Component {
                       width: '12ch',
                       border: 0,
                       textAlign: 'left',
+                      backgroundColor: '#eeeeee'
                     }}
                     value={this.state.status}
                     onChange={event => this.setState({ status: event.target.value })}
+                    required
                   >
                     <option value={'backlog'}>Backlog</option>
                     <option value={'todo'}>Todo</option>
@@ -322,6 +337,7 @@ class TaskEdit extends Component {
                     }}
                     value={this.state.priority}
                     onChange={this.handleSetPriority}
+                    required
                   >
                     <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
                     <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>

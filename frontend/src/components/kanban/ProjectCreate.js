@@ -22,7 +22,7 @@ export default function ProjectCreate(props) {
   const handleSaveProject = (event) => {
     event.preventDefault()
     const form = new FormData(event.target)
-    const params = ['name', 'description', 'owner']
+    const params = ['name', 'description']
     const payload = {}
     for (const param of params) {
       payload[param] = form.get(param)
@@ -103,7 +103,7 @@ export default function ProjectCreate(props) {
               </Grid>
               <Grid container sx={{ width: '100%', height: '50%' }} style={{ fontSize: '1.2vw' }} direction="row"
                 alignItems="center">
-                Owner
+                {/* Owner */}
               </Grid>
 
             </Grid>
@@ -119,25 +119,29 @@ export default function ProjectCreate(props) {
                   label="name"
                   sx={{ width: '90%' }}
                   placeholder="Project Name"
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
+                  // value={title}
+                  // onInput={(event) => this.setTitle(event.target.value)}
+                  required
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' }, pattern: "^[a-zA-Z0-9_.-]*$", title: "This field doesn't accept special characters." }}
                 />
               </Grid>
 
-              {/* Owner */}
+              {/* Owner Don't need now, owner is current user */}
               <Grid container sx={{ width: '80%', height: '50%', backgroundColor: '#' }} direction="row"
                 alignItems="center">
-                <Select
+                {/* <Select
                   name="owner"
                   id="owner"
                   fullWidth
                   variant="standard"
+                  required
                 >
                   {
                     props.allUsers.map((user) => (
                       <MenuItem value={user.username}>{user.username}</MenuItem>
                     ))
                   }
-                </Select>
+                </Select> */}
               </Grid>
 
             </Grid>
