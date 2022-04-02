@@ -13,7 +13,7 @@ Suggested package versions, can be slightly different.
 + python 3.8+
   + django 4.0+
   + social-auth-app-django 5.0.x
-  + mysqlclient 2.1.x
+  + djangorestframework 3.13.x
   
 + node 17.6+
 + npm 8.5+

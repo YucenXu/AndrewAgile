@@ -1,7 +1,5 @@
 # Backend API spec
 
-[TOC]
-
 ## User
 
 ### User logout
@@ -519,7 +517,7 @@ Response:
   }
   ```
 
-### Delete a project
+### Delete a task
 
 Path: /api/task/\<int:tid\>
 

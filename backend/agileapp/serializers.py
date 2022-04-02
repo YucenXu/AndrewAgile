@@ -1,6 +1,7 @@
 from abc import abstractmethod, abstractproperty
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -79,6 +80,7 @@ class MutableModelSerializer(serializers.ModelSerializer):
             self._instance = self.Meta.model.objects.filter(id=self._validated_data['id'])[0]
             for key, value in self._validated_data.items():
                 setattr(self._instance, key, value)
+            setattr(self._instance, "last_updated_at", timezone.now())
         else:
             self._instance = self.Meta.model(**self._validated_data)
         self._instance.save()
