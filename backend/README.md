@@ -383,7 +383,7 @@ Response:
   ```json
   {
       "status": "This field should be TaskStatus type.",
-      "title": "This field should be str type.",
+      "title": "This string field cannot be blank.",
       "assigneeId": "Object with this ID does not exist."
   }
   ```

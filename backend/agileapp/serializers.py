@@ -49,12 +49,19 @@ class MutableModelSerializer(serializers.ModelSerializer):
             if field_name not in data and is_required:
                 errors[field_name] = "This field is required."
             elif field_name in data:
+                # try convert enum type
                 if isinstance(field_type, models.enums.ChoicesMeta):
                     choices = [choice[0] for choice in field_type.choices]
                     if str(data[field_name]).lower() in choices:
                         data[field_name] = getattr(field_type, data[field_name].upper())
+                # check field types
                 if not isinstance(data[field_name], field_type):
                     errors[field_name] = "This field should be %s type." % field_type.__name__
+                # strip string fields and check if blank
+                if field_type == str and isinstance(data[field_name], field_type):
+                    data[field_name] = data[field_name].strip()
+                    if not data[field_name]:
+                        errors[field_name] = "This string field cannot be blank."
 
         return errors
 
