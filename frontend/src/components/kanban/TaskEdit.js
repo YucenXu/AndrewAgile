@@ -250,7 +250,7 @@ class TaskEdit extends Component {
                   >
                     {
                       this.props.allUsers.map((user) => (
-                        <MenuItem value={user.username}>{user.username}</MenuItem>
+                        <MenuItem key={user.username} value={user.username}>{user.username}</MenuItem>
                       ))
                     }
 
@@ -271,7 +271,7 @@ class TaskEdit extends Component {
                   >
                     {
                       this.props.allUsers.map((user) => (
-                        <MenuItem value={user.username}>{user.username}</MenuItem>
+                        <MenuItem key={user.username} value={user.username}>{user.username}</MenuItem>
                       ))
                     }
                   </Select>

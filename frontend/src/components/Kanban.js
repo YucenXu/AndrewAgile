@@ -177,7 +177,7 @@ export default function Kanban() {
               onChange={handleChangeWorkspace}
             >
               {allWorkspaces.map((workspace) => (
-                <MenuItem value={workspace.id}>{workspace.name}</MenuItem>
+                <MenuItem key={workspace.id} value={workspace.id}>{workspace.name}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -196,7 +196,7 @@ export default function Kanban() {
               onChange={handleChangeProject}
             >
               {allProjects.map((project) => (
-                <MenuItem value={project.id}>{project.name}</MenuItem>
+                <MenuItem key={project.id} value={project.id}>{project.name}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -228,7 +228,7 @@ export default function Kanban() {
       <Grid container sx={{ my: '2vh', mx: 'auto', width: '80vw', height: '60vh' }} style={{ alignItems: 'center' }}>
         {taskStatus.map((status) => (
           // Column
-          <Paper sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }} style={{ backgroundColor: '#eaecee' }}>
+          <Paper key={status} sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }} style={{ backgroundColor: '#eaecee' }}>
             {/* title */}
             <Grid item xs sx={{ mt: '1vh', width: '19vw', height: '6vh' }} direction="row" display="flex"
               justify="center">
@@ -241,8 +241,8 @@ export default function Kanban() {
             <Grid item spacing={2} sx={{ my: '0.5vh', width: '19vw', height: '53vh' }}
               style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
               {allTasks.map((task) => {
-                if (task.status == status.toLowerCase()) {
-                  return <Card sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
+                if (task.status === status.toLowerCase()) {
+                  return <Card key={task.id} sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
                     <CardActionArea type="submit" onClick={handleClickTask(task.id)}>
                       <CardContent>
                         <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>

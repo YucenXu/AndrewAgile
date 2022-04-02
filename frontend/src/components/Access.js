@@ -49,7 +49,7 @@ export default function Access () {
             value={workspaceId}
             onChange={handleChangeWorkspace}>
             {[0, 1, 2].map((value) => (
-              <option value={value}>Workspace-{value}</option>
+              <option key={value} value={value}>Workspace-{value}</option>
             ))}
           </NativeSelect>
         </FormControl>
@@ -70,7 +70,7 @@ export default function Access () {
             style={{ backgroundColor: '', justifyContent: 'left' }}>
         <List sx={{ my: '2vh', width: '60vw', height: '10vh' }}>
           {people.map((user) => (
-            <UserRole name={user.name} role={user.role}/>
+            <UserRole key={user.name} name={user.name} role={user.role}/>
           ))}
         </List>
       </Grid>

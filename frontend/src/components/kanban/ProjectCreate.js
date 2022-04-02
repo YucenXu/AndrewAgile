@@ -143,7 +143,7 @@ export default function ProjectCreate(props) {
                 >
                   {
                     props.allUsers.map((user) => (
-                      <MenuItem value={user.username}>{user.username}</MenuItem>
+                      <MenuItem key={user.username} value={user.username}>{user.username}</MenuItem>
                     ))
                   }
                 </Select> */}

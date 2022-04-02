@@ -177,7 +177,7 @@ export default function TaskCreate(props) {
                 >
                   {
                     props.allUsers.map((user) => (
-                      <MenuItem value={user.username}>{user.username}</MenuItem>
+                      <MenuItem key={user.username} value={user.username}>{user.username}</MenuItem>
                     ))
                   }
                 </Select>
@@ -195,7 +195,7 @@ export default function TaskCreate(props) {
                 >
                   {
                     props.allUsers.map((user) => (
-                      <MenuItem value={user.username}>{user.username}</MenuItem>
+                      <MenuItem key={user.username} value={user.username}>{user.username}</MenuItem>
                     ))
                   }
                 </Select>
