@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.contrib.auth.decorators import login_required
 from rest_framework.parsers import JSONParser
@@ -38,7 +38,6 @@ def workspace_api(request, wid):
         return HttpResponse(status=404)
 
 
-@csrf_exempt
 @login_required
 @require_http_methods(["GET", "POST"])
 def workspace_projects(request, wid):
@@ -58,7 +57,6 @@ def workspace_projects(request, wid):
             return JsonResponse(serializer.errors, status=400)
 
 
-@csrf_exempt
 @login_required
 @require_http_methods(["GET", "PUT", "DELETE"])
 def project_api(request, pid):
@@ -85,7 +83,6 @@ def project_api(request, pid):
         return HttpResponse(status=200)
 
 
-@csrf_exempt
 @login_required
 @require_http_methods(["GET", "POST"])
 def project_tasks(request, pid):
@@ -104,7 +101,6 @@ def project_tasks(request, pid):
             return JsonResponse(serializer.errors, status=400)
 
 
-@csrf_exempt
 @login_required
 @require_http_methods(["GET", "PUT", "DELETE"])
 def task_api(request, tid):
@@ -131,7 +127,6 @@ def task_api(request, tid):
         return HttpResponse(status=200)
 
 
-@csrf_exempt
 @login_required
 @require_POST
 def task_comments(request, tid):
