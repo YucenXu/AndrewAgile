@@ -14,7 +14,7 @@ import Select from '@mui/material/Select'
 import axios from 'axios'
 
 class TaskEdit extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.props = props
     this.state = {
@@ -70,7 +70,7 @@ class TaskEdit extends Component {
     // Todo
     event.preventDefault()
     const form = new FormData(event.target)
-    const params = ['assignee', 'reporter', 'type', 'status', 'priority', 'description']
+    const params = ['assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
     const payload = {}
     for (const param of params) {
       payload[param] = form.get(param)
@@ -102,13 +102,13 @@ class TaskEdit extends Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.taskId !== prevProps.taskId && this.props.taskId != 0) {
       this.getCurTask()
     }
   }
 
-  render () {
+  render() {
     return (
 
       <Dialog
@@ -135,17 +135,17 @@ class TaskEdit extends Component {
                 onClick={this.handleCloseTask}
                 aria-label="close"
               >
-                <CloseIcon/>
+                <CloseIcon />
               </IconButton>
             </Toolbar>
           </AppBar>
         </Grid>
 
         <Box component="form" onSubmit={this.handleSaveTask}
-             sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
+          sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
           {/* Project Info */}
           <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
-                direction="row" alignItems="center">
+            direction="row" alignItems="center">
             <Grid item sx={{ mx: '3%', width: '8vw' }}>
               <Typography
                 sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
@@ -172,33 +172,33 @@ class TaskEdit extends Component {
             }}>
               {/* Index Column */}
               <Grid container
-                    sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
+                sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Assignee
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Reporter
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Type
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Status
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Priority
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Createed at
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Last updated at
                 </Grid>
               </Grid>
@@ -207,10 +207,10 @@ class TaskEdit extends Component {
               <Grid container sx={{ mx: '1%', width: '58%', height: '100%', backgroundColor: '#' }}>
                 {/* Assignee */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Select
-                    name="assignee"
-                    id="assignee"
+                    name="assigneeId"
+                    id="assigneeId"
                     defaultValue={this.state.assignee}
                     fullWidth
                     variant="standard"
@@ -226,10 +226,10 @@ class TaskEdit extends Component {
 
                 {/* Reporter */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Select
-                    name="reporter"
-                    id="reporter"
+                    name="reporterId"
+                    id="reporterId"
                     defaultValue={this.state.reporter}
                     fullWidth
                     variant="standard"
@@ -244,7 +244,7 @@ class TaskEdit extends Component {
 
                 {/* Type */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="type"
                     id="type"
@@ -264,7 +264,7 @@ class TaskEdit extends Component {
 
                 {/* Status */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="status"
                     id="status"
@@ -285,7 +285,7 @@ class TaskEdit extends Component {
 
                 {/* Priority */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="priority"
                     id="priority"
@@ -307,14 +307,14 @@ class TaskEdit extends Component {
                 </Grid>
                 {/* Create Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Typography
                     sx={{ fontSize: '1vw' }}>{new Date(this.state.curTask.createdAt).toLocaleString()}</Typography>
                 </Grid>
 
                 {/* Last Update Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Typography
                     sx={{ fontSize: '1vw' }}>{new Date(this.state.curTask.lastUpdatedAt).toLocaleString()}</Typography>
                 </Grid>
@@ -362,14 +362,14 @@ class TaskEdit extends Component {
           <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
             <Grid container sx={{ mx: '0vw', width: '40vw', height: '100%' }}></Grid>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-                  alignItems="center">
+              alignItems="center">
               <Button onClick={this.handleDeleteTask}
-                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
+                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
             </Grid>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-                  alignItems="center">
+              alignItems="center">
               <Button type="submit" variant="contained"
-                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
+                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
             </Grid>
           </Grid>
         </Box>

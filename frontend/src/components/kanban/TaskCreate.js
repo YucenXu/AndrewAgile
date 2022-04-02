@@ -14,7 +14,7 @@ import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 
-export default function TaskCreate (props) {
+export default function TaskCreate(props) {
   const [priorityColor, setPriorityColor] = React.useState('#ffcdd2')
 
   const handleCloseTask = () => {
@@ -25,7 +25,7 @@ export default function TaskCreate (props) {
     // Todo
     event.preventDefault()
     const form = new FormData(event.target)
-    const params = ['title', 'assignee', 'reporter', 'type', 'status', 'priority', 'description']
+    const params = ['title', 'assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
     const payload = {}
     for (const param of params) {
       payload[param] = form.get(param)
@@ -33,6 +33,7 @@ export default function TaskCreate (props) {
     axios.post('/api/project/' + props.curProject.id + '/tasks', payload).catch(err => {
       // Todo
     }).then(() => {
+      props.setRefresh(props.refresh + 1)
       props.setCreateTaskOpen(false)
     })
   }
@@ -81,17 +82,17 @@ export default function TaskCreate (props) {
               onClick={handleCloseTask}
               aria-label="close"
             >
-              <CloseIcon/>
+              <CloseIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
       </Grid>
 
       <Box component="form" onSubmit={handleSaveTask}
-           sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
+        sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
         {/* Project Info */}
         <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
-              direction="row" alignItems="center">
+          direction="row" alignItems="center">
           <Grid item sx={{ mx: '3%', width: '8vw' }}>
             <Typography
               sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
@@ -117,29 +118,29 @@ export default function TaskCreate (props) {
           }}>
             {/* Index Column */}
             <Grid container
-                  sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
+              sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
               <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 Task Title
               </Grid>
               <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 Assignee
               </Grid>
               <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 Reporter
               </Grid>
               <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 Type
               </Grid>
               <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 Status
               </Grid>
               <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 Priority
               </Grid>
             </Grid>
@@ -148,7 +149,7 @@ export default function TaskCreate (props) {
             <Grid container sx={{ mx: '1%', width: '58%', height: '100%', backgroundColor: '#' }}>
               {/* Task Title */}
               <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 <InputBase
                   name="title"
                   id="name"
@@ -160,9 +161,9 @@ export default function TaskCreate (props) {
 
               {/* Assignee */}
               <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 <Select
-                  name="assignee"
+                  name="assigneeId"
                   id="assignee"
                   fullWidth
                   variant="standard"
@@ -177,9 +178,9 @@ export default function TaskCreate (props) {
 
               {/* Reporter */}
               <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 <Select
-                  name="reporter"
+                  name="reporterId"
                   id="reporter"
                   fullWidth
                   variant="standard"
@@ -194,7 +195,7 @@ export default function TaskCreate (props) {
 
               {/* Type */}
               <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 <select
                   name="type"
                   id="type"
@@ -213,7 +214,7 @@ export default function TaskCreate (props) {
 
               {/* Status */}
               <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 <select
                   name="status"
                   id="status"
@@ -224,16 +225,16 @@ export default function TaskCreate (props) {
                     textAlign: 'left',
                   }}
                 >
-                  <option value={'Backlog'}>Backlog</option>
-                  <option value={'Todo'}>Todo</option>
-                  <option value={'Inprogress'}>In Progress</option>
-                  <option value={'Done'}>Done</option>
+                  <option value={'backlog'}>Backlog</option>
+                  <option value={'todo'}>Todo</option>
+                  <option value={'inprogress'}>In Progress</option>
+                  <option value={'done'}>Done</option>
                 </select>
               </Grid>
 
               {/* Priority */}
               <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                    alignItems="center">
+                alignItems="center">
                 <select
                   name="priority"
                   id="priority"
@@ -246,10 +247,10 @@ export default function TaskCreate (props) {
                   }}
                   onChange={handleSetPriorityColor}
                 >
-                  <option value={1} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
-                  <option value={2} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
-                  <option value={3} style={{ backgroundColor: '#e3f2fd' }}>Normal</option>
-                  <option value={4} style={{ backgroundColor: '#e3f2fd' }}>Low</option>
+                  <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
+                  <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
+                  <option value={'normal'} style={{ backgroundColor: '#e3f2fd' }}>Normal</option>
+                  <option value={'low'} style={{ backgroundColor: '#e3f2fd' }}>Low</option>
                 </select>
               </Grid>
             </Grid>
@@ -275,9 +276,9 @@ export default function TaskCreate (props) {
         <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
           <Grid container sx={{ mx: '0vw', width: '50vw', height: '100%' }}></Grid>
           <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-                alignItems="center">
+            alignItems="center">
             <Button type="submit" variant="contained"
-                    style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
+              style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
           </Grid>
         </Grid>
       </Box>
