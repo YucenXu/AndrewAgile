@@ -73,9 +73,9 @@ export default function Kanban() {
     axios.get('/api/workspace/' + id).catch(err => {
       // Todo
     }).then(response => {
-      setCurWorkspace(response.data)
-      setProjectId(0)
       setCurProject({})
+      setProjectId(0)
+      setCurWorkspace(response.data)
     })
   }
 
@@ -119,9 +119,11 @@ export default function Kanban() {
   React.useEffect(() => {
     getallWorkspaces()
     getAllProjects()
+  }, [workspaceId])
+
+  React.useEffect(() => {
     getAllTasks()
-    getAllUsers()
-  }, [workspaceId, projectId])
+  }, [projectId])
 
   React.useEffect(() => {
     getAllTasks()
@@ -152,12 +154,12 @@ export default function Kanban() {
     }, [delay]);
   }
 
-  useInterval(() => {
-    getallWorkspaces()
-    getAllProjects()
-    getAllTasks()
-    getAllUsers()
-  }, 10000)
+  // useInterval(() => {
+  //   getallWorkspaces()
+  //   getAllProjects()
+  //   getAllTasks()
+  //   getAllUsers()
+  // }, 3000)
 
   return (
     <Box>
