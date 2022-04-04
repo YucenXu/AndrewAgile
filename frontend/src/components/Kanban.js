@@ -36,34 +36,39 @@ export default function Kanban() {
   const [refreshProjects, setRefreshProjects] = React.useState(0);
 
   const getallWorkspaces = () => {
-    axios.get('/api/workspaces').catch(err => {
+    return axios.get('/api/workspaces').catch(err => {
       // Todo
     }).then(response => {
       setAllWorkspaces(response.data)
+      return response.data
     })
   }
 
   const getAllProjects = () => {
-    axios.get('/api/workspace/' + workspaceId + '/projects').catch(err => {
+    return axios.get('/api/workspace/' + workspaceId + '/projects').catch(err => {
       // Todo
     }).then(response => {
       setAllProjects(response.data)
+      return response.data
+
     })
   }
 
   const getAllTasks = () => {
-    axios.get('/api/project/' + projectId + '/tasks').catch(err => {
+    return axios.get('/api/project/' + projectId + '/tasks').catch(err => {
       // Todo
     }).then(response => {
       setAllTasks(response.data)
+      return response.data
     })
   }
 
   const getAllUsers = () => {
-    axios.get('api/users').catch(err => {
+    return axios.get('api/users').catch(err => {
       // Todo
     }).then(response => {
       setAllUsers(response.data)
+      return response.data
     })
   }
 
@@ -75,7 +80,6 @@ export default function Kanban() {
     }).then(response => {
       setCurWorkspace(response.data)
       setProjectId(0)
-      setCurProject({})
     })
   }
 
@@ -117,11 +121,21 @@ export default function Kanban() {
   }
 
   React.useEffect(() => {
-    getallWorkspaces()
-    getAllProjects()
-    getAllTasks()
-    getAllUsers()
-  }, [workspaceId, projectId])
+    async function fetchData() {
+      await getallWorkspaces()
+      await getAllProjects()
+      await getAllUsers()
+    }
+    fetchData()
+  }, [workspaceId])
+
+  React.useEffect(() => {
+    if (projectId != 0) {
+      getAllTasks()
+    } else {
+      setAllTasks([])
+    }
+  }, [projectId])
 
   React.useEffect(() => {
     getAllTasks()
@@ -153,10 +167,13 @@ export default function Kanban() {
   }
 
   useInterval(() => {
-    getallWorkspaces()
-    getAllProjects()
-    getAllTasks()
-    getAllUsers()
+    async function fetchData() {
+      await getallWorkspaces()
+      await getAllProjects()
+      await getAllTasks()
+      await getAllUsers()
+    }
+    fetchData()
   }, 10000)
 
   return (
