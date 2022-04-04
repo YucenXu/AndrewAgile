@@ -36,7 +36,7 @@ export default function Kanban() {
   const [refreshProjects, setRefreshProjects] = React.useState(0);
 
   const getallWorkspaces = () => {
-    axios.get('/api/workspaces').catch(err => {
+    return axios.get('/api/workspaces').catch(err => {
       // Todo
     }).then(response => {
       setAllWorkspaces(response.data)
@@ -45,7 +45,7 @@ export default function Kanban() {
   }
 
   const getAllProjects = () => {
-    axios.get('/api/workspace/' + workspaceId + '/projects').catch(err => {
+    return axios.get('/api/workspace/' + workspaceId + '/projects').catch(err => {
       // Todo
     }).then(response => {
       setAllProjects(response.data)
@@ -55,7 +55,7 @@ export default function Kanban() {
   }
 
   const getAllTasks = () => {
-    axios.get('/api/project/' + projectId + '/tasks').catch(err => {
+    return axios.get('/api/project/' + projectId + '/tasks').catch(err => {
       // Todo
     }).then(response => {
       setAllTasks(response.data)
@@ -64,7 +64,7 @@ export default function Kanban() {
   }
 
   const getAllUsers = () => {
-    axios.get('api/users').catch(err => {
+    return axios.get('api/users').catch(err => {
       // Todo
     }).then(response => {
       setAllUsers(response.data)
@@ -130,7 +130,11 @@ export default function Kanban() {
   }, [workspaceId])
 
   React.useEffect(() => {
-    getAllTasks()
+    if (projectId != 0) {
+      getAllTasks()
+    } else {
+      setAllTasks([])
+    }
   }, [projectId])
 
   React.useEffect(() => {
@@ -284,7 +288,7 @@ export default function Kanban() {
         allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}></TaskCreate>
 
       {/* Debug info, will delete*/}
-      <Typography>Workspace:{workspaceId} Project:{projectId}</Typography>
+      {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
     </Box>
   )
 }

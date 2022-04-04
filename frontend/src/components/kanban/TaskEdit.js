@@ -40,8 +40,8 @@ class TaskEdit extends Component {
       let task = response.data
       this.setState({
         title: task.title,
-        assignee: task.assignee.username,
-        reporter: task.reporter.username,
+        assignee: task.assignee?.username,
+        reporter: task.reporter?.username,
         type: task.type,
         status: task.status,
         priority: task.priority,
