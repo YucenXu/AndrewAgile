@@ -40,6 +40,7 @@ export default function Kanban() {
       // Todo
     }).then(response => {
       setAllWorkspaces(response.data)
+      return response.data
     })
   }
 
@@ -48,6 +49,8 @@ export default function Kanban() {
       // Todo
     }).then(response => {
       setAllProjects(response.data)
+      return response.data
+
     })
   }
 
@@ -56,6 +59,7 @@ export default function Kanban() {
       // Todo
     }).then(response => {
       setAllTasks(response.data)
+      return response.data
     })
   }
 
@@ -64,6 +68,7 @@ export default function Kanban() {
       // Todo
     }).then(response => {
       setAllUsers(response.data)
+      return response.data
     })
   }
 
@@ -73,9 +78,8 @@ export default function Kanban() {
     axios.get('/api/workspace/' + id).catch(err => {
       // Todo
     }).then(response => {
-      setCurProject({})
-      setProjectId(0)
       setCurWorkspace(response.data)
+      setProjectId(0)
     })
   }
 
@@ -117,8 +121,13 @@ export default function Kanban() {
   }
 
   React.useEffect(() => {
-    getallWorkspaces()
-    getAllProjects()
+    async function fetchData() {
+      await getallWorkspaces()
+      await getAllProjects()
+      await getAllUsers()
+    }
+    fetchData()
+
   }, [workspaceId])
 
   React.useEffect(() => {
@@ -159,7 +168,7 @@ export default function Kanban() {
   //   getAllProjects()
   //   getAllTasks()
   //   getAllUsers()
-  // }, 3000)
+  // }, 10000)
 
   return (
     <Box>
@@ -273,7 +282,7 @@ export default function Kanban() {
         allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}></TaskCreate>
 
       {/* Debug info, will delete*/}
-      {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
+      <Typography>Workspace:{workspaceId} Project:{projectId}</Typography>
     </Box>
   )
 }
