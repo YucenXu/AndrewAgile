@@ -19,14 +19,9 @@ function useAuth () {
   const [auth, setAuth] = useState(initialAuth.auth)
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      const resp = await axios.get('/api/userinfo')
-      setAuth(await resp.data)
-    }
-
-    getUserInfo().catch(() => {
-      setAuth({ ...initialAuth.auth })
-    })
+    axios.get('/api/userinfo')
+    .then(resp => setAuth(resp.data))
+    .catch(() => setAuth({ ...initialAuth.auth }))
   }, [])
 
   return { auth, setAuth }

@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper'
 import Container from '@mui/material/Container'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { formatDateTime } from '../utils/formats'
+import { formatDateTime } from '../../utils/formats'
 
 export default function Kanban () {
   const [projects, setProjects] = useState([])
@@ -17,9 +17,7 @@ export default function Kanban () {
   useEffect(() => {
     const getAllProjectsByWorkspace = async () => {
       const workspaces = (await axios.get('/api/workspaces')).data
-      const resp = await axios.get(
-        `/api/workspace/${workspaces[0].id}/projects`)
-      const projects = await resp.data
+      const projects = (await axios.get(`/api/workspace/${workspaces[0].id}/projects`)).data
       setProjects(projects)
     }
 
@@ -50,7 +48,7 @@ export default function Kanban () {
                 <TableCell>{project.name}</TableCell>
                 <TableCell>{project.description}</TableCell>
                 <TableCell>{project.workspaceId}</TableCell>
-                <TableCell>{project.owner}</TableCell>
+                <TableCell>{project.owner?.username}</TableCell>
                 <TableCell>{formatDateTime(project.createdAt)}</TableCell>
               </TableRow>
             ))}
