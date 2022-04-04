@@ -127,7 +127,6 @@ export default function Kanban() {
       await getAllUsers()
     }
     fetchData()
-
   }, [workspaceId])
 
   React.useEffect(() => {
@@ -163,12 +162,15 @@ export default function Kanban() {
     }, [delay]);
   }
 
-  // useInterval(() => {
-  //   getallWorkspaces()
-  //   getAllProjects()
-  //   getAllTasks()
-  //   getAllUsers()
-  // }, 10000)
+  useInterval(() => {
+    async function fetchData() {
+      await getallWorkspaces()
+      await getAllProjects()
+      await getAllTasks()
+      await getAllUsers()
+    }
+    fetchData()
+  }, 10000)
 
   return (
     <Box>
