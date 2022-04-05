@@ -5,15 +5,14 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from userapp.serializers import UserSerializer
-from agileapp.models import EmptyModel, Workspace, Permission, Project, Task, Comment
+from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
 
 
 class MutableModelSerializer(serializers.ModelSerializer):
     @abstractproperty
     class Meta:
-        model = EmptyModel
+        model = None
         fields = []
 
     def validate(self, method):
@@ -92,6 +91,15 @@ class MutableModelSerializer(serializers.ModelSerializer):
             self._instance = self.Meta.model(**self._validated_data)
         self._instance.save()
         return self._instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    firstname = serializers.CharField(source='first_name')
+    lastname = serializers.CharField(source='last_name')
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'firstname', 'lastname']
 
 
 class WorkspaceSerializer(serializers.ModelSerializer):

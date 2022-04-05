@@ -3,11 +3,6 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
-# an empty model for abstract class MutableModelSerializer
-class EmptyModel(models.Model):
-    pass
-
-
 class Workspace(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField(max_length=300)
@@ -84,8 +79,8 @@ class Task(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Task: id=%d, title=%s, project=%s, type=%s" % (
-            self.id, self.title, self.project.name, self.type,
+        return "Task: id=%d, title=%s, project=%s" % (
+            self.id, self.title, self.project.name,
         )
 
 
@@ -97,4 +92,6 @@ class Comment(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Comment: id=%d, task=%s, user=%s" % (self.id, self.task.title, self.user)
+        return "Comment: id=%d, task=%s, user=%s" % (
+            self.id, self.task.title, self.user,
+        )

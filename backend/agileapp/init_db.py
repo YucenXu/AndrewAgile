@@ -38,12 +38,14 @@ def init_workspaces():
 def init_permissions():
     for workspace in workspaces:
         for user in users:
-            perm = Permission(
-                workspace=workspace,
-                user=user,
-                role=random.choice(UserRole.choices)[0],
-            )
-            perm.save()
+            role = random.choice(UserRole.choices)[0]
+            if role != UserRole.VIEWER:
+                perm = Permission(
+                    workspace=workspace,
+                    user=user,
+                    role=role,
+                )
+                perm.save()
 
 
 def init_projects():

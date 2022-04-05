@@ -1,3 +1,5 @@
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -8,8 +10,8 @@ from rest_framework.parsers import JSONParser
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
 
-from agileapp.serializers import WorkspaceSerializer, ProjectSerializer, TaskSerializer, CommentSerializer, \
-    TaskDetailSerializer
+from agileapp.serializers import UserSerializer, WorkspaceSerializer, ProjectSerializer, TaskSerializer, \
+    CommentSerializer, TaskDetailSerializer
 
 
 @login_required
@@ -17,6 +19,42 @@ from agileapp.serializers import WorkspaceSerializer, ProjectSerializer, TaskSer
 # args and kwargs must be included to fit all requests
 def home_view(request, *args, **kwargs):
     return render(request, "index.html")
+
+
+@require_POST
+def logout_api(request):
+    logout(request)
+    return HttpResponse(status=200)
+
+
+# ensure frontend has csrftoken in local dev
+@ensure_csrf_cookie
+@require_GET
+def user_info(request):
+    if request.user.is_authenticated:
+        serializer = UserSerializer(request.user)
+        return JsonResponse(serializer.data)
+    else:
+        return HttpResponse(status=401)
+
+
+@login_required
+@require_GET
+def all_users(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@login_required
+@require_GET
+def user_api(request, uid):
+    user = User.objects.filter(username=uid)
+    if user:
+        serializer = UserSerializer(user[0])
+        return JsonResponse(serializer.data)
+    else:
+        return HttpResponse(status=404)
 
 
 @login_required

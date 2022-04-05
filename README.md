@@ -24,9 +24,9 @@ Suggested package versions, can be slightly different.
 
    ```shell
    cd backend
-   python3 manage.py makemigrations userapp agileapp
+   python3 manage.py makemigrations agileapp
    python3 manage.py migrate
-   python3 manage.py shell < backend/init_db.py
+   python3 manage.py shell < agileapp/init_db.py
    ```
 
 2. Start the backend server, code changes will trigger reload.

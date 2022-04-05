@@ -129,9 +129,9 @@ Finally, migrate the backend database and collect static files.
 
 ```shell
 cd s22_team_26/backend
-python3 manage.py makemigrations userapp agileapp
+python3 manage.py makemigrations agileapp
 python3 manage.py migrate
-# python3 manage.py shell < backend/init_db.py
+# python3 manage.py shell < agileapp/init_db.py
 python3 manage.py collectstatic
 ```
 
