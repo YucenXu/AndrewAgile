@@ -13,20 +13,20 @@ tasks = []
 
 
 def init_users():
-    for c in "ABCDEFG":
+    for i in range(1, 8):
         user = User.objects.create_user(
-            username="user" + c,
-            password="123456",
-            email="user" + c.lower() + "@gmail.com",
-            first_name=c + "first",
-            last_name=c + "last",
+            username="testuser-" + str(i),
+            password="testuser-" + str(i),
+            email="testuser-" + str(i) + "@gmail.com",
+            first_name="Firstname-" + str(i),
+            last_name="Lastname-" + str(i),
         )
         user.save()
         users.append(user)
 
 
 def init_workspaces():
-    for name in ("Default", "DevOps"):
+    for name in ("Workspace-A", "Workspace-B"):
         workspace = Workspace(
             name=name,
             description="This is the workspace for " + name,
@@ -50,7 +50,7 @@ def init_projects():
     for workspace in workspaces:
         for c in "ABC":
             project = Project(
-                name="Project-" + c,
+                name="Project-" + workspace.name[-1] + c,
                 description="This is the project description",
                 workspace=workspace,
                 owner=random.choice(users),
@@ -66,7 +66,7 @@ def init_tasks():
                 type=random.choice(TaskType.choices)[0],
                 priority=random.choice(TaskPriority.choices)[0],
                 status=random.choice(TaskStatus.choices)[0],
-                title="Task-" + str(i),
+                title="Task-" + project.name[-2:] + chr(65 + i),
                 description="This is the task description",
                 project=project,
                 assignee=random.choice(users),
