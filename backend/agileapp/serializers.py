@@ -235,8 +235,20 @@ class CommentSerializer(MutableModelSerializer):
         return self._validation_result(data, errors)
 
     def _validate_update(self, data):
-        # comments are not allowed to update
-        pass
+        errors = self._validate_fields([
+            ('id', int, True, None),
+            ('user', User, True, None),
+            ('content', str, False, False),
+        ], data)
+
+        comment = Comment.objects.filter(id=data['id'])
+        if not comment:
+            errors['commentId'] = "Object with this ID does not exist."
+        elif data['user'] != comment[0].user:
+            errors['user'] = "Only the original commenter can edit."
+
+        del data['user']
+        return self._validation_result(data, errors)
 
 
 class TaskDetailSerializer(TaskSerializer):

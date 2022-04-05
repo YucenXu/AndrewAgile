@@ -177,3 +177,23 @@ def task_comments(request, tid):
         return JsonResponse(serializer.data, status=201)
     else:
         return JsonResponse(serializer.errors, status=400)
+
+
+@login_required
+@require_http_methods(["PUT", "DELETE"])
+def comment_api(request, cid):
+    if request.method == "PUT":
+        data = JSONParser().parse(request)
+        data['id'] = cid
+        data['user'] = request.user
+        serializer = CommentSerializer(data=data)
+        if serializer.validate(method='PUT'):
+            serializer = CommentSerializer(serializer.save())
+            return JsonResponse(serializer.data, status=200)
+        else:
+            return JsonResponse(serializer.errors, status=400)
+    elif request.method == "DELETE":
+        comment = Comment.objects.filter(id=cid)
+        if comment:
+            comment[0].delete()
+        return HttpResponse(status=200)

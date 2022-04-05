@@ -13,4 +13,5 @@ urlpatterns = [
     path('project/<int:pid>/tasks', apis.project_tasks),
     path('task/<int:tid>', apis.task_api),
     path('task/<int:tid>/comments', apis.task_comments),
+    path('comment/<int:cid>', apis.comment_api),
 ]

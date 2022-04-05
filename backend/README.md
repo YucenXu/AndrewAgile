@@ -569,3 +569,53 @@ Response:
   }
   ```
 
+### Update an existing comment
+
+Path: /api/comment/\<int:cid\>
+
+Method: PUT
+
+Request:
+
+```python
+{
+    "content": "edited comment"  # optional, non-blank
+}
+```
+
+Response: 
+
++ 200
+
+  ```json
+  {
+      "id": 85,
+      "taskId": 1,
+      "user": {
+          "username": "userA",
+          "email": "usera@gmail.com",
+          "firstname": "Afirst",
+          "lastname": "Alast"
+      },
+      "content": "edited comment",
+      "createdAt": "2022-04-05T17:45:46.250770-04:00",
+      "lastUpdatedAt": "2022-04-05T17:47:01.438142-04:00"
+  }
+  ```
+
++ 400
+
+  ```json
+  {
+      "content": "This string field cannot be blank.",
+      "user": "Only the original commenter can edit."
+  }
+  ```
+
+### Delete a comment
+
+Path: /api/comment/\<int:cid\>
+
+Method: DELETE
+
+Response: 200
