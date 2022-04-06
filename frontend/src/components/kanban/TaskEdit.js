@@ -30,28 +30,30 @@ class TaskEdit extends Component {
       createdAt: "",
       lastUpdatedAt: "",
       description: "",
+      comments: [],
       newComment: "",
     }
   }
 
-  getCurTask = () => {
-    axios.get('/api/task/' + this.props.taskId).catch(err => {
+  getCurTask = async () => {
+    const response = await axios.get('/api/task/' + this.props.taskId).catch(err => {
       // Todo
-    }).then(response => {
-      let task = response.data
-      this.setState({
-        title: task.title,
-        assignee: task.assignee?.username,
-        reporter: task.reporter?.username,
-        type: task.type,
-        status: task.status,
-        priority: task.priority,
-        priorityColor: this.getPriorityColor(task.priority),
-        createdAt: task.createdAt,
-        lastUpdatedAt: task.lastUpdatedAt,
-        description: task.description
-      })
     })
+    let task = response.data
+    this.setState({
+      title: task.title,
+      assignee: task.assignee?.username,
+      reporter: task.reporter?.username,
+      type: task.type,
+      status: task.status,
+      priority: task.priority,
+      priorityColor: this.getPriorityColor(task.priority),
+      createdAt: task.createdAt,
+      lastUpdatedAt: task.lastUpdatedAt,
+      description: task.description,
+      comments: task.comments
+    })
+
   }
 
   handleCloseTask = () => {
@@ -59,18 +61,17 @@ class TaskEdit extends Component {
     this.props.setEditOpen(false)
   }
 
-  handleDeleteTask = () => {
-    axios.delete('/api/task/' + this.props.taskId).catch(err => {
+  handleDeleteTask = async () => {
+    await axios.delete('/api/task/' + this.props.taskId).catch(err => {
       // Todo
-    }).then(() => {
-      this.props.setTaskId(0)
-      this.props.setRefresh(this.props.refresh + 1)
-      this.props.setEditOpen(false)
-      this.clearState()
     })
+    this.props.setTaskId(0)
+    this.props.setRefresh(this.props.refresh + 1)
+    this.props.setEditOpen(false)
+    this.clearState()
   }
 
-  handleSaveTask = (event) => {
+  handleSaveTask = async (event) => {
     event.preventDefault()
     const form = new FormData(event.target)
     const params = ['title', 'assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
@@ -78,22 +79,29 @@ class TaskEdit extends Component {
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    axios.put('/api/task/' + this.props.taskId, payload).catch(err => {
+    await axios.put('/api/task/' + this.props.taskId, payload).catch(err => {
       // Todo
-    }).then(() => {
-      this.props.setTaskId(0)
-      this.props.setEditOpen(false)
-      this.props.setRefresh(this.props.refresh + 1)
-      this.clearState()
     })
+    this.props.setTaskId(0)
+    this.props.setEditOpen(false)
+    this.props.setRefresh(this.props.refresh + 1)
+    this.clearState()
   }
 
-  handleAddComment = (event) => {
+  handleAddComment = async (event) => {
     event.preventDefault()
     const payload = { "content": this.state.newComment }
-    // axios.put('/api/task/' + this.props.taskId + "comments", payload).catch(err => {
-    //   // Todo
-    // })
+    await axios.post('/api/task/' + this.props.taskId + "/comments", payload).catch(err => {
+      // Todo
+    })
+    const response = await axios.get('/api/task/' + this.props.taskId).catch(err => {
+      // Todo
+    })
+    let task = response.data
+    this.setState({
+      comments: task.comments
+    })
+    this.setState({ newComment: "" })
   }
 
   handleSetPriority = (event) => {
@@ -128,7 +136,9 @@ class TaskEdit extends Component {
       priorityColor: "",
       createdAt: "",
       lastUpdatedAt: "",
-      description: ""
+      description: "",
+      comments: [],
+      newComment: "",
     }
     )
   }
@@ -190,7 +200,7 @@ class TaskEdit extends Component {
                 value={this.state.title}
                 onChange={(event) =>
                   this.setState({ title: sanitizeBlank(event.target.value) })}
-                inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
+                inputProps={{ style: { textAlign: 'left', fontSize: '1.5vw', fontWeight: "bold" } }}
                 required
               />
             </Grid>
@@ -244,6 +254,7 @@ class TaskEdit extends Component {
 
               {/* Value Column */}
               <Grid container sx={{ mx: '1%', width: '58%', height: '100%', backgroundColor: '#' }}>
+
                 {/* Assignee */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
                   alignItems="center">
@@ -261,7 +272,6 @@ class TaskEdit extends Component {
                         <MenuItem key={user.username} value={user.username}>{user.username}</MenuItem>
                       ))
                     }
-
                   </Select>
                 </Grid>
 
@@ -296,7 +306,7 @@ class TaskEdit extends Component {
                       width: '8ch',
                       border: 0,
                       textAlign: 'left',
-                      backgroundColor: '#eeeeee'
+                      backgroundColor: '#e0e0e0'
                     }}
                     value={this.state.type}
                     onChange={event => this.setState({ type: event.target.value })}
@@ -319,7 +329,7 @@ class TaskEdit extends Component {
                       width: '12ch',
                       border: 0,
                       textAlign: 'left',
-                      backgroundColor: '#eeeeee'
+                      backgroundColor: '#e0e0e0'
                     }}
                     value={this.state.status}
                     onChange={event => this.setState({ status: event.target.value })}
@@ -349,24 +359,25 @@ class TaskEdit extends Component {
                     onChange={this.handleSetPriority}
                     required
                   >
-                    <option value={'critical'} style={{ backgroundColor: '#eeeeee' }}>Critical</option>
-                    <option value={'important'} style={{ backgroundColor: '#eeeeee' }}>Important</option>
-                    <option value={'normal'} style={{ backgroundColor: '#eeeeee' }}>Normal</option>
-                    <option value={'low'} style={{ backgroundColor: '#eeeeee' }}>Low</option>
+                    <option value={'critical'} style={{ backgroundColor: '#e0e0e0' }}>Critical</option>
+                    <option value={'important'} style={{ backgroundColor: '#e0e0e0' }}>Important</option>
+                    <option value={'normal'} style={{ backgroundColor: '#e0e0e0' }}>Normal</option>
+                    <option value={'low'} style={{ backgroundColor: '#e0e0e0' }}>Low</option>
                   </select>
                 </Grid>
+
                 {/* Create Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
                   alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw' }}>{new Date(this.state.createdAt).toLocaleString()}</Typography>
+                    sx={{ fontSize: '1vw', backgroundColor: '#e0e0e0' }}>{new Date(this.state.createdAt).toLocaleString()}</Typography>
                 </Grid>
 
                 {/* Last Update Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
                   alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw' }}>{new Date(this.state.lastUpdatedAt).toLocaleString()}</Typography>
+                    sx={{ fontSize: '1vw', backgroundColor: '#e0e0e0' }}>{new Date(this.state.lastUpdatedAt).toLocaleString()}</Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -400,11 +411,15 @@ class TaskEdit extends Component {
                 {/* Current Comments */}
                 <Grid item sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
                   {
-                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((comment) => {
-                      return <Grid item sx={{ mx: 'auto', width: '100%' }}><Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>Comment-{comment}</Typography></Grid>
+                    this.state.comments.map((comment) => {
+                      return <Grid item sx={{ mx: 'auto', width: '100%' }}>
+                        <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>{comment.content}</Typography>
+                        <Typography sx={{ mx: '5%', fontSize: '0.8vw', }} style={{ textAlign: 'right' }}>-made by {comment.user.username} at {new Date(comment.createdAt).toLocaleString()}</Typography>
+                      </Grid>
                     })
                   }
                 </Grid>
+
                 {/* Add Comment */}
                 {/* Title */}
                 <Grid container sx={{ mx: 'auto', width: '95%', height: '10%', backgroundColor: 'e8f5e9', overflow: 'auto' }} direction="row"
@@ -423,7 +438,7 @@ class TaskEdit extends Component {
                       label="comment"
                       sx={{ mx: '5%', width: '90%' }}
                       placeholder="add a comment..."
-                      value={this.newComment}
+                      value={this.state.newComment}
                       onChange={(event) => {
                         const input = event.target.value
                         this.setState({ newComment: input })
