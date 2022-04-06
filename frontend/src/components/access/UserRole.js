@@ -20,7 +20,7 @@ function UserRole (props) {
       <FormControl sx={{ mx: '3vw', width: '20vw' }}>
         <InputLabel>Access</InputLabel>
         <Select defaultValue={{ role: `${props.role}` }} value={access} label="Access" onChange={handleChangeAccess}
-                sx={{ height: '8vh' }}>
+                sx={{ height: '8vh' }} disabled={props.disableEdit}>
           <MenuItem value={'Admin'}>Admin</MenuItem>
           <MenuItem value={'Editor'}>Editor</MenuItem>
           <MenuItem value={'Viewer'}>Viewer</MenuItem>

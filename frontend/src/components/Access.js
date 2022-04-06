@@ -6,6 +6,7 @@ import SearchBar from './access/SearchBar'
 import List from '@mui/material/List'
 import Modal from './access/Modal'
 import UserRole from './access/UserRole'
+import { isAdmin } from '../hooks/useScope'
 
 export default function Access () {
   const [workspaceId, setWorkspaceId] = React.useState(0)
@@ -70,7 +71,7 @@ export default function Access () {
             style={{ backgroundColor: '', justifyContent: 'left' }}>
         <List sx={{ my: '2vh', width: '60vw', height: '10vh' }}>
           {people.map((user) => (
-            <UserRole key={user.name} name={user.name} role={user.role}/>
+            <UserRole key={user.name} name={user.name} role={user.role} disableEdit={!isAdmin(workspaceId)}/>
           ))}
         </List>
       </Grid>

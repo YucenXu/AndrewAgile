@@ -134,7 +134,7 @@ def workspace_users(request, wid):
     # viewer permissions generated ad-hoc
     common_users = User.objects.exclude(username__in=special_users)
     common_perms = [Permission(user=user, role=UserRole.VIEWER) for user in common_users]
-
+    # concatenate all permissions into payload
     serializer = PermissionSerializer(special_perms + common_perms, many=True)
     return JsonResponse(serializer.data, safe=False)
 

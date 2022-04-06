@@ -20,9 +20,7 @@ function useAuth () {
   const [auth, setAuth] = useState(initialAuth.auth)
 
   useEffect(() => {
-    axios.get('/api/userinfo')
-    .then(resp => setAuth(resp.data))
-    .catch(() => setAuth({ ...initialAuth.auth }))
+    axios.get('/api/userinfo').then(resp => setAuth(resp.data)).catch(() => setAuth({ ...initialAuth.auth }))
   }, [])
 
   return { auth, setAuth }
