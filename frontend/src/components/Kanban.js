@@ -14,7 +14,7 @@ import TaskCreate from './kanban/TaskCreate'
 import ProjectCreate from './kanban/ProjectCreate'
 import useInterval from '../hooks/useInterval'
 import axios from 'axios'
-import { canModify } from '../hooks/useScope'
+import { canModifyData } from '../hooks/useScope'
 
 export default function Kanban() {
   // Call API to GET
@@ -194,7 +194,7 @@ export default function Kanban() {
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
           style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateProject} disabled={!canModify(workspaceId)}>Create</Button>
+            onClick={handleClickCreateProject} disabled={!canModifyData(workspaceId)}>Create</Button>
         </Grid>
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
           style={{ backgroundColor: '#', alignItems: 'left' }}></Grid>
@@ -208,7 +208,7 @@ export default function Kanban() {
         <Grid item sx={{ width: '44.5vw' }}></Grid>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateTask} disabled={projectId === 0 || !canModify(workspaceId)}>Create</Button>
+            onClick={handleClickCreateTask} disabled={projectId === 0 || !canModifyData(workspaceId)}>Create</Button>
         </Grid>
       </Grid>
 
@@ -252,7 +252,7 @@ export default function Kanban() {
 
       {/* Task Edit Popup Dialog */}
       <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} setTaskId={setTaskId} curProject={curProject}
-        allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={!canModify(workspaceId)}></TaskEdit>
+        allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={!canModifyData(workspaceId)}></TaskEdit>
 
       {/* Task Create Popup Dialog */}
       <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}

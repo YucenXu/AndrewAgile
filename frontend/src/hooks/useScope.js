@@ -37,12 +37,12 @@ export function ScopeConsumer () {
   return useContext(scopeContext)
 }
 
-export function canModify (workspaceId) {
+export function canModifyData (workspaceId) {
   const { admin, editor } = ScopeConsumer()
   return admin.includes(workspaceId) || editor.includes(workspaceId)
 }
 
-export function isAdmin (workspaceId) {
+export function canGrantPerm (workspaceId) {
   const { admin } = ScopeConsumer()
   return admin.includes(workspaceId)
 }
