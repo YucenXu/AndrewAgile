@@ -29,7 +29,8 @@ class TaskEdit extends Component {
       priorityColor: "",
       createdAt: "",
       lastUpdatedAt: "",
-      description: ""
+      description: "",
+      newComment: "",
     }
   }
 
@@ -85,6 +86,14 @@ class TaskEdit extends Component {
       this.props.setRefresh(this.props.refresh + 1)
       this.clearState()
     })
+  }
+
+  handleAddComment = (event) => {
+    event.preventDefault()
+    const payload = { "content": this.state.newComment }
+    // axios.put('/api/task/' + this.props.taskId + "comments", payload).catch(err => {
+    //   // Todo
+    // })
   }
 
   handleSetPriority = (event) => {
@@ -164,7 +173,7 @@ class TaskEdit extends Component {
         </Grid>
 
         <Box component="form" onSubmit={this.handleSaveTask}
-          sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
+          sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
           {/* Task Title */}
           <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
             direction="row" alignItems="center">
@@ -188,7 +197,6 @@ class TaskEdit extends Component {
           </Grid>
 
           {/* Task Info */}
-
           <Grid container sx={{ width: '60vw', height: '53vh', backgroundColor: '#' }}>
 
             {/* Detail */}
@@ -197,9 +205,9 @@ class TaskEdit extends Component {
               width: '48%',
               height: '100%',
               border: 2,
-              borderColor: '#1976d2',
+              borderColor: '#eeeeee',
               borderRadius: 1,
-              backgroundColor: '#',
+              backgroundColor: '#eeeeee',
             }}>
               {/* Index Column */}
               <Grid container
@@ -341,10 +349,10 @@ class TaskEdit extends Component {
                     onChange={this.handleSetPriority}
                     required
                   >
-                    <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
-                    <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
-                    <option value={'normal'} style={{ backgroundColor: '#e3f2fd' }}>Normal</option>
-                    <option value={'low'} style={{ backgroundColor: '#e3f2fd' }}>Low</option>
+                    <option value={'critical'} style={{ backgroundColor: '#eeeeee' }}>Critical</option>
+                    <option value={'important'} style={{ backgroundColor: '#eeeeee' }}>Important</option>
+                    <option value={'normal'} style={{ backgroundColor: '#eeeeee' }}>Normal</option>
+                    <option value={'low'} style={{ backgroundColor: '#eeeeee' }}>Low</option>
                   </select>
                 </Grid>
                 {/* Create Time */}
@@ -363,9 +371,11 @@ class TaskEdit extends Component {
               </Grid>
             </Grid>
 
-            {/* Description */}
-            <Grid container sx={{ width: '48%', height: '100%', backgroundColor: '#' }}>
-              <Grid container sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#' }}>
+            {/* Description and Comments */}
+            <Grid sx={{ width: '48%', height: '100%', backgroundColor: 'fff3e0' }}>
+              {/* Description */}
+              <Grid container sx={{ width: '100%', height: '30%', backgroundColor: 'ffebee' }}>
+                {/* <Grid container sx={{ mx: 'auto', width: '95%', height: '50%', backgroundColor: '#e0f7fa' }}> */}
                 <TextField
                   name="description"
                   id="description"
@@ -374,29 +384,58 @@ class TaskEdit extends Component {
                   placeholder="Task Description..."
                   value={this.state.description}
                   onChange={event => this.setState({ description: event.target.value })}
-                  rows={5}
+                  rows={2}
                   multiline
                   focused
                 />
+                {/* </Grid> */}
               </Grid>
 
-              {/* Activity */}
-              <Grid container sx={{ mx: 'auto', width: '95%', height: '40%', backgroundColor: '#' }}>
-                <Typography sx={{ mx: '5%', fontSize: '1.5vw', fontWeight: 'bold', color: '#1976d2' }}>
-                  Activity
-                </Typography>
-
-                <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
-                  Nianyi assigned this task to Peng -09:25 AM 02/25/22
-                </Typography>
-
-                <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
-                  Peng started working on this task. -12:43 PM 02/26/22
-                </Typography>
-
-                <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>
-                  Peng changed priority to level 2. -02:12 PM 02/26/22
-                </Typography>
+              {/* Comments */}
+              <Grid container sx={{ width: '100%', height: '70%', backgroundColor: 'e1f5fe' }}>
+                {/* Comment Title */}
+                <Grid item sx={{ mx: 'auto', width: '95%', height: '15%', backgroundColor: 'e8f5e9', overflow: 'auto' }}>
+                  <Typography sx={{ mx: '5%', fontSize: '1.5vw', fontWeight: 'bold', color: '#1976d2' }}>Comments</Typography>
+                </Grid>
+                {/* Current Comments */}
+                <Grid item sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
+                  {
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((comment) => {
+                      return <Grid item sx={{ mx: 'auto', width: '100%' }}><Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>Comment-{comment}</Typography></Grid>
+                    })
+                  }
+                </Grid>
+                {/* Add Comment */}
+                {/* Title */}
+                <Grid container sx={{ mx: 'auto', width: '95%', height: '10%', backgroundColor: 'e8f5e9', overflow: 'auto' }} direction="row"
+                  alignItems="center">
+                  <Grid item sx={{ my: 'auto', width: '100%' }}>
+                    <Typography sx={{ mx: '5%', fontSize: '1vw', color: '#1976d2' }}>Add a comment</Typography>
+                  </Grid>
+                </Grid>
+                <Grid container sx={{ mx: 'auto', width: '95%', height: '20%', backgroundColor: 'fff3e0', overflow: 'auto' }}>
+                  {/* Comment Input */}
+                  <Grid item sx={{ mx: 'auto', width: '80%', height: '100%', backgroundColor: 'e1f5fe', overflow: 'auto' }}>
+                    <InputBase
+                      variant="outlined"
+                      name="comment"
+                      id="comment"
+                      label="comment"
+                      sx={{ mx: '5%', width: '90%' }}
+                      placeholder="add a comment..."
+                      value={this.newComment}
+                      onChange={(event) => {
+                        const input = event.target.value
+                        this.setState({ newComment: input })
+                      }}
+                      inputProps={{ style: { textAlign: 'left', fontSize: '1vw', border: "1px solid #9e9e9e" } }}
+                    />
+                  </Grid>
+                  {/* Button */}
+                  <Grid item sx={{ mx: 'auto', width: '20%', height: '100%', backgroundColor: 'ffebee', overflow: 'auto' }}>
+                    <button onClick={this.handleAddComment} style={{ fontSize: "1vw" }}>add</button>
+                  </Grid>
+                </Grid>
 
               </Grid>
             </Grid>

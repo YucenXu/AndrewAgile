@@ -71,7 +71,7 @@ export default function ProjectCreate(props) {
       </Grid>
 
       <Box component="form" onSubmit={handleSaveProject}
-        sx={{ mb: '0%', width: '50vw', height: '70vh', backgroundColor: '#eeeeee' }}>
+        sx={{ mb: '0%', width: '50vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
         {/* Workspace Info */}
         <Grid container sx={{ mb: '0%', width: '50vw', height: '10vh', backgroundColor: '#' }}
           direction="row" alignItems="center">
@@ -94,7 +94,7 @@ export default function ProjectCreate(props) {
             width: '100%',
             height: '30%',
             // border: 2,
-            borderColor: '#1976d2',
+            borderColor: '#',
             borderRadius: 1,
             backgroundColor: '#',
           }}>

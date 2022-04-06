@@ -92,7 +92,7 @@ export default function TaskCreate(props) {
       </Grid>
 
       <Box component="form" onSubmit={handleSaveTask}
-        sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
+        sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
         {/* Project Info */}
         <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
           direction="row" alignItems="center">
@@ -115,9 +115,9 @@ export default function TaskCreate(props) {
             width: '48%',
             height: '100%',
             border: 2,
-            borderColor: '#1976d2',
+            borderColor: '#eeeeee',
             borderRadius: 1,
-            backgroundColor: '#',
+            backgroundColor: '#eeeeee',
           }}>
             {/* Index Column */}
             <Grid container
