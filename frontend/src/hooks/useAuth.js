@@ -8,6 +8,7 @@ export const initialAuth = {
     email: '',
     firstname: '',
     lastname: '',
+    dateJoined: '',
   },
   setAuth: () => {
   },

@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'agileapp.middlewares.DeveloperAccountMiddleware',
+    'agileapp.middlewares.UserPermissionMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'

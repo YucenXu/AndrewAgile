@@ -1,7 +1,11 @@
+from collections import defaultdict
+
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods, require_GET, require_POST
 from django.contrib.auth.decorators import login_required
@@ -10,8 +14,8 @@ from rest_framework.parsers import JSONParser
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
 
-from agileapp.serializers import UserSerializer, WorkspaceSerializer, ProjectSerializer, TaskSerializer, \
-    CommentSerializer, TaskDetailSerializer
+from agileapp.serializers import UserSerializer, WorkspaceSerializer, PermissionSerializer, \
+    ProjectSerializer, TaskSerializer, CommentSerializer, TaskDetailSerializer
 
 
 @login_required
@@ -40,25 +44,6 @@ def user_info(request):
 
 @login_required
 @require_GET
-def all_users(request):
-    users = User.objects.all()
-    serializer = UserSerializer(users, many=True)
-    return JsonResponse(serializer.data, safe=False)
-
-
-@login_required
-@require_GET
-def user_api(request, uid):
-    user = User.objects.filter(username=uid)
-    if user:
-        serializer = UserSerializer(user[0])
-        return JsonResponse(serializer.data)
-    else:
-        return HttpResponse(status=404)
-
-
-@login_required
-@require_GET
 def all_workspaces(request):
     workspaces = Workspace.objects.all()
     serializer = WorkspaceSerializer(workspaces, many=True)
@@ -74,6 +59,80 @@ def workspace_api(request, wid):
         return JsonResponse(serializer.data)
     else:
         return HttpResponse(status=404)
+
+
+@login_required
+@require_GET
+def user_scope(request):
+    admin_wids = list(Permission.objects.filter(user=request.user, role=UserRole.ADMIN)
+                      .values_list("workspace__id", flat=True))
+    editor_wids = list(Permission.objects.filter(user=request.user, role=UserRole.EDITOR)
+                       .values_list("workspace__id", flat=True))
+    viewer_wids = list(Workspace.objects.exclude(id__in=admin_wids + editor_wids)
+                       .values_list("id", flat=True))
+    payload = {
+        "admin": admin_wids,
+        "editor": editor_wids,
+        "viewer": viewer_wids,
+    }
+    return JsonResponse(payload)
+
+
+@login_required
+@require_http_methods(["GET", "PUT"])
+def workspace_users(request, wid):
+    if request.method == "PUT":
+        role_choices = [choice[0] for choice in UserRole.choices]
+        data = JSONParser().parse(request)
+        errors = {}
+        user_roles = defaultdict(list)
+        if not Workspace.objects.filter(id=wid):
+            errors["workspaceId"] = "Object with this ID does not exist."
+        for username, role in data.items():
+            if str(role).lower() not in role_choices:
+                errors[username] = "Json value should be UserRole type."
+            else:
+                role = getattr(UserRole, role.upper())
+                user = User.objects.filter(username=username)
+                if not user:
+                    errors[username] = "Object with this ID does not exist."
+                else:
+                    user_roles[role].append(user[0])
+        if errors:
+            return JsonResponse(errors, status=400)
+        else:
+            workspace = Workspace.objects.get(id=wid)
+            perm_query = Permission.objects.select_for_update().filter(workspace=workspace)
+            with transaction.atomic():
+                for role in (UserRole.ADMIN, UserRole.EDITOR):
+                    for user in user_roles[role]:
+                        perm = perm_query.filter(user=user)
+                        if not perm:
+                            perm = Permission(
+                                workspace=workspace,
+                                user=user,
+                                role=role,
+                                granted_by=request.user,
+                            )
+                        else:
+                            perm = perm[0]
+                            perm.role = role
+                            perm.granted_by = request.user
+                            perm.last_updated_at = timezone.now()
+                        perm.save()
+                for user in user_roles[UserRole.VIEWER]:
+                    perm = perm_query.filter(user=user)
+                    perm.delete()
+
+    # admin and editor permissions in DB
+    special_perms = list(Permission.objects.filter(workspace__id=wid))
+    special_users = [perm.user.username for perm in special_perms]
+    # viewer permissions generated ad-hoc
+    common_users = User.objects.exclude(username__in=special_users)
+    common_perms = [Permission(user=user, role=UserRole.VIEWER) for user in common_users]
+
+    serializer = PermissionSerializer(special_perms + common_perms, many=True)
+    return JsonResponse(serializer.data, safe=False)
 
 
 @login_required

@@ -25,57 +25,26 @@ Response:
       "username": "userA",
       "email": "usera@gmail.com",
       "firstname": "Afirst",
-      "lastname": "Alast"
+      "lastname": "Alast",
+      "dateJoined": "2022-04-05T17:04:34.326932-04:00"
   }
   ```
 
 + 401
 
-### Get all users
+## Permission API
 
-Path: /api/users
+### User scope
 
-Method: GET
 
-Response: 200
 
-```json
-[
-    {
-        "username": "userA",
-        "email": "usera@gmail.com",
-        "firstname": "Afirst",
-        "lastname": "Alast"
-    },
-    {
-        "username": "userB",
-        "email": "userb@gmail.com",
-        "firstname": "Bfirst",
-        "lastname": "Blast"
-    }
-]
-```
+### Get all users of a workspace
 
-### Get user by ID (username)
 
-Path: /api/user/\<str:uid\>
 
-Method: GET
+### Update user permissions
 
-Response:
 
-+ 200
-
-  ```json
-  {
-      "username": "userA",
-      "email": "usera@gmail.com",
-      "firstname": "Afirst",
-      "lastname": "Alast"
-  }
-  ```
-
-+ 404
 
 ## Workspace API
 
@@ -149,7 +118,8 @@ Response: 200
             "username": "userF",
             "email": "userf@gmail.com",
             "firstname": "Ffirst",
-            "lastname": "Flast"
+            "lastname": "Flast",
+            "dateJoined": "2022-04-05T17:04:18.811803-04:00"
         },
         "createdAt": "2022-03-27T22:52:32.227527-04:00",
         "lastUpdatedAt": "2022-03-27T22:52:32.227529-04:00"
@@ -163,7 +133,8 @@ Response: 200
             "username": "userG",
             "email": "userg@gmail.com",
             "firstname": "Gfirst",
-            "lastname": "Glast"
+            "lastname": "Glast",
+            "dateJoined": "2022-04-05T17:04:18.811803-04:00"
         },
         "createdAt": "2022-03-27T22:52:32.227972-04:00",
         "lastUpdatedAt": "2022-03-27T22:52:32.227973-04:00"
@@ -200,7 +171,8 @@ Response:
           "username": "userA",
           "email": "usera@gmail.com",
           "firstname": "Afirst",
-          "lastname": "Alast"
+          "lastname": "Alast",
+          "dateJoined": "2022-04-05T17:04:18.811803-04:00"
       },
       "createdAt": "2022-04-01T22:31:29.895845-04:00",
       "lastUpdatedAt": "2022-04-01T22:31:29.895858-04:00"
@@ -236,7 +208,8 @@ Response:
           "username": "userF",
           "email": "userf@gmail.com",
           "firstname": "Ffirst",
-          "lastname": "Flast"
+          "lastname": "Flast",
+          "dateJoined": "2022-04-05T17:04:18.811803-04:00"
       },
       "createdAt": "2022-03-27T22:52:32.227527-04:00",
       "lastUpdatedAt": "2022-03-27T22:52:32.227529-04:00"
@@ -274,7 +247,8 @@ Response:
           "username": "userF",
           "email": "userf@gmail.com",
           "firstname": "Ffirst",
-          "lastname": "Flast"
+          "lastname": "Flast",
+          "dateJoined": "2022-04-05T17:04:18.811803-04:00"
       },
       "createdAt": "2022-03-27T22:52:32.227527-04:00",
       "lastUpdatedAt": "2022-03-27T22:52:32.227529-04:00"
@@ -415,7 +389,8 @@ Response:
               "username": "userF",
               "email": "userf@gmail.com",
               "firstname": "Ffirst",
-              "lastname": "Flast"
+              "lastname": "Flast",
+              "dateJoined": "2022-04-05T17:04:18.811803-04:00"
           },
           "createdAt": "2022-03-27T22:52:32.227527-04:00",
           "lastUpdatedAt": "2022-03-27T22:52:32.227529-04:00"
@@ -424,13 +399,15 @@ Response:
           "username": "userD",
           "email": "userd@gmail.com",
           "firstname": "Dfirst",
-          "lastname": "Dlast"
+          "lastname": "Dlast",
+          "dateJoined": "2022-04-05T17:04:18.811803-04:00"
       },
       "reporter": {
           "username": "userE",
           "email": "usere@gmail.com",
           "firstname": "Efirst",
-          "lastname": "Elast"
+          "lastname": "Elast",
+          "dateJoined": "2022-04-05T17:04:18.811803-04:00"
       },
       "createdAt": "2022-03-27T22:52:32.231983-04:00",
       "lastUpdatedAt": "2022-03-27T22:52:32.231984-04:00",
@@ -442,7 +419,8 @@ Response:
                   "username": "userB",
                   "email": "userb@gmail.com",
                   "firstname": "Bfirst",
-                  "lastname": "Blast"
+                  "lastname": "Blast",
+                  "dateJoined": "2022-04-05T17:04:18.811803-04:00"
               },
               "content": "This is a task comment",
               "createdAt": "2022-03-27T22:52:32.256010-04:00",
@@ -455,7 +433,8 @@ Response:
                   "username": "userB",
                   "email": "userb@gmail.com",
                   "firstname": "Bfirst",
-                  "lastname": "Blast"
+                  "lastname": "Blast",
+                  "dateJoined": "2022-04-05T17:04:18.811803-04:00"
               },
               "content": "This is a task comment",
               "createdAt": "2022-03-27T22:52:32.256339-04:00",
@@ -553,7 +532,8 @@ Response:
           "username": "userA",
           "email": "usera@gmail.com",
           "firstname": "Afirst",
-          "lastname": "Alast"
+          "lastname": "Alast",
+          "dateJoined": "2022-04-05T17:04:18.811803-04:00"
       },
       "content": "my comment",
       "createdAt": "2022-04-01T22:51:27.687439-04:00",
@@ -595,7 +575,8 @@ Response:
           "username": "userA",
           "email": "usera@gmail.com",
           "firstname": "Afirst",
-          "lastname": "Alast"
+          "lastname": "Alast",
+          "dateJoined": "2022-04-05T17:04:18.811803-04:00"
       },
       "content": "edited comment",
       "createdAt": "2022-04-05T17:45:46.250770-04:00",
@@ -619,3 +600,4 @@ Path: /api/comment/\<int:cid\>
 Method: DELETE
 
 Response: 200
+

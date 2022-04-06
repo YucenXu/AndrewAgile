@@ -96,10 +96,11 @@ class MutableModelSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     firstname = serializers.CharField(source='first_name')
     lastname = serializers.CharField(source='last_name')
+    dateJoined = serializers.DateTimeField(source='date_joined')
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'firstname', 'lastname']
+        fields = ['username', 'email', 'firstname', 'lastname', 'dateJoined']
 
 
 class WorkspaceSerializer(serializers.ModelSerializer):
@@ -109,6 +110,18 @@ class WorkspaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workspace
         fields = ['id', 'name', 'description', 'createdAt', 'lastUpdatedAt']
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
+    firstname = serializers.CharField(source='user.first_name')
+    lastname = serializers.CharField(source='user.last_name')
+    dateJoined = serializers.DateTimeField(source='user.date_joined')
+
+    class Meta:
+        model = Permission
+        fields = ['role', 'username', 'email', 'firstname', 'lastname', 'dateJoined']
 
 
 class ProjectSerializer(MutableModelSerializer):

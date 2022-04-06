@@ -10,7 +10,7 @@ class Workspace(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Workspace: id=%d, name=%s" % (self.id, self.name)
+        return "id=%d, name=%s" % (self.id, self.name)
 
 
 class UserRole(models.TextChoices):
@@ -20,15 +20,17 @@ class UserRole(models.TextChoices):
 
 
 class Permission(models.Model):
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     role = models.CharField(choices=UserRole.choices, max_length=6)
+    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='granted_by')
     created_at = models.DateTimeField(default=timezone.now)
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Permission: workspace=%s, user=%s, role=%s" % (
-            self.workspace.name, self.user, self.role,
+        return "workspace=%s, user=%s, role=%s" % (
+            self.workspace.name if self.workspace else None,
+            self.user, self.role,
         )
 
 
@@ -41,7 +43,7 @@ class Project(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Project: id=%d, name=%s, workspace=%s" % (
+        return "id=%d, name=%s, workspace=%s" % (
             self.id, self.name, self.workspace.name,
         )
 
@@ -79,7 +81,7 @@ class Task(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Task: id=%d, title=%s, project=%s" % (
+        return "id=%d, title=%s, project=%s" % (
             self.id, self.title, self.project.name,
         )
 
@@ -92,6 +94,6 @@ class Comment(models.Model):
     last_updated_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return "Comment: id=%d, task=%s, user=%s" % (
+        return "id=%d, task=%s, user=%s" % (
             self.id, self.task.title, self.user,
         )
