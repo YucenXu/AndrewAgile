@@ -105,24 +105,28 @@ def workspace_users(request, wid):
             perm_query = Permission.objects.select_for_update().filter(workspace=workspace)
             with transaction.atomic():
                 for role in (UserRole.ADMIN, UserRole.EDITOR):
-                    for user in user_roles[role]:
-                        perm = perm_query.filter(user=user)
-                        if not perm:
-                            perm = Permission(
-                                workspace=workspace,
-                                user=user,
-                                role=role,
-                                granted_by=request.user,
-                            )
-                        else:
-                            perm = perm[0]
-                            perm.role = role
-                            perm.granted_by = request.user
-                            perm.last_updated_at = timezone.now()
-                        perm.save()
-                for user in user_roles[UserRole.VIEWER]:
-                    perm = perm_query.filter(user=user)
-                    perm.delete()
+                    # batch update existing permission entries
+                    exist_perms = perm_query.filter(user__in=user_roles[role])
+                    exist_perms.update(
+                        role=role,
+                        granted_by=request.user,
+                        last_updated_at=timezone.now(),
+                    )
+                    # batch create new permission entries
+                    exist_users = exist_perms.values_list("user__username", flat=True)
+                    new_users = [user for user in user_roles[role] if user.username not in exist_users]
+                    new_perms = [
+                        Permission(
+                            workspace=workspace,
+                            user=user,
+                            role=role,
+                            granted_by=request.user,
+                        ) for user in new_users
+                    ]
+                    Permission.objects.bulk_create(new_perms)
+                # batch delete withdrawn permission entries
+                perms = perm_query.filter(user__in=user_roles[UserRole.VIEWER])
+                perms.delete()
 
     # admin and editor permissions in DB
     special_perms = list(Permission.objects.filter(workspace__id=wid))
