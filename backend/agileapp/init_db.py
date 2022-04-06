@@ -1,6 +1,8 @@
 import random
 
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.db.utils import IntegrityError
 
 from agileapp.models import Workspace, Permission, Project, Task, Comment
@@ -13,91 +15,97 @@ tasks = []
 
 
 def init_users():
-    for i in range(1, 8):
-        user = User.objects.create_user(
+    new_users = [
+        User(
             username="testuser-" + str(i),
-            password="testuser-" + str(i),
+            password=make_password("testuser-" + str(i)),
             email="testuser-" + str(i) + "@gmail.com",
             first_name="Firstname-" + str(i),
             last_name="Lastname-" + str(i),
-        )
-        user.save()
-        users.append(user)
+            is_active=True,
+        ) for i in range(1, 9)
+    ]
+    User.objects.bulk_create(new_users)
+    users.extend(new_users[:4])
 
 
 def init_workspaces():
-    for name in ("Workspace-A", "Workspace-B"):
-        workspace = Workspace(
-            name=name,
-            description="This is the workspace for " + name,
-        )
-        workspace.save()
-        workspaces.append(workspace)
+    new_workspaces = [
+        Workspace(
+            name="Workspace-" + c,
+            description="This is the workspace description",
+        ) for c in "AB"
+    ]
+    Workspace.objects.bulk_create(new_workspaces)
+    workspaces.extend(new_workspaces)
 
 
 def init_permissions():
-    for workspace in workspaces:
-        for user in users:
-            role = random.choice(UserRole.choices)[0]
-            if role != UserRole.VIEWER:
-                perm = Permission(
-                    workspace=workspace,
-                    user=user,
-                    role=role,
-                )
-                perm.save()
+    new_perms = [
+        Permission(
+            workspace=workspace,
+            user=user,
+            role=random.choice([UserRole.ADMIN, UserRole.EDITOR]),
+        ) for workspace in workspaces
+        for user in users
+    ]
+    Permission.objects.bulk_create(new_perms)
 
 
 def init_projects():
-    for workspace in workspaces:
-        for c in "ABC":
-            project = Project(
-                name="Project-" + workspace.name[-1] + c,
-                description="This is the project description",
-                workspace=workspace,
-                owner=random.choice(users),
-            )
-            project.save()
-            projects.append(project)
+    new_projects = [
+        Project(
+            name="Project-" + workspace.name[-1] + c,
+            description="This is the project description",
+            workspace=workspace,
+            owner=random.choice(users),
+        ) for workspace in workspaces
+        for c in "ABC"
+    ]
+    Project.objects.bulk_create(new_projects)
+    projects.extend(new_projects)
 
 
 def init_tasks():
-    for project in projects:
-        for i in range(random.randint(1, 20)):
-            task = Task(
-                type=random.choice(TaskType.choices)[0],
-                priority=random.choice(TaskPriority.choices)[0],
-                status=random.choice(TaskStatus.choices)[0],
-                title="Task-" + project.name[-2:] + chr(65 + i),
-                description="This is the task description",
-                project=project,
-                assignee=random.choice(users),
-                reporter=random.choice(users),
-            )
-            task.save()
-            tasks.append(task)
+    new_tasks = [
+        Task(
+            type=random.choice(TaskType.choices)[0],
+            priority=random.choice(TaskPriority.choices)[0],
+            status=random.choice(TaskStatus.choices)[0],
+            title="Task-" + project.name[-2:] + chr(65 + i),
+            description="This is the task description",
+            project=project,
+            assignee=random.choice(users),
+            reporter=random.choice(users),
+        ) for project in projects
+        for i in range(random.randint(0, 20))
+    ]
+    Task.objects.bulk_create(new_tasks)
+    tasks.extend(new_tasks)
 
 
 def init_comments():
-    for task in tasks:
-        for i in range(random.randint(0, 3)):
-            comment = Comment(
-                content="This is a task comment",
-                task=task,
-                user=random.choice(users),
-            )
-            comment.save()
+    new_comments = [
+        Comment(
+            content="This is the task comment",
+            task=task,
+            user=random.choice(users),
+        ) for task in tasks
+        for _ in range(random.randint(0, 3))
+    ]
+    Comment.objects.bulk_create(new_comments)
 
 
 # populate database with dummy data
 try:
-    init_users()
-    init_workspaces()
-    init_permissions()
-    init_projects()
-    init_tasks()
-    init_comments()
-    print("=== Init Database Successful! ===")
+    with transaction.atomic():
+        init_users()
+        init_workspaces()
+        init_permissions()
+        init_projects()
+        init_tasks()
+        init_comments()
+    print("=== Init Database Successful ===")
     exit(0)
 except IntegrityError as e:
     print("=== Init Database Failed: already initialized ===")

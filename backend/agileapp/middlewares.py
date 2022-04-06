@@ -1,5 +1,5 @@
 import re
-from django.http import HttpResponse
+from django.http import JsonResponse
 
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
@@ -32,7 +32,6 @@ class DeveloperAccountMiddleware:
 class UserPermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
         self._perm_url_pattern = re.compile("^/api/workspace/[0-9]+/users$")
 
     def __call__(self, request):
@@ -42,35 +41,33 @@ class UserPermissionMiddleware:
         if request.method in ("POST", "PUT", "DELETE"):
             workspace_id = self._parse_workspace_id(view_kwargs)
             if workspace_id and request.user.is_authenticated:
-                perm = Permission.objects.filter(workspace__id=workspace_id, user=request.user)
-                if not perm:
-                    # only editors and admins can modify database models
-                    return HttpResponse(status=403)
-                elif self._perm_url_pattern.match(request.path) and perm[0].role != UserRole.ADMIN:
-                    # only admins are allowed to grant new permissions
-                    return HttpResponse(status=403)
+                perm = Permission.objects.filter(workspace__id=workspace_id, user=request.user).first()
+                if self._perm_url_pattern.match(request.path) and (not perm or perm.role != UserRole.ADMIN):
+                    error = {"error": "Only admins can grant user permissions."}
+                    return JsonResponse(error, status=403)
+                elif not perm:
+                    error = {"error": "Only admins and editors can modify backend data."}
+                    return JsonResponse(error, status=403)
 
         # continue to call view functions
         return None
 
     def _parse_workspace_id(self, view_kwargs):
         wid = None
-
         if 'wid' in view_kwargs:
-            workspace = Workspace.objects.filter(id=view_kwargs['wid'])
+            workspace = Workspace.objects.filter(id=view_kwargs['wid']).first()
             if workspace:
-                wid = workspace[0].id
+                wid = workspace.id
         elif 'pid' in view_kwargs:
-            project = Project.objects.filter(id=view_kwargs['pid'])
+            project = Project.objects.filter(id=view_kwargs['pid']).first()
             if project:
-                wid = project[0].workspace.id
+                wid = project.workspace.id
         elif 'tid' in view_kwargs:
-            task = Task.objects.filter(id=view_kwargs['tid'])
+            task = Task.objects.filter(id=view_kwargs['tid']).first()
             if task:
-                wid = task[0].project.workspace.id
+                wid = task.project.workspace.id
         elif 'cid' in view_kwargs:
-            comment = Comment.objects.filter(id=view_kwargs['cid'])
+            comment = Comment.objects.filter(id=view_kwargs['cid']).first()
             if comment:
-                wid = comment[0].task.project.workspace.id
-
+                wid = comment.task.project.workspace.id
         return wid

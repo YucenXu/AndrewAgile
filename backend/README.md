@@ -1,5 +1,19 @@
 # Backend API spec
 
+## API permission check
+
+Unsafe REST API methods such as POST, PUT, DELETE which modidy backend data will have a pre-flight permission check serving as user access control.
+
+Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return 403 directly.
+
+```json
+{
+    "error": "Only admins and editors can modify backend data."
+}
+```
+
+A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions](###Update user permissions) for details.
+
 ## User API
 
 ### User logout
@@ -34,17 +48,126 @@ Response:
 
 ## Permission API
 
-### User scope
+### Get current user scope
 
+Path: /api/userscope
 
+Method: GET
+
+Response: 200
+
+```json
+{
+    "admin": [1, 2],
+    "editor": [3],
+    "viewer": [4, 5]
+}
+```
 
 ### Get all users of a workspace
 
+Path: /api/workspace/\<int:wid\>/users
 
+Method: GET
+
+Response: 200
+
+```json
+[
+    {
+        "role": "admin",
+        "username": "testuser-1",
+        "email": "testuser-1@gmail.com",
+        "firstname": "Firstname-1",
+        "lastname": "Lastname-1",
+        "dateJoined": "2022-04-06T14:21:41.778465-04:00"
+    },
+    {
+        "role": "editor",
+        "username": "testuser-2",
+        "email": "testuser-2@gmail.com",
+        "firstname": "Firstname-2",
+        "lastname": "Lastname-2",
+        "dateJoined": "2022-04-06T14:21:41.825741-04:00"
+    },
+    {
+        "role": "viewer",
+        "username": "testuser-3",
+        "email": "testuser-3@gmail.com",
+        "firstname": "Firstname-3",
+        "lastname": "Lastname-3",
+        "dateJoined": "2022-04-06T14:21:41.872694-04:00"
+    }
+]
+```
 
 ### Update user permissions
 
+Path: /api/workspace/\<int:wid\>/users
 
+Method: PUT
+
+Request:
+
+```python
+# required format: username-role key-value pairs
+{
+    "testuser-1": "admin",
+    "testuser-2": "viewer",
+    "testuser-3": "editor"
+}
+```
+
+Response:
+
++ 200
+
+  ```json
+  [
+      {
+          "role": "admin",
+          "username": "testuser-1",
+          "email": "testuser-1@gmail.com",
+          "firstname": "Firstname-1",
+          "lastname": "Lastname-1",
+          "dateJoined": "2022-04-06T14:21:41.778465-04:00"
+      },
+      {
+          "role": "editor",
+          "username": "testuser-2",
+          "email": "testuser-2@gmail.com",
+          "firstname": "Firstname-2",
+          "lastname": "Lastname-2",
+          "dateJoined": "2022-04-06T14:21:41.825741-04:00"
+      },
+      {
+          "role": "viewer",
+          "username": "testuser-3",
+          "email": "testuser-3@gmail.com",
+          "firstname": "Firstname-3",
+          "lastname": "Lastname-3",
+          "dateJoined": "2022-04-06T14:21:41.872694-04:00"
+      }
+  ]
+  ```
+
++ 400
+
+  ```json
+  {
+      "workspaceId": "Object with this ID does not exist.",
+      "unknown_username": "Object with this ID does not exist.",
+      "correct_username": "Json value should be UserRole type."
+  }
+  ```
+
++ 403
+
+  ```json
+  {
+      "error": "Only admins can grant user permissions."
+  }
+  ```
 
 ## Workspace API
 
@@ -599,5 +722,15 @@ Path: /api/comment/\<int:cid\>
 
 Method: DELETE
 
-Response: 200
+Response: 
+
++ 200
+
++ 403
+
+  ```json
+  {
+      "error": "Only the original commenter can delete."
+  }
+  ```
 

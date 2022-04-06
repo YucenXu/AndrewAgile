@@ -53,9 +53,9 @@ def all_workspaces(request):
 @login_required
 @require_GET
 def workspace_api(request, wid):
-    workspace = Workspace.objects.filter(id=wid)
+    workspace = Workspace.objects.filter(id=wid).first()
     if workspace:
-        serializer = WorkspaceSerializer(workspace[0])
+        serializer = WorkspaceSerializer(workspace)
         return JsonResponse(serializer.data)
     else:
         return HttpResponse(status=404)
@@ -93,11 +93,11 @@ def workspace_users(request, wid):
                 errors[username] = "Json value should be UserRole type."
             else:
                 role = getattr(UserRole, role.upper())
-                user = User.objects.filter(username=username)
+                user = User.objects.filter(username=username).first()
                 if not user:
                     errors[username] = "Object with this ID does not exist."
                 else:
-                    user_roles[role].append(user[0])
+                    user_roles[role].append(user)
         if errors:
             return JsonResponse(errors, status=400)
         else:
@@ -162,9 +162,9 @@ def workspace_projects(request, wid):
 @require_http_methods(["GET", "PUT", "DELETE"])
 def project_api(request, pid):
     if request.method == "GET":
-        project = Project.objects.filter(id=pid)
+        project = Project.objects.filter(id=pid).first()
         if project:
-            serializer = ProjectSerializer(project[0])
+            serializer = ProjectSerializer(project)
             return JsonResponse(serializer.data)
         else:
             return HttpResponse(status=404)
@@ -174,13 +174,13 @@ def project_api(request, pid):
         serializer = ProjectSerializer(data=data)
         if serializer.validate(method='PUT'):
             serializer = ProjectSerializer(serializer.save())
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse(serializer.data)
         else:
             return JsonResponse(serializer.errors, status=400)
     elif request.method == "DELETE":
-        project = Project.objects.filter(id=pid)
+        project = Project.objects.filter(id=pid).first()
         if project:
-            project[0].delete()
+            project.delete()
         return HttpResponse(status=200)
 
 
@@ -206,9 +206,9 @@ def project_tasks(request, pid):
 @require_http_methods(["GET", "PUT", "DELETE"])
 def task_api(request, tid):
     if request.method == "GET":
-        task = Task.objects.filter(id=tid)
+        task = Task.objects.filter(id=tid).first()
         if task:
-            serializer = TaskDetailSerializer(task[0])
+            serializer = TaskDetailSerializer(task)
             return JsonResponse(serializer.data)
         else:
             return HttpResponse(status=404)
@@ -218,13 +218,13 @@ def task_api(request, tid):
         serializer = TaskSerializer(data=data)
         if serializer.validate(method='PUT'):
             serializer = TaskSerializer(serializer.save())
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse(serializer.data)
         else:
             return JsonResponse(serializer.errors, status=400)
     elif request.method == "DELETE":
-        task = Task.objects.filter(id=tid)
+        task = Task.objects.filter(id=tid).first()
         if task:
-            task[0].delete()
+            task.delete()
         return HttpResponse(status=200)
 
 
@@ -252,11 +252,15 @@ def comment_api(request, cid):
         serializer = CommentSerializer(data=data)
         if serializer.validate(method='PUT'):
             serializer = CommentSerializer(serializer.save())
-            return JsonResponse(serializer.data, status=200)
+            return JsonResponse(serializer.data)
         else:
             return JsonResponse(serializer.errors, status=400)
     elif request.method == "DELETE":
-        comment = Comment.objects.filter(id=cid)
+        comment = Comment.objects.filter(id=cid).first()
         if comment:
-            comment[0].delete()
+            if request.user != comment.user:
+                error = {"error": "Only the original commenter can delete."}
+                return JsonResponse(error, status=403)
+            else:
+                comment.delete()
         return HttpResponse(status=200)
