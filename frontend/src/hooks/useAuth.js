@@ -20,13 +20,17 @@ function useAuth () {
   const [auth, setAuth] = useState(initialAuth.auth)
 
   useEffect(() => {
-    axios.get('/api/userinfo').then(resp => setAuth(resp.data)).catch(() => setAuth({ ...initialAuth.auth }))
+    axios.get('/api/userinfo').then(
+      resp => setAuth(resp.data),
+    ).catch(
+      () => setAuth({ ...initialAuth.auth }),
+    )
   }, [])
 
   return { auth, setAuth }
 }
 
-export function AuthProvider ({ children }) {
+export default function AuthProvider ({ children }) {
   const authCxt = useAuth()
   return (
     <authContext.Provider value={authCxt}>
@@ -39,7 +43,7 @@ export function AuthConsumer () {
   return useContext(authContext)
 }
 
-export default function RequireAuth ({ children }) {
+export function RequireAuth ({ children }) {
   const { auth } = AuthConsumer()
   return auth?.username ? children : null
 }

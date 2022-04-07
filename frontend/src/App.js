@@ -1,7 +1,7 @@
 import './App.css'
 import React from 'react'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
-import RequireAuth, { AuthProvider } from './hooks/useAuth'
+import AuthProvider, { RequireAuth } from './hooks/useAuth'
 import Home from './components/Home'
 import Progress from './components/Progress'
 import Access from './components/Access'

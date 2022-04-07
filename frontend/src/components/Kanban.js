@@ -15,148 +15,113 @@ import ProjectCreate from './kanban/ProjectCreate'
 import useInterval from '../hooks/useInterval'
 import axios from 'axios'
 import { canModifyData } from '../hooks/useScope'
+import { capitalizeStr } from '../utils/formats'
 
-export default function Kanban() {
+const initialTasks = {
+  backlog: [],
+  todo: [],
+  inprogress: [],
+  done: [],
+}
+
+export default function Kanban () {
   // Call API to GET
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
-  const [allProjects, setAllProjects] = React.useState([])
-  const [allTasks, setAllTasks] = React.useState([])
   const [allUsers, setAllUsers] = React.useState([])
-  const taskStatus = ['Backlog', 'Todo', 'InProgress', 'Done']
+  const [allProjects, setAllProjects] = React.useState([])
+  const [allTasks, setAllTasks] = React.useState(initialTasks)
 
   // Store user action
   const [workspaceId, setWorkspaceId] = React.useState(0)
   const [curWorkspace, setCurWorkspace] = React.useState({})
   const [projectId, setProjectId] = React.useState(0)
   const [curProject, setCurProject] = React.useState({})
+  const [taskId, setTaskId] = React.useState(0)
 
-  const [editOpen, setEditOpen] = React.useState(false)
   const [createProjectOpen, setCreateProjectOpen] = React.useState(false)
   const [createTaskOpen, setCreateTaskOpen] = React.useState(false)
-  const [taskId, setTaskId] = React.useState(0)
+  const [editTaskOpen, setEditTaskOpen] = React.useState(false)
+
   const [refreshTasks, setRefreshTasks] = React.useState(0)
-  const [refreshProjects, setRefreshProjects] = React.useState(0);
+  const [refreshProjects, setRefreshProjects] = React.useState(0)
 
-  const getallWorkspaces = () => {
-    return axios.get('/api/workspaces').catch(err => {
-      // Todo
-    }).then(response => {
-      setAllWorkspaces(response.data)
-      return response.data
-    })
+  React.useEffect(() => fetchAllWorkspaces(), [])
+  React.useEffect(() => fetchAllProjects(), [workspaceId, refreshProjects])
+  React.useEffect(() => fetchAllUsers(), [workspaceId])
+  React.useEffect(() => fetchAllTasks(), [projectId, refreshTasks])
+
+  useInterval(() => {
+    fetchAllWorkspaces()
+    fetchAllProjects()
+    fetchAllUsers()
+    fetchAllTasks()
+  }, 10000)
+
+  const fetchAllWorkspaces = () => {
+    axios.get('/api/workspaces').then(
+      resp => setAllWorkspaces(resp.data),
+    ).catch(console.error)
   }
 
-  const getAllProjects = () => {
-    return axios.get('/api/workspace/' + workspaceId + '/projects').catch(err => {
-      // Todo
-    }).then(response => {
-      setAllProjects(response.data)
-      return response.data
-
-    })
+  const fetchAllProjects = () => {
+    axios.get('/api/workspace/' + workspaceId + '/projects').then(
+      resp => setAllProjects(resp.data),
+    ).catch(console.error)
   }
 
-  const getAllTasks = () => {
-    return axios.get('/api/project/' + projectId + '/tasks').catch(err => {
-      // Todo
-    }).then(response => {
-      setAllTasks(response.data)
-      return response.data
-    })
+  const fetchAllUsers = () => {
+    axios.get('/api/workspace/' + workspaceId + '/users').then(
+      resp => setAllUsers(resp.data),
+    ).catch(console.error)
   }
 
-  const getAllUsers = () => {
-    return axios.get('/api/workspace/' + workspaceId + '/users').catch(err => {
-      // Todo
-    }).then(response => {
-      setAllUsers(response.data)
-      return response.data
-    })
+  const fetchAllTasks = () => {
+    axios.get('/api/project/' + projectId + '/tasks').then(
+      resp => setAllTasks(resp.data),
+    ).catch(console.error)
   }
 
   const handleChangeWorkspace = (event) => {
-    let id = Number(event.target.value)
+    let id = event.target.value
     setWorkspaceId(id)
-    axios.get('/api/workspace/' + id).catch(err => {
-      // Todo
-    }).then(response => {
-      setCurWorkspace(response.data)
+    axios.get('/api/workspace/' + id).then(resp => {
+      setCurWorkspace(resp.data)
       setProjectId(0)
     })
   }
 
   const handleChangeProject = (event) => {
-    let id = Number(event.target.value)
+    let id = event.target.value
     setProjectId(id)
-    axios.get('/api/project/' + id).catch(err => {
-      // Todo
-    }).then(response => {
-      setCurProject(response.data)
+    axios.get('/api/project/' + id).then(resp => {
+      setCurProject(resp.data)
     })
   }
 
   const handleClickCreateProject = () => {
-    // Todo
     setCreateProjectOpen(true)
   }
 
-  const handleClickTask = (taskId) => () => {
-    // Todo
-    setEditOpen(true)
-    setTaskId(Number(taskId))
-  }
-
   const handleClickCreateTask = () => {
-    // Todo
     setCreateTaskOpen(true)
-    setTaskId(Number(taskId))
+    setTaskId(taskId)
   }
 
-  React.useEffect(() => {
-    async function fetchData() {
-      await getallWorkspaces()
-      await getAllProjects()
-      await getAllUsers()
-    }
-    fetchData()
-  }, [workspaceId])
-
-  React.useEffect(() => {
-    if (projectId != 0) {
-      getAllTasks()
-    } else {
-      setAllTasks([])
-    }
-  }, [projectId])
-
-  React.useEffect(() => {
-    getAllTasks()
-  }, [refreshTasks])
-
-  React.useEffect(() => {
-    getAllProjects()
-  }, [refreshProjects])
-
-  useInterval(() => {
-    async function fetchData() {
-      await getallWorkspaces()
-      await getAllProjects()
-      await getAllTasks()
-      await getAllUsers()
-    }
-    fetchData()
-  }, 10000)
+  const handleClickTask = (taskId) => () => {
+    setEditTaskOpen(true)
+    setTaskId(taskId)
+  }
 
   return (
     <Box>
       {/* Dropdown menus */}
       <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
-        style={{ backgroundColor: '', alignItems: 'left' }}>
+            style={{ backgroundColor: '', alignItems: 'left' }}>
         {/* Workspace Dropdown */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}>
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-            style={{ backgroundColor: '' }}>
+                       style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
             <Select
               labelId="id-select-workspace-label"
@@ -173,9 +138,9 @@ export default function Kanban() {
 
         {/* Project Dropdown */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}>
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-            style={{ backgroundColor: '' }}>
+                       style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-project-label">Project</InputLabel>
             <Select
               labelId="id-select-project-label"
@@ -192,55 +157,55 @@ export default function Kanban() {
 
         {/* Project Create Button */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+              style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateProject} disabled={!canModifyData(workspaceId)}>Create</Button>
+                  onClick={handleClickCreateProject} disabled={!canModifyData(workspaceId)}>Create</Button>
         </Grid>
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}></Grid>
+              style={{ backgroundColor: '#', alignItems: 'left' }}/>
       </Grid>
 
       {/* Search Bar, Create Button */}
       <Grid container sx={{ my: '1vh', mx: 'auto', width: '80vw', height: '6vh' }} style={{ backgroundColor: '' }}>
         <Grid item sx={{ width: '25vw' }}>
-          <SearchBar></SearchBar>
+          <SearchBar/>
         </Grid>
-        <Grid item sx={{ width: '44.5vw' }}></Grid>
+        <Grid item sx={{ width: '44.5vw' }}/>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateTask} disabled={projectId === 0 || !canModifyData(workspaceId)}>Create</Button>
+                  onClick={handleClickCreateTask}
+                  disabled={projectId === 0 || !canModifyData(workspaceId)}>Create</Button>
         </Grid>
       </Grid>
 
       {/* Board */}
       <Grid container sx={{ my: '2vh', mx: 'auto', width: '80vw', height: '60vh' }} style={{ alignItems: 'center' }}>
-        {taskStatus.map((status) => (
+        {Object.keys(initialTasks).map(status => (
           // Column
-          <Paper key={status} sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }} style={{ backgroundColor: '#eaecee' }}>
+          <Paper key={status} sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }}
+                 style={{ backgroundColor: '#eaecee' }}>
             {/* title */}
             <Grid item xs sx={{ mt: '1vh', width: '19vw', height: '6vh' }} direction="row" display="flex"
-              justify="center">
+                  justify="center">
               <Typography sx={{ ml: '2vw', my: 'auto', width: '12vw', fontSize: 18, fontWeight: 700 }} color="#424949">
-                {status}
+                {capitalizeStr(status)}
               </Typography>
             </Grid>
-            <Divider></Divider>
+            <Divider/>
             {/* tasks */}
             <Grid item spacing={2} sx={{ my: '0.5vh', width: '19vw', height: '53vh' }}
-              style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
-              {allTasks.map((task) => {
-                if (task.status === status.toLowerCase()) {
-                  return <Card key={task.id} sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
-                    <CardActionArea type="submit" onClick={handleClickTask(task.id)}>
-                      <CardContent>
-                        <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>
-                          {task.title}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                }
-              })}
+                  style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
+              {allTasks[status].map((task) =>
+                <Card key={task.id} sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
+                  <CardActionArea type="submit" onClick={handleClickTask(task.id)}>
+                    <CardContent>
+                      <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>
+                        {task.title}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>,
+              )}
             </Grid>
           </Paper>
         ))}
@@ -248,15 +213,16 @@ export default function Kanban() {
 
       {/* Project Create Popup Dialog */}
       <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}
-        allUsers={allUsers} refresh={refreshProjects} setRefresh={setRefreshProjects}></ProjectCreate>
-
-      {/* Task Edit Popup Dialog */}
-      <TaskEdit open={editOpen} setEditOpen={setEditOpen} taskId={taskId} setTaskId={setTaskId} curProject={curProject}
-        allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={!canModifyData(workspaceId)}></TaskEdit>
+                     allUsers={allUsers} refresh={refreshProjects} setRefresh={setRefreshProjects}/>
 
       {/* Task Create Popup Dialog */}
       <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
-        allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}></TaskCreate>
+                  allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}/>
+
+      {/* Task Edit Popup Dialog */}
+      <TaskEdit open={editTaskOpen} setEditOpen={setEditTaskOpen} taskId={taskId} setTaskId={setTaskId}
+                curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
+                disableEdit={!canModifyData(workspaceId)}/>
 
       {/* Debug info, will delete*/}
       {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}

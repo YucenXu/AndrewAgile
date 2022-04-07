@@ -188,9 +188,12 @@ def project_api(request, pid):
 @require_http_methods(["GET", "POST"])
 def project_tasks(request, pid):
     if request.method == "GET":
-        tasks = Task.objects.filter(project__id=pid)
-        serializer = TaskSerializer(tasks, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        all_tasks = {}
+        for status, _ in TaskStatus.choices:
+            tasks = Task.objects.filter(project__id=pid, status=status)
+            serializer = TaskSerializer(tasks, many=True)
+            all_tasks[status] = serializer.data
+        return JsonResponse(all_tasks)
     elif request.method == "POST":
         data = JSONParser().parse(request)
         data['projectId'] = pid

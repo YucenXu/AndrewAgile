@@ -2,17 +2,13 @@
 
 ## API permission check
 
-Unsafe REST API methods such as POST, PUT, DELETE which modidy backend data will have a pre-flight permission check serving as user access control.
-
-Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return 403 directly.
+Unsafe REST API methods such as POST, PUT, DELETE which modify backend data will have a pre-flight permission check serving as user access control. Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return **403** directly. A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions API](#update-user-permissions) for details.
 
 ```json
 {
     "error": "Only admins and editors can modify backend data."
 }
 ```
-
-A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions](###Update user permissions) for details.
 
 ## User API
 
@@ -45,6 +41,57 @@ Response:
   ```
 
 + 401
+
+## Workspace API
+
+### Get all workspaces
+
+Path: /api/workspaces
+
+Method: GET
+
+Response: 200
+
+```json
+[
+    {
+        "id": 1,
+        "name": "Product",
+        "description": "This is the workspace for Product",
+        "createdAt": "2022-03-27T22:52:32-04:00",
+        "lastUpdatedAt": "2022-03-27T22:52:32-04:00"
+    },
+    {
+        "id": 2,
+        "name": "DevOps",
+        "description": "This is the workspace for DevOps",
+        "createdAt": "2022-03-27T22:52:32.221848-04:00",
+        "lastUpdatedAt": "2022-03-27T22:52:32.221849-04:00"
+    }
+]
+```
+
+### Get workspace by ID
+
+Path: /api/workspace/\<int:wid\>
+
+Method: GET
+
+Response:
+
++ 200
+
+  ```json
+  {
+      "id": 1,
+      "name": "Product",
+      "description": "This is the workspace for Product",
+      "createdAt": "2022-03-27T22:52:32-04:00",
+      "lastUpdatedAt": "2022-03-27T22:52:32-04:00"
+  }
+  ```
+
++ 404
 
 ## Permission API
 
@@ -168,57 +215,6 @@ Response:
       "error": "Only admins can grant user permissions."
   }
   ```
-
-## Workspace API
-
-### Get all workspaces
-
-Path: /api/workspaces
-
-Method: GET
-
-Response: 200
-
-```json
-[
-    {
-        "id": 1,
-        "name": "Product",
-        "description": "This is the workspace for Product",
-        "createdAt": "2022-03-27T22:52:32-04:00",
-        "lastUpdatedAt": "2022-03-27T22:52:32-04:00"
-    },
-    {
-        "id": 2,
-        "name": "DevOps",
-        "description": "This is the workspace for DevOps",
-        "createdAt": "2022-03-27T22:52:32.221848-04:00",
-        "lastUpdatedAt": "2022-03-27T22:52:32.221849-04:00"
-    }
-]
-```
-
-### Get workspace by ID
-
-Path: /api/workspace/\<int:wid\>
-
-Method: GET
-
-Response:
-
-+ 200
-
-  ```json
-  {
-      "id": 1,
-      "name": "Product",
-      "description": "This is the workspace for Product",
-      "createdAt": "2022-03-27T22:52:32-04:00",
-      "lastUpdatedAt": "2022-03-27T22:52:32-04:00"
-  }
-  ```
-
-+ 404
 
 ## Project API
 
@@ -405,34 +401,81 @@ Method: GET
 Response: 200
 
 ```json
-[
-    {
-        "id": 1,
-        "type": "story",
-        "priority": "important",
-        "status": "todo",
-        "title": "Task-0",
-        "description": "This is the task description",
-        "projectId": 1,
-        "assigneeId": "userE",
-        "reporterId": "userD",
-        "createdAt": "2022-03-27T22:52:32.229749-04:00",
-        "lastUpdatedAt": "2022-03-27T22:52:32.229750-04:00"
-    },
-    {
-        "id": 2,
-        "type": "issue",
-        "priority": "critical",
-        "status": "todo",
-        "title": "Task-1",
-        "description": "This is the task description",
-        "projectId": 1,
-        "assigneeId": "userE",
-        "reporterId": "userF",
-        "createdAt": "2022-03-27T22:52:32.230215-04:00",
-        "lastUpdatedAt": "2022-03-27T22:52:32.230216-04:00"
-    }
-]
+{
+    "backlog": [
+        {
+            "id": 6,
+            "type": "action",
+            "priority": "low",
+            "status": "backlog",
+            "title": "Task-AAF",
+            "description": "This is the task description",
+            "projectId": 1,
+            "assigneeId": "testuser-3",
+            "reporterId": "testuser-1",
+            "createdAt": "2022-04-06T14:21:42.110311-04:00",
+            "lastUpdatedAt": "2022-04-06T14:21:42.110312-04:00"
+        },
+        {
+            "id": 8,
+            "type": "action",
+            "priority": "critical",
+            "status": "backlog",
+            "title": "Task-AAH",
+            "description": "This is the task description",
+            "projectId": 1,
+            "assigneeId": "testuser-3",
+            "reporterId": "testuser-3",
+            "createdAt": "2022-04-06T14:21:42.110349-04:00",
+            "lastUpdatedAt": "2022-04-06T14:21:42.110350-04:00"
+        }
+    ],
+    "todo": [
+        {
+            "id": 2,
+            "type": "action",
+            "priority": "low",
+            "status": "todo",
+            "title": "Task-AAB",
+            "description": "This is the task description",
+            "projectId": 1,
+            "assigneeId": "testuser-3",
+            "reporterId": "testuser-1",
+            "createdAt": "2022-04-06T14:21:42.110234-04:00",
+            "lastUpdatedAt": "2022-04-06T14:21:42.110235-04:00"
+        }
+    ],
+    "inprogress": [
+        {
+            "id": 5,
+            "type": "story",
+            "priority": "important",
+            "status": "inprogress",
+            "title": "Task-AAE",
+            "description": "This is the task description",
+            "projectId": 1,
+            "assigneeId": "testuser-1",
+            "reporterId": "testuser-3",
+            "createdAt": "2022-04-06T14:21:42.110292-04:00",
+            "lastUpdatedAt": "2022-04-06T14:21:42.110293-04:00"
+        }
+    ],
+    "done": [
+        {
+            "id": 1,
+            "type": "action",
+            "priority": "important",
+            "status": "done",
+            "title": "Task-AAA",
+            "description": "This is the task",
+            "projectId": 1,
+            "assigneeId": "testuser-1",
+            "reporterId": "testuser-3",
+            "createdAt": "2022-04-06T14:21:42.110210-04:00",
+            "lastUpdatedAt": "2022-04-06T16:44:45.064937-04:00"
+        }
+    ]
+}
 ```
 
 ### Create a new task

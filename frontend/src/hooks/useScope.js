@@ -14,12 +14,16 @@ const scopeContext = createContext(initialScope)
 function useScope () {
   const [scope, setScope] = useState(initialScope)
 
-  const getUserScope = () => {
-    axios.get('/api/userscope').then(resp => setScope(resp.data)).catch(() => setScope({ ...initialScope }))
-  }
-
   useEffect(() => getUserScope(), [])
   useInterval(() => getUserScope(), 10000)
+
+  const getUserScope = () => {
+    axios.get('/api/userscope').then(
+      resp => setScope(resp.data),
+    ).catch(
+      () => setScope({ ...initialScope }),
+    )
+  }
 
   return scope
 }
