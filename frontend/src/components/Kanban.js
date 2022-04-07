@@ -25,13 +25,11 @@ const initialTasks = {
 }
 
 export default function Kanban () {
-  // Call API to GET
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allUsers, setAllUsers] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
   const [allTasks, setAllTasks] = React.useState(initialTasks)
 
-  // Store user action
   const [workspaceId, setWorkspaceId] = React.useState(0)
   const [curWorkspace, setCurWorkspace] = React.useState({})
   const [projectId, setProjectId] = React.useState(0)
@@ -44,6 +42,8 @@ export default function Kanban () {
 
   const [refreshTasks, setRefreshTasks] = React.useState(0)
   const [refreshProjects, setRefreshProjects] = React.useState(0)
+
+  const disableEdit = !canModifyData(workspaceId)
 
   React.useEffect(() => fetchAllWorkspaces(), [])
   React.useEffect(() => fetchAllProjects(), [workspaceId, refreshProjects])
@@ -159,7 +159,7 @@ export default function Kanban () {
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
               style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-                  onClick={handleClickCreateProject} disabled={!canModifyData(workspaceId)}>Create</Button>
+                  onClick={handleClickCreateProject} disabled={disableEdit}>Create</Button>
         </Grid>
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
               style={{ backgroundColor: '#', alignItems: 'left' }}/>
@@ -174,7 +174,7 @@ export default function Kanban () {
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
                   onClick={handleClickCreateTask}
-                  disabled={projectId === 0 || !canModifyData(workspaceId)}>Create</Button>
+                  disabled={projectId === 0 || disableEdit}>Create</Button>
         </Grid>
       </Grid>
 
@@ -222,7 +222,7 @@ export default function Kanban () {
       {/* Task Edit Popup Dialog */}
       <TaskEdit open={editTaskOpen} setEditOpen={setEditTaskOpen} taskId={taskId} setTaskId={setTaskId}
                 curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
-                disableEdit={!canModifyData(workspaceId)}/>
+                disableEdit={disableEdit}/>
 
       {/* Debug info, will delete*/}
       {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
