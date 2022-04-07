@@ -448,7 +448,7 @@ class TaskEdit extends Component {
                   </Grid>
                   {/* Button */}
                   <Grid item sx={{ mx: 'auto', width: '20%', height: '100%', backgroundColor: 'ffebee', overflow: 'auto' }}>
-                    <button onClick={this.handleAddComment} style={{ fontSize: "1vw" }}>add</button>
+                    <button onClick={this.handleAddComment} style={{ fontSize: "1vw" }} disabled={this.props.disableEdit}>add</button>
                   </Grid>
                 </Grid>
 
