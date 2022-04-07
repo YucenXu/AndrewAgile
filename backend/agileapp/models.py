@@ -29,8 +29,7 @@ class Permission(models.Model):
 
     def __str__(self):
         return "workspace=%s, user=%s, role=%s" % (
-            self.workspace.name if self.workspace else None,
-            self.user, self.role,
+            self.workspace.name, self.user, self.role,
         )
 
 

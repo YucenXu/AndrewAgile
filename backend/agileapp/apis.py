@@ -123,7 +123,7 @@ def workspace_users(request, wid):
                             granted_by=request.user,
                         ) for user in new_users
                     ]
-                    Permission.objects.bulk_create(new_perms)
+                    new_perms = Permission.objects.bulk_create(new_perms)
                 # batch delete withdrawn permission entries
                 perms = perm_query.filter(user__in=user_roles[UserRole.VIEWER])
                 perms.delete()

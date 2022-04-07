@@ -8,11 +8,6 @@ from django.db.utils import IntegrityError
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
 
-users = []
-workspaces = []
-projects = []
-tasks = []
-
 
 def init_users():
     new_users = [
@@ -25,8 +20,7 @@ def init_users():
             is_active=True,
         ) for i in range(1, 9)
     ]
-    User.objects.bulk_create(new_users)
-    users.extend(new_users[:4])
+    return User.objects.bulk_create(new_users)[:4]
 
 
 def init_workspaces():
@@ -36,8 +30,7 @@ def init_workspaces():
             description="This is the workspace description",
         ) for c in "AB"
     ]
-    Workspace.objects.bulk_create(new_workspaces)
-    workspaces.extend(new_workspaces)
+    return Workspace.objects.bulk_create(new_workspaces)
 
 
 def init_permissions():
@@ -49,7 +42,7 @@ def init_permissions():
         ) for workspace in workspaces
         for user in users
     ]
-    Permission.objects.bulk_create(new_perms)
+    return Permission.objects.bulk_create(new_perms)
 
 
 def init_projects():
@@ -62,8 +55,7 @@ def init_projects():
         ) for workspace in workspaces
         for c in "ABC"
     ]
-    Project.objects.bulk_create(new_projects)
-    projects.extend(new_projects)
+    return Project.objects.bulk_create(new_projects)
 
 
 def init_tasks():
@@ -80,8 +72,7 @@ def init_tasks():
         ) for project in projects
         for i in range(random.randint(0, 20))
     ]
-    Task.objects.bulk_create(new_tasks)
-    tasks.extend(new_tasks)
+    return Task.objects.bulk_create(new_tasks)
 
 
 def init_comments():
@@ -93,18 +84,18 @@ def init_comments():
         ) for task in tasks
         for _ in range(random.randint(0, 3))
     ]
-    Comment.objects.bulk_create(new_comments)
+    return Comment.objects.bulk_create(new_comments)
 
 
 # populate database with dummy data
 try:
     with transaction.atomic():
-        init_users()
-        init_workspaces()
-        init_permissions()
-        init_projects()
-        init_tasks()
-        init_comments()
+        users = init_users()
+        workspaces = init_workspaces()
+        perms = init_permissions()
+        projects = init_projects()
+        tasks = init_tasks()
+        comments = init_comments()
     print("=== Init Database Successful ===")
     exit(0)
 except IntegrityError as e:
