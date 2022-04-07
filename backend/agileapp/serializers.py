@@ -5,15 +5,14 @@ from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from userapp.serializers import UserSerializer
-from agileapp.models import EmptyModel, Workspace, Permission, Project, Task, Comment
+from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
 
 
 class MutableModelSerializer(serializers.ModelSerializer):
     @abstractproperty
     class Meta:
-        model = EmptyModel
+        model = None
         fields = []
 
     def validate(self, method):
@@ -69,7 +68,7 @@ class MutableModelSerializer(serializers.ModelSerializer):
     def _validate_foreign_key(cls, fk_obj, fk_name, data, errors):
         if fk_obj:
             del data[fk_name + 'Id']
-            data[fk_name] = fk_obj[0]
+            data[fk_name] = fk_obj
         else:
             errors[fk_name + 'Id'] = "Object with this ID does not exist."
 
@@ -83,7 +82,7 @@ class MutableModelSerializer(serializers.ModelSerializer):
 
     def save(self):
         if 'id' in self._validated_data:
-            self._instance = self.Meta.model.objects.filter(id=self._validated_data['id'])[0]
+            self._instance = self.Meta.model.objects.get(id=self._validated_data['id'])
             for key, value in self._validated_data.items():
                 setattr(self._instance, key, value)
             if len(self._validated_data) > 1 and "last_updated_at" in self._instance.__dict__:
@@ -94,6 +93,16 @@ class MutableModelSerializer(serializers.ModelSerializer):
         return self._instance
 
 
+class UserSerializer(serializers.ModelSerializer):
+    firstname = serializers.CharField(source='first_name')
+    lastname = serializers.CharField(source='last_name')
+    dateJoined = serializers.DateTimeField(source='date_joined')
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'firstname', 'lastname', 'dateJoined']
+
+
 class WorkspaceSerializer(serializers.ModelSerializer):
     createdAt = serializers.DateTimeField(source='created_at')
     lastUpdatedAt = serializers.DateTimeField(source='last_updated_at')
@@ -101,6 +110,18 @@ class WorkspaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workspace
         fields = ['id', 'name', 'description', 'createdAt', 'lastUpdatedAt']
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
+    firstname = serializers.CharField(source='user.first_name')
+    lastname = serializers.CharField(source='user.last_name')
+    dateJoined = serializers.DateTimeField(source='user.date_joined')
+
+    class Meta:
+        model = Permission
+        fields = ['role', 'username', 'email', 'firstname', 'lastname', 'dateJoined']
 
 
 class ProjectSerializer(MutableModelSerializer):
@@ -121,7 +142,7 @@ class ProjectSerializer(MutableModelSerializer):
             ('owner', User, True, None),
         ], data)
 
-        workspace = Workspace.objects.filter(id=data['workspaceId'])
+        workspace = Workspace.objects.filter(id=data['workspaceId']).first()
         self._validate_foreign_key(workspace, 'workspace', data, errors)
 
         return self._validation_result(data, errors)
@@ -165,15 +186,15 @@ class TaskSerializer(MutableModelSerializer):
             ('reporterId', str, True, False),
         ], data)
 
-        project = Project.objects.filter(id=data['projectId'])
+        project = Project.objects.filter(id=data['projectId']).first()
         self._validate_foreign_key(project, 'project', data, errors)
 
         if 'assigneeId' in data and isinstance(data['assigneeId'], str):
-            assignee = User.objects.filter(username=data['assigneeId'])
+            assignee = User.objects.filter(username=data['assigneeId']).first()
             self._validate_foreign_key(assignee, 'assignee', data, errors)
 
         if 'reporterId' in data and isinstance(data['reporterId'], str):
-            reporter = User.objects.filter(username=data['reporterId'])
+            reporter = User.objects.filter(username=data['reporterId']).first()
             self._validate_foreign_key(reporter, 'reporter', data, errors)
 
         return self._validation_result(data, errors)
@@ -194,11 +215,11 @@ class TaskSerializer(MutableModelSerializer):
             errors['taskId'] = "Object with this ID does not exist."
 
         if 'assigneeId' in data and isinstance(data['assigneeId'], str):
-            assignee = User.objects.filter(username=data['assigneeId'])
+            assignee = User.objects.filter(username=data['assigneeId']).first()
             self._validate_foreign_key(assignee, 'assignee', data, errors)
 
         if 'reporterId' in data and isinstance(data['reporterId'], str):
-            reporter = User.objects.filter(username=data['reporterId'])
+            reporter = User.objects.filter(username=data['reporterId']).first()
             self._validate_foreign_key(reporter, 'reporter', data, errors)
 
         return self._validation_result(data, errors)
@@ -221,14 +242,26 @@ class CommentSerializer(MutableModelSerializer):
             ('content', str, True, False),
         ], data)
 
-        task = Task.objects.filter(id=data['taskId'])
+        task = Task.objects.filter(id=data['taskId']).first()
         self._validate_foreign_key(task, 'task', data, errors)
 
         return self._validation_result(data, errors)
 
     def _validate_update(self, data):
-        # comments are not allowed to update
-        pass
+        errors = self._validate_fields([
+            ('id', int, True, None),
+            ('user', User, True, None),
+            ('content', str, False, False),
+        ], data)
+
+        comment = Comment.objects.filter(id=data['id']).first()
+        if not comment:
+            errors['commentId'] = "Object with this ID does not exist."
+        elif data['user'] != comment.user:
+            errors['user'] = "Only the original commenter can edit."
+
+        del data['user']
+        return self._validation_result(data, errors)
 
 
 class TaskDetailSerializer(TaskSerializer):

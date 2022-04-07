@@ -20,8 +20,7 @@ from agileapp.apis import home_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('oauth/', include('social_django.urls')),
-    path('api/', include('userapp.urls')),
     path('api/', include('agileapp.urls')),
-    # render frontend pages except paths start with /admin or /oauth or /api
+    # render react frontend except paths defined above
     re_path('(^(?!(admin|oauth|api)).*$)', home_view),
 ]

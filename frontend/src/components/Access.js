@@ -6,11 +6,14 @@ import SearchBar from './access/SearchBar'
 import List from '@mui/material/List'
 import Modal from './access/Modal'
 import UserRole from './access/UserRole'
+import { canGrantPerm } from '../hooks/useScope'
 
 export default function Access () {
   const [workspaceId, setWorkspaceId] = React.useState(0)
   const [access, setAccess] = React.useState('')
   const [showModal, setShowModal] = React.useState(false)
+  const disableEdit = !canGrantPerm(workspaceId)
+
   const people = [
     {
       name: 'Peng Zhao',
@@ -58,9 +61,9 @@ export default function Access () {
       {/* Search Bar, Invite Button */}
       <Grid container sx={{ my: '1vh', mx: 'auto', width: '80vw', height: '6vh' }}>
         <Grid item sx={{ width: '25vw' }}>
-          <SearchBar></SearchBar>
+          <SearchBar/>
         </Grid>
-        <Grid item sx={{ width: '44.5vw' }}></Grid>
+        <Grid item sx={{ width: '44.5vw' }}/>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" onClick={() => setShowModal(true)}>Invite</Button>
         </Grid>
@@ -70,7 +73,7 @@ export default function Access () {
             style={{ backgroundColor: '', justifyContent: 'left' }}>
         <List sx={{ my: '2vh', width: '60vw', height: '10vh' }}>
           {people.map((user) => (
-            <UserRole key={user.name} name={user.name} role={user.role}/>
+            <UserRole key={user.name} name={user.name} role={user.role} disableEdit={disableEdit}/>
           ))}
         </List>
       </Grid>

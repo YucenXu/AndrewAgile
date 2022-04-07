@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
-    'userapp',
     'agileapp',
 ]
 
@@ -56,7 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'userapp.middleware.DeveloperAccountMiddleware',
+    'agileapp.middlewares.DeveloperAccountMiddleware',
+    'agileapp.middlewares.UserPermissionMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'

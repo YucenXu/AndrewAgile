@@ -406,12 +406,12 @@ class TaskEdit extends Component {
             <Grid container sx={{ mx: '0vw', width: '40vw', height: '100%' }}></Grid>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
               alignItems="center">
-              <Button onClick={this.handleDeleteTask}
-                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
+              <Button onClick={this.handleDeleteTask} variant="outlined" color="error" disabled={this.props.disableEdit}
+                style={{ minWidth: '80%', maxWidth: '80%', height: '100%'}}>Delete</Button>
             </Grid>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
               alignItems="center">
-              <Button type="submit" variant="contained"
+              <Button type="submit" variant="contained" disabled={this.props.disableEdit}
                 style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
             </Grid>
           </Grid>
