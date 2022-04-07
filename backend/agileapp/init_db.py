@@ -20,7 +20,9 @@ def init_users():
             is_active=True,
         ) for i in range(1, 9)
     ]
-    return User.objects.bulk_create(new_users)[:4]
+    for user in new_users:
+        user.save()
+    return new_users[:4]
 
 
 def init_workspaces():
@@ -30,7 +32,9 @@ def init_workspaces():
             description="This is the workspace description",
         ) for c in "AB"
     ]
-    return Workspace.objects.bulk_create(new_workspaces)
+    for workspace in new_workspaces:
+        workspace.save()
+    return new_workspaces
 
 
 def init_permissions():
@@ -42,7 +46,9 @@ def init_permissions():
         ) for workspace in workspaces
         for user in users
     ]
-    return Permission.objects.bulk_create(new_perms)
+    for perm in new_perms:
+        perm.save()
+    return new_perms
 
 
 def init_projects():
@@ -55,7 +61,9 @@ def init_projects():
         ) for workspace in workspaces
         for c in "ABC"
     ]
-    return Project.objects.bulk_create(new_projects)
+    for project in new_projects:
+        project.save()
+    return new_projects
 
 
 def init_tasks():
@@ -72,7 +80,9 @@ def init_tasks():
         ) for project in projects
         for i in range(random.randint(0, 20))
     ]
-    return Task.objects.bulk_create(new_tasks)
+    for task in new_tasks:
+        task.save()
+    return new_tasks
 
 
 def init_comments():
@@ -84,7 +94,9 @@ def init_comments():
         ) for task in tasks
         for _ in range(random.randint(0, 3))
     ]
-    return Comment.objects.bulk_create(new_comments)
+    for comment in new_comments:
+        comment.save()
+    return new_comments
 
 
 # populate database with dummy data
