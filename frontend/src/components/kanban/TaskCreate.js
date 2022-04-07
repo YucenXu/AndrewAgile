@@ -92,7 +92,7 @@ export default function TaskCreate(props) {
       </Grid>
 
       <Box component="form" onSubmit={handleSaveTask}
-        sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#eeeeee' }}>
+        sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
         {/* Project Info */}
         <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
           direction="row" alignItems="center">
@@ -115,9 +115,9 @@ export default function TaskCreate(props) {
             width: '48%',
             height: '100%',
             border: 2,
-            borderColor: '#1976d2',
+            borderColor: '#eeeeee',
             borderRadius: 1,
-            backgroundColor: '#',
+            backgroundColor: '#eeeeee',
           }}>
             {/* Index Column */}
             <Grid container
@@ -160,7 +160,8 @@ export default function TaskCreate(props) {
                   placeholder="Task Title"
                   value={title}
                   onChange={event => setTitle(sanitizeBlank(event.target.value))}
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw' } }}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw', backgroundColor:"#e0e0e0" } }}
+                  
                   required
                 />
               </Grid>
@@ -212,7 +213,7 @@ export default function TaskCreate(props) {
                     width: '8ch',
                     border: 0,
                     textAlign: 'left',
-                    backgroundColor: '#eeeeee'
+                    backgroundColor: '#e0e0e0'
                   }}
                   required
                 >
@@ -233,7 +234,7 @@ export default function TaskCreate(props) {
                     width: '12ch',
                     border: 0,
                     textAlign: 'left',
-                    backgroundColor: '#eeeeee'
+                    backgroundColor: '#e0e0e0'
                   }}
                   required
                 >
@@ -260,10 +261,10 @@ export default function TaskCreate(props) {
                   onChange={handleSetPriorityColor}
                   required
                 >
-                  <option value={'critical'} style={{ backgroundColor: '#e3f2fd' }}>Critical</option>
-                  <option value={'important'} style={{ backgroundColor: '#e3f2fd' }}>Important</option>
-                  <option value={'normal'} style={{ backgroundColor: '#e3f2fd' }}>Normal</option>
-                  <option value={'low'} style={{ backgroundColor: '#e3f2fd' }}>Low</option>
+                  <option value={'critical'} style={{ backgroundColor: '#e0e0e0' }}>Critical</option>
+                  <option value={'important'} style={{ backgroundColor: '#e0e0e0' }}>Important</option>
+                  <option value={'normal'} style={{ backgroundColor: '#e0e0e0' }}>Normal</option>
+                  <option value={'low'} style={{ backgroundColor: '#e0e0e0' }}>Low</option>
                 </select>
               </Grid>
             </Grid>
