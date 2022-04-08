@@ -7,9 +7,10 @@ import Progress from './components/Progress'
 import Access from './components/Access'
 import Help from './components/Help'
 import Kanban from './components/Kanban'
+import KanbanDrag from './components/KanbanDrag'
 import ScopeProvider from './hooks/useScope'
 
-export default function App () {
+export default function App() {
   return (
     <AuthProvider>
       <ScopeProvider>
@@ -18,31 +19,31 @@ export default function App () {
             <Route exact path="/" element={
               <RequireAuth>
                 <Home>
-                  <Kanban/>
+                  <KanbanDrag />
                 </Home>
               </RequireAuth>
-            }/>
+            } />
             <Route path="/progress" element={
               <RequireAuth>
                 <Home>
-                  <Progress/>
+                  <Progress />
                 </Home>
               </RequireAuth>
-            }/>
+            } />
             <Route path="/access" element={
               <RequireAuth>
                 <Home>
-                  <Access/>
+                  <Access />
                 </Home>
               </RequireAuth>
-            }/>
+            } />
             <Route path="/help" element={
               <RequireAuth>
                 <Home>
-                  <Help/>
+                  <Help />
                 </Home>
               </RequireAuth>
-            }/>
+            } />
           </Routes>
         </BrowserRouter>
       </ScopeProvider>
