@@ -16,6 +16,8 @@ import useInterval from '../hooks/useInterval'
 import axios from 'axios'
 import { canModifyData } from '../hooks/useScope'
 import { capitalizeStr } from '../utils/formats'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import DragBoard from './kanban/DragBoard'
 
 const initialTasks = {
   backlog: [],
@@ -24,7 +26,7 @@ const initialTasks = {
   done: [],
 }
 
-export default function Kanban() {
+export default function KanbanDrag() {
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allUsers, setAllUsers] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
@@ -107,12 +109,8 @@ export default function Kanban() {
     setTaskId(taskId)
   }
 
-  const handleClickTask = (taskId) => () => {
-    setEditTaskOpen(true)
-    setTaskId(taskId)
-  }
-
   return (
+
     <Box>
       {/* Dropdown menus */}
       <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
@@ -179,37 +177,9 @@ export default function Kanban() {
       </Grid>
 
       {/* Board */}
-      <Grid container sx={{ my: '2vh', mx: 'auto', width: '80vw', height: '60vh' }} style={{ alignItems: 'center' }}>
-        {Object.keys(initialTasks).map(status => (
-          // Column
-          <Paper key={status} sx={{ my: '0vh', mx: '0.5vw', width: '19vw', height: '60vh' }}
-            style={{ backgroundColor: '#eaecee' }}>
-            {/* title */}
-            <Grid item xs sx={{ mt: '1vh', width: '19vw', height: '6vh' }} direction="row" display="flex"
-              justify="center">
-              <Typography sx={{ ml: '2vw', my: 'auto', width: '12vw', fontSize: 18, fontWeight: 700 }} color="#424949">
-                {capitalizeStr(status)}
-              </Typography>
-            </Grid>
-            <Divider />
-            {/* tasks */}
-            <Grid item spacing={2} sx={{ my: '0.5vh', width: '19vw', height: '53vh' }}
-              style={{ backgroundColor: '#eaecee', overflow: 'auto' }}>
-              {allTasks[status].map((task) =>
-                <Card key={task.id} sx={{ ml: '2vw', my: 0.5, width: '14vw' }} style={{ backgroundColor: '#f2f4f4' }}>
-                  <CardActionArea type="submit" onClick={handleClickTask(task.id)}>
-                    <CardContent>
-                      <Typography sx={{ fontSize: 18, fontWeight: 1000 }} color="#515a5a" gutterBottom>
-                        {task.title}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              )}
-            </Grid>
-          </Paper>
-        ))}
-      </Grid>
+      <DragBoard allTasks={allTasks} setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId}
+        refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={disableEdit}></DragBoard>
+
 
       {/* Project Create Popup Dialog */}
       <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}
@@ -226,6 +196,6 @@ export default function Kanban() {
 
       {/* Debug info, will delete*/}
       {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
-    </Box>
+    </Box >
   )
 }
