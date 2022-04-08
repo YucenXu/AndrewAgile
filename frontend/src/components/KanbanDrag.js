@@ -1,13 +1,10 @@
 import * as React from 'react'
 import Grid from '@mui/material/Grid'
-import Paper from '@mui/material/Paper'
-import { Button, Divider, FormControl } from '@mui/material'
+import { Button, FormControl } from '@mui/material'
 import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import Typography from '@mui/material/Typography'
-import { Card, CardContent, CardActionArea } from '@mui/material'
 import SearchBar from './kanban/SearchBar'
 import TaskEdit from './kanban/TaskEdit'
 import TaskCreate from './kanban/TaskCreate'
@@ -15,8 +12,6 @@ import ProjectCreate from './kanban/ProjectCreate'
 import useInterval from '../hooks/useInterval'
 import axios from 'axios'
 import { canModifyData } from '../hooks/useScope'
-import { capitalizeStr } from '../utils/formats'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import DragBoard from './kanban/DragBoard'
 
 const initialTasks = {
@@ -110,7 +105,6 @@ export default function KanbanDrag() {
   }
 
   return (
-
     <Box>
       {/* Dropdown menus */}
       <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
@@ -177,9 +171,9 @@ export default function KanbanDrag() {
       </Grid>
 
       {/* Board */}
-      <DragBoard allTasks={allTasks} setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId}
-        refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={disableEdit}></DragBoard>
-
+      <DragBoard statusList={Object.keys(allTasks)} allTasks={Object.values(allTasks)} setAllTasks={setAllTasks}
+                 setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId} refresh={refreshTasks}
+                 setRefresh={setRefreshTasks} disableEdit={disableEdit}/>
 
       {/* Project Create Popup Dialog */}
       <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}

@@ -1,131 +1,16 @@
-import React, { useState } from 'react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import * as React from 'react'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import Container from '@mui/material/Container'
 
-// fake data generator
-const getItems = (count, offset = 0) =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `item-${k + offset}-${new Date().getTime()}`,
-    content: `item ${k + offset}`,
-  }))
-
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list)
-  const [removed] = result.splice(startIndex, 1)
-  result.splice(endIndex, 0, removed)
-
-  return result
-}
-
-const move = (source, destination, droppableSource, droppableDestination) => {
-  const sourceClone = Array.from(source)
-  const destClone = Array.from(destination)
-  const [removed] = sourceClone.splice(droppableSource.index, 1)
-
-  destClone.splice(droppableDestination.index, 0, removed)
-
-  const result = {}
-  result[droppableSource.droppableId] = sourceClone
-  result[droppableDestination.droppableId] = destClone
-
-  return result
-}
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: 'none',
-  padding: 8 * 2,
-  margin: `0 0 8px 0`,
-
-  // change background colour if dragging
-  background: isDragging ? 'lightgreen' : 'grey',
-
-  // styles we need to apply on draggables
-  ...draggableStyle,
-})
-
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
-  padding: 8,
-  width: 250,
-})
-
-// Ref: https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/about/examples.md
 export default function Help () {
-  const [state, setState] = useState([getItems(10), getItems(5, 10)])
-
-  function onDragEnd (result) {
-    const { source, destination } = result
-
-    // dropped outside the list
-    if (!destination) {
-      return
-    }
-
-    const sInd = +source.droppableId
-    const dInd = +destination.droppableId
-
-    if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index)
-      const newState = [...state]
-      newState[sInd] = items
-      setState(newState)
-    } else {
-      const result = move(state[sInd], state[dInd], source, destination)
-      const newState = [...state]
-      newState[sInd] = result[sInd]
-      newState[dInd] = result[dInd]
-
-      setState(newState.filter(group => group.length))
-    }
-  }
-
   return (
-    <div>
-      <div style={{ display: 'flex' }}>
-        <DragDropContext onDragEnd={onDragEnd}>
-          {state.map((el, ind) => (
-            <Droppable key={ind} droppableId={`${ind}`}>
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  style={getListStyle(snapshot.isDraggingOver)}
-                  {...provided.droppableProps}
-                >
-                  {el.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={index}
-                    >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style,
-                          )}
-                        >
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-around',
-                            }}
-                          >
-                            {item.content}
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))}
-        </DragDropContext>
-      </div>
-    </div>
+    <Container maxWidth="sx" sx={{ mt: 12 }}>
+      <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column' }}>
+        <Typography component="h2" variant="h6" color="primary">
+          Help Page (placeholder)
+        </Typography>
+      </Paper>
+    </Container>
   )
 }
