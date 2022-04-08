@@ -144,7 +144,7 @@ class TaskEdit extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.taskId !== prevProps.taskId && this.props.taskId != 0) {
+    if (this.props.taskId !== prevProps.taskId && this.props.taskId !== 0) {
       this.getCurTask()
     }
   }
@@ -412,7 +412,7 @@ class TaskEdit extends Component {
                 <Grid item sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
                   {
                     this.state.comments.map((comment) => {
-                      return <Grid item sx={{ mx: 'auto', width: '100%' }}>
+                      return <Grid key={comment.id} item sx={{ mx: 'auto', width: '100%' }}>
                         <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>{comment.content}</Typography>
                         <Typography sx={{ mx: '5%', fontSize: '0.8vw', }} style={{ textAlign: 'right' }}>-made by {comment.user.username} at {new Date(comment.createdAt).toLocaleString()}</Typography>
                       </Grid>
