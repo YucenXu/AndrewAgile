@@ -160,31 +160,11 @@ export default function DragBoard(props) {
                     key={item.id + ""}
                     draggableId={item.id + ""}
                     index={index}
+                    isDragDisabled={props.disableEdit}
                   >
 
-                    {(provided, snapshot) => {
-                      // user doesn't have access to edit
-                      if (props.disableEdit == true) {
-                        // prevent dragging by not providing props required
-                        return <div
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
-                          onClick={handleClickTask(item.id)}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-around"
-                            }}
-                          >
-                            {item.title}
-                          </div>
-                        </div>
-                      }
-                      // user has access to edit
-                      return <div
+                    {(provided, snapshot) => (
+                      <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
@@ -203,7 +183,7 @@ export default function DragBoard(props) {
                           {item.title}
                         </div>
                       </div>
-                    }}
+                    )}
 
                   </Draggable>
                 ))}
