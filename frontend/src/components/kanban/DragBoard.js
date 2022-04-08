@@ -80,10 +80,12 @@ export default function DragBoard(props) {
     const dInd = +destination.droppableId;
 
     if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index);
-      const newState = [...state];
-      newState[sInd] = items;
-      setState(newState);
+      // disable order change to avoid changing after auto refresh
+
+      // const items = reorder(state[sInd], source.index, destination.index);
+      // const newState = [...state];
+      // newState[sInd] = items;
+      // setState(newState);
     } else {
       // Todo
       // move task position in frontend
