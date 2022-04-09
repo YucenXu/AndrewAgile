@@ -13,6 +13,7 @@ import useInterval from '../hooks/useInterval'
 import axios from 'axios'
 import { canModifyData } from '../hooks/useScope'
 import DragBoard from './kanban/DragBoard'
+import { filterTasksBySearch } from './kanban/SearchBar'
 
 const initialTasks = {
   backlog: [],
@@ -21,11 +22,13 @@ const initialTasks = {
   done: [],
 }
 
-export default function Kanban() {
+export default function Kanban () {
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allUsers, setAllUsers] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
+
   const [allTasks, setAllTasks] = React.useState(initialTasks)
+  const [searchText, setSearchText] = React.useState('')
 
   const [workspaceId, setWorkspaceId] = React.useState(0)
   const [curWorkspace, setCurWorkspace] = React.useState({})
@@ -108,12 +111,12 @@ export default function Kanban() {
     <Box>
       {/* Dropdown menus */}
       <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
-        style={{ backgroundColor: '', alignItems: 'left' }}>
+            style={{ backgroundColor: '', alignItems: 'left' }}>
         {/* Workspace Dropdown */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}>
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-            style={{ backgroundColor: '' }}>
+                       style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
             <Select
               labelId="id-select-workspace-label"
@@ -130,9 +133,9 @@ export default function Kanban() {
 
         {/* Project Dropdown */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }}>
+              style={{ backgroundColor: '#', alignItems: 'left' }}>
           <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-            style={{ backgroundColor: '' }}>
+                       style={{ backgroundColor: '' }}>
             <InputLabel id="id-select-project-label">Project</InputLabel>
             <Select
               labelId="id-select-project-label"
@@ -149,47 +152,47 @@ export default function Kanban() {
 
         {/* Project Create Button */}
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+              style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateProject} disabled={disableEdit}>Create</Button>
+                  onClick={handleClickCreateProject} disabled={disableEdit}>Create</Button>
         </Grid>
         <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }} />
+              style={{ backgroundColor: '#', alignItems: 'left' }}/>
       </Grid>
 
       {/* Search Bar, Create Button */}
       <Grid container sx={{ my: '1vh', mx: 'auto', width: '80vw', height: '6vh' }} style={{ backgroundColor: '' }}>
         <Grid item sx={{ width: '25vw' }}>
-          <SearchBar />
+          <SearchBar searchText={searchText} setSearchText={setSearchText}/>
         </Grid>
-        <Grid item sx={{ width: '44.5vw' }} />
+        <Grid item sx={{ width: '44.5vw' }}/>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-            onClick={handleClickCreateTask}
-            disabled={projectId === 0 || disableEdit}>Create</Button>
+                  onClick={handleClickCreateTask}
+                  disabled={projectId === 0 || disableEdit}>Create</Button>
         </Grid>
       </Grid>
 
       {/* Board */}
-      <DragBoard statusList={Object.keys(allTasks)} allTasks={Object.values(allTasks)} setAllTasks={setAllTasks}
-                 setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId} refresh={refreshTasks}
-                 setRefresh={setRefreshTasks} disableEdit={disableEdit}/>
+      <DragBoard statusList={Object.keys(allTasks)} allTasks={filterTasksBySearch(allTasks, searchText)}
+                 setAllTasks={setAllTasks} setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId}
+                 refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={disableEdit}/>
 
       {/* Project Create Popup Dialog */}
       <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}
-        allUsers={allUsers} refresh={refreshProjects} setRefresh={setRefreshProjects} />
+                     allUsers={allUsers} refresh={refreshProjects} setRefresh={setRefreshProjects}/>
 
       {/* Task Create Popup Dialog */}
       <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
-        allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks} />
+                  allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}/>
 
       {/* Task Edit Popup Dialog */}
       <TaskEdit open={editTaskOpen} setEditOpen={setEditTaskOpen} taskId={taskId} setTaskId={setTaskId}
-        curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
-        disableEdit={disableEdit} />
+                curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
+                disableEdit={disableEdit}/>
 
       {/* Debug info, will delete*/}
       {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
-    </Box >
+    </Box>
   )
 }

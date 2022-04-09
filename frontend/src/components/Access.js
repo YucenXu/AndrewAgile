@@ -47,7 +47,6 @@ export default function Access () {
                      style={{ backgroundColor: '' }}>
           <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
           <NativeSelect
-            labelId="id-select-workspace-label"
             label="workspaceId"
             value={workspaceId}
             onChange={handleChangeWorkspace}>
