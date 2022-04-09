@@ -14,6 +14,7 @@ import axios from 'axios'
 import { canModifyData } from '../hooks/useScope'
 import DragBoard from './kanban/DragBoard'
 import { filterTasksBySearch } from './kanban/SearchBar'
+import { AuthConsumer } from '../hooks/useAuth'
 
 const initialTasks = {
   backlog: [],
@@ -44,6 +45,8 @@ export default function Kanban () {
   const [refreshProjects, setRefreshProjects] = React.useState(0)
 
   const disableEdit = !canModifyData(workspaceId)
+
+  const { auth } = AuthConsumer()
 
   React.useEffect(() => fetchAllWorkspaces(), [])
   React.useEffect(() => fetchAllProjects(), [workspaceId, refreshProjects])
@@ -189,7 +192,7 @@ export default function Kanban () {
       {/* Task Edit Popup Dialog */}
       <TaskEdit open={editTaskOpen} setEditOpen={setEditTaskOpen} taskId={taskId} setTaskId={setTaskId}
                 curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
-                disableEdit={disableEdit}/>
+                disableEdit={disableEdit} currentUser={auth.username}/>
 
       {/* Debug info, will delete*/}
       {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}

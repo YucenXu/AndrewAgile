@@ -16,22 +16,22 @@ import axios from 'axios'
 import { sanitizeBlank } from '../../utils/formats'
 
 class TaskEdit extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.props = props
     this.state = {
-      title: "",
-      assignee: "",
-      reporter: "",
-      type: "",
-      status: "",
-      priority: "",
-      priorityColor: "",
-      createdAt: "",
-      lastUpdatedAt: "",
-      description: "",
+      title: '',
+      assignee: '',
+      reporter: '',
+      type: '',
+      status: '',
+      priority: '',
+      priorityColor: '',
+      createdAt: '',
+      lastUpdatedAt: '',
+      description: '',
       comments: [],
-      newComment: "",
+      newComment: '',
     }
   }
 
@@ -51,7 +51,7 @@ class TaskEdit extends Component {
       createdAt: task.createdAt,
       lastUpdatedAt: task.lastUpdatedAt,
       description: task.description,
-      comments: task.comments
+      comments: task.comments,
     })
 
   }
@@ -90,25 +90,34 @@ class TaskEdit extends Component {
 
   handleAddComment = async (event) => {
     event.preventDefault()
-    const payload = { "content": this.state.newComment }
-    await axios.post('/api/task/' + this.props.taskId + "/comments", payload).catch(err => {
-      // Todo
-    })
-    const response = await axios.get('/api/task/' + this.props.taskId).catch(err => {
-      // Todo
-    })
+    const payload = { 'content': this.state.newComment }
+    await axios.post('/api/task/' + this.props.taskId + '/comments', payload).catch(console.error)
+    const response = await axios.get('/api/task/' + this.props.taskId).catch(console.error)
     let task = response.data
     this.setState({
-      comments: task.comments
+      comments: task.comments,
     })
-    this.setState({ newComment: "" })
+    this.setState({ newComment: '' })
+  }
+
+  handleDeleteComment = (event, commentId) => {
+    event.preventDefault()
+    axios.delete('/api/comment/' + commentId).then(() =>
+      axios.get('/api/task/' + this.props.taskId).then(resp => {
+          const task = resp.data
+          this.setState({
+            comments: task.comments,
+          })
+        },
+      ).catch(console.error),
+    ).catch(console.error)
   }
 
   handleSetPriority = (event) => {
     let priority = event.target.value
     this.setState({
       priority: priority,
-      priorityColor: this.getPriorityColor(priority)
+      priorityColor: this.getPriorityColor(priority),
     })
   }
 
@@ -127,31 +136,30 @@ class TaskEdit extends Component {
 
   clearState = () => {
     this.setState({
-      title: "",
-      assignee: "",
-      reporter: "",
-      type: "",
-      status: "",
-      priority: "",
-      priorityColor: "",
-      createdAt: "",
-      lastUpdatedAt: "",
-      description: "",
-      comments: [],
-      newComment: "",
-    }
+        title: '',
+        assignee: '',
+        reporter: '',
+        type: '',
+        status: '',
+        priority: '',
+        priorityColor: '',
+        createdAt: '',
+        lastUpdatedAt: '',
+        description: '',
+        comments: [],
+        newComment: '',
+      },
     )
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (this.props.taskId !== prevProps.taskId && this.props.taskId !== 0) {
       this.getCurTask()
     }
   }
 
-  render() {
+  render () {
     return (
-
       <Dialog
         open={this.props.open}
         onClose={this.handleCloseTask}
@@ -176,23 +184,23 @@ class TaskEdit extends Component {
                 onClick={this.handleCloseTask}
                 aria-label="close"
               >
-                <CloseIcon />
+                <CloseIcon/>
               </IconButton>
             </Toolbar>
           </AppBar>
         </Grid>
 
         <Box component="form" onSubmit={this.handleSaveTask}
-          sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
+             sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
           {/* Task Title */}
           <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
-            direction="row" alignItems="center">
+                direction="row" alignItems="center">
             <Grid item sx={{ mx: '3%', width: '8vw' }}>
               <Typography
                 sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
                 align="center">Task</Typography>
             </Grid>
-            <Grid item sx={{ ml: "3%", width: '20%' }}>
+            <Grid item sx={{ ml: '3%', width: '20%' }}>
               <InputBase
                 name="title"
                 id="title"
@@ -200,7 +208,7 @@ class TaskEdit extends Component {
                 value={this.state.title}
                 onChange={(event) =>
                   this.setState({ title: sanitizeBlank(event.target.value) })}
-                inputProps={{ style: { textAlign: 'left', fontSize: '1.5vw', fontWeight: "bold" } }}
+                inputProps={{ style: { textAlign: 'left', fontSize: '1.5vw', fontWeight: 'bold' } }}
                 required
               />
             </Grid>
@@ -221,33 +229,33 @@ class TaskEdit extends Component {
             }}>
               {/* Index Column */}
               <Grid container
-                sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
+                    sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   Assignee
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   Reporter
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   Type
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   Status
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   Priority
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   Createed at
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   Last updated at
                 </Grid>
               </Grid>
@@ -257,7 +265,7 @@ class TaskEdit extends Component {
 
                 {/* Assignee */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   <Select
                     name="assigneeId"
                     id="assigneeId"
@@ -277,7 +285,7 @@ class TaskEdit extends Component {
 
                 {/* Reporter */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   <Select
                     name="reporterId"
                     id="reporterId"
@@ -297,7 +305,7 @@ class TaskEdit extends Component {
 
                 {/* Type */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   <select
                     name="type"
                     id="type"
@@ -306,7 +314,7 @@ class TaskEdit extends Component {
                       width: '8ch',
                       border: 0,
                       textAlign: 'left',
-                      backgroundColor: '#e0e0e0'
+                      backgroundColor: '#e0e0e0',
                     }}
                     value={this.state.type}
                     onChange={event => this.setState({ type: event.target.value })}
@@ -320,7 +328,7 @@ class TaskEdit extends Component {
 
                 {/* Status */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   <select
                     name="status"
                     id="status"
@@ -329,7 +337,7 @@ class TaskEdit extends Component {
                       width: '12ch',
                       border: 0,
                       textAlign: 'left',
-                      backgroundColor: '#e0e0e0'
+                      backgroundColor: '#e0e0e0',
                     }}
                     value={this.state.status}
                     onChange={event => this.setState({ status: event.target.value })}
@@ -344,7 +352,7 @@ class TaskEdit extends Component {
 
                 {/* Priority */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   <select
                     name="priority"
                     id="priority"
@@ -368,16 +376,22 @@ class TaskEdit extends Component {
 
                 {/* Create Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw', backgroundColor: '#e0e0e0' }}>{new Date(this.state.createdAt).toLocaleString()}</Typography>
+                    sx={{
+                      fontSize: '1vw',
+                      backgroundColor: '#e0e0e0',
+                    }}>{new Date(this.state.createdAt).toLocaleString()}</Typography>
                 </Grid>
 
                 {/* Last Update Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                  alignItems="center">
+                      alignItems="center">
                   <Typography
-                    sx={{ fontSize: '1vw', backgroundColor: '#e0e0e0' }}>{new Date(this.state.lastUpdatedAt).toLocaleString()}</Typography>
+                    sx={{
+                      fontSize: '1vw',
+                      backgroundColor: '#e0e0e0',
+                    }}>{new Date(this.state.lastUpdatedAt).toLocaleString()}</Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -405,32 +419,55 @@ class TaskEdit extends Component {
               {/* Comments */}
               <Grid container sx={{ width: '100%', height: '70%', backgroundColor: 'e1f5fe' }}>
                 {/* Comment Title */}
-                <Grid item sx={{ mx: 'auto', width: '95%', height: '15%', backgroundColor: 'e8f5e9', overflow: 'auto' }}>
-                  <Typography sx={{ mx: '5%', fontSize: '1.5vw', fontWeight: 'bold', color: '#1976d2' }}>Comments</Typography>
+                <Grid item
+                      sx={{ mx: 'auto', width: '95%', height: '15%', backgroundColor: 'e8f5e9', overflow: 'auto' }}>
+                  <Typography
+                    sx={{ mx: '5%', fontSize: '1.5vw', fontWeight: 'bold', color: '#1976d2' }}>Comments</Typography>
                 </Grid>
                 {/* Current Comments */}
-                <Grid item sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
+                <Grid item
+                      sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
                   {
                     this.state.comments.map((comment) => {
-                      return <Grid key={comment.id} item sx={{ mx: 'auto', width: '100%' }}>
-                        <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>{comment.content}</Typography>
-                        <Typography sx={{ mx: '5%', fontSize: '0.8vw', }} style={{ textAlign: 'right' }}>-made by {comment.user.username} at {new Date(comment.createdAt).toLocaleString()}</Typography>
-                      </Grid>
+                      if (comment.user?.username === this.props.currentUser) {
+                        return <Grid key={comment.id} item sx={{ mx: 'auto', width: '100%' }}>
+                          <Grid container>
+                            <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>{comment.content}</Typography>
+                            <button onClick={(event) => this.handleDeleteComment(event, comment.id)}
+                                    style={{ fontSize: '0.8vw' }} disabled={this.props.disableEdit}>Delete
+                            </button>
+                          </Grid>
+                          <Typography sx={{ mx: '5%', fontSize: '0.8vw' }} style={{ textAlign: 'right' }}>
+                            - made by you at {new Date(comment.createdAt).toLocaleString()}
+                          </Typography>
+                        </Grid>
+                      } else {
+                        return <Grid key={comment.id} item sx={{ mx: 'auto', width: '100%' }}>
+                          <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>{comment.content}</Typography>
+                          <Typography sx={{ mx: '5%', fontSize: '0.8vw' }} style={{ textAlign: 'right' }}>
+                            - made by {comment.user?.username} at {new Date(comment.createdAt).toLocaleString()}
+                          </Typography>
+                        </Grid>
+                      }
                     })
                   }
                 </Grid>
 
                 {/* Add Comment */}
                 {/* Title */}
-                <Grid container sx={{ mx: 'auto', width: '95%', height: '10%', backgroundColor: 'e8f5e9', overflow: 'auto' }} direction="row"
-                  alignItems="center">
+                <Grid container
+                      sx={{ mx: 'auto', width: '95%', height: '10%', backgroundColor: 'e8f5e9', overflow: 'auto' }}
+                      direction="row"
+                      alignItems="center">
                   <Grid item sx={{ my: 'auto', width: '100%' }}>
                     <Typography sx={{ mx: '5%', fontSize: '1vw', color: '#1976d2' }}>Add a comment</Typography>
                   </Grid>
                 </Grid>
-                <Grid container sx={{ mx: 'auto', width: '95%', height: '20%', backgroundColor: 'fff3e0', overflow: 'auto' }}>
+                <Grid container
+                      sx={{ mx: 'auto', width: '95%', height: '20%', backgroundColor: 'fff3e0', overflow: 'auto' }}>
                   {/* Comment Input */}
-                  <Grid item sx={{ mx: 'auto', width: '80%', height: '100%', backgroundColor: 'e1f5fe', overflow: 'auto' }}>
+                  <Grid item
+                        sx={{ mx: 'auto', width: '80%', height: '100%', backgroundColor: 'e1f5fe', overflow: 'auto' }}>
                     <InputBase
                       variant="outlined"
                       name="comment"
@@ -440,15 +477,17 @@ class TaskEdit extends Component {
                       placeholder="add a comment..."
                       value={this.state.newComment}
                       onChange={(event) => {
-                        const input = event.target.value
-                        this.setState({ newComment: input })
+                        this.setState({ newComment: sanitizeBlank(event.target.value) })
                       }}
-                      inputProps={{ style: { textAlign: 'left', fontSize: '1vw', border: "1px solid #9e9e9e" } }}
+                      inputProps={{ style: { textAlign: 'left', fontSize: '1vw', border: '1px solid #9e9e9e' } }}
                     />
                   </Grid>
                   {/* Button */}
-                  <Grid item sx={{ mx: 'auto', width: '20%', height: '100%', backgroundColor: 'ffebee', overflow: 'auto' }}>
-                    <button onClick={this.handleAddComment} style={{ fontSize: "1vw" }} disabled={this.props.disableEdit}>add</button>
+                  <Grid item
+                        sx={{ mx: 'auto', width: '20%', height: '100%', backgroundColor: 'ffebee', overflow: 'auto' }}>
+                    <button onClick={this.handleAddComment} style={{ fontSize: '1vw' }}
+                            disabled={this.props.disableEdit}>Add
+                    </button>
                   </Grid>
                 </Grid>
 
@@ -457,16 +496,16 @@ class TaskEdit extends Component {
           </Grid>
 
           <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
-            <Grid container sx={{ mx: '0vw', width: '40vw', height: '100%' }}></Grid>
+            <Grid container sx={{ mx: '0vw', width: '40vw', height: '100%' }}/>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-              alignItems="center">
+                  alignItems="center">
               <Button onClick={this.handleDeleteTask} variant="outlined" color="error" disabled={this.props.disableEdit}
-                style={{ minWidth: '80%', maxWidth: '80%', height: '100%'}}>Delete</Button>
+                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
             </Grid>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-              alignItems="center">
+                  alignItems="center">
               <Button type="submit" variant="contained" disabled={this.props.disableEdit}
-                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
+                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
             </Grid>
           </Grid>
         </Box>

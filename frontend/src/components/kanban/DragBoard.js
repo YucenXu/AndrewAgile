@@ -77,7 +77,7 @@ export default function DragBoard (props) {
     }
   }
 
-  const handleClickTask = (taskId) => () => {
+  const handleClickTask = (taskId) => {
     props.setEditTaskOpen(true)
     props.setTaskId(taskId)
   }
@@ -131,7 +131,7 @@ export default function DragBoard (props) {
                           snapshot.isDragging,
                           provided.draggableProps.style,
                         )}
-                        onClick={handleClickTask(item.id)}
+                        onClick={() => handleClickTask(item.id)}
                       >
                         <div
                           style={{

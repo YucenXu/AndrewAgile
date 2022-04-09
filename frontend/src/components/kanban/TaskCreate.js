@@ -161,7 +161,6 @@ export default function TaskCreate(props) {
                   value={title}
                   onChange={event => setTitle(sanitizeBlank(event.target.value))}
                   inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw', backgroundColor:"#e0e0e0" } }}
-                  
                   required
                 />
               </Grid>
@@ -288,7 +287,7 @@ export default function TaskCreate(props) {
         </Grid>
 
         <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
-          <Grid container sx={{ mx: '0vw', width: '50vw', height: '100%' }}></Grid>
+          <Grid container sx={{ mx: '0vw', width: '50vw', height: '100%' }}/>
           <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
             alignItems="center">
             <Button type="submit" variant="contained"
