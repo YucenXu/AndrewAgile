@@ -7,15 +7,15 @@ import IconButton from '@mui/material/IconButton'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 export default function SearchBar () {
-  const [searchText, setSearchText] = React.useState()
+  const [searchText, setSearchText] = React.useState('')
 
   const handleSearch = (event) => {
-    // Todo
+    event.preventDefault()
     setSearchText(event.target.value)
   }
 
   const handleCancelSearch = (event) => {
-    // Todo
+    event.preventDefault()
     setSearchText('')
   }
 
