@@ -8,17 +8,19 @@ from django.db.utils import IntegrityError
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
 
+planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
+
 
 def init_users():
     new_users = [
         User(
-            username="testuser-" + str(i),
-            password=make_password("testuser-" + str(i)),
-            email="testuser-" + str(i) + "@gmail.com",
-            first_name="Firstname-" + str(i),
-            last_name="Lastname-" + str(i),
+            username="user" + c,
+            password=make_password("password" + c),
+            email="user" + c + "@gmail.com",
+            first_name="User",
+            last_name=c.upper(),
             is_active=True,
-        ) for i in range(1, 9)
+        ) for c in "abcdefgh"
     ]
     for user in new_users:
         user.save()
@@ -28,9 +30,9 @@ def init_users():
 def init_workspaces():
     new_workspaces = [
         Workspace(
-            name="Workspace-" + c,
+            name="Workspace-" + str(i),
             description="This is the workspace description",
-        ) for c in "AB"
+        ) for i in range(1, 3)
     ]
     for workspace in new_workspaces:
         workspace.save()
@@ -54,12 +56,12 @@ def init_permissions():
 def init_projects():
     new_projects = [
         Project(
-            name="Project-" + workspace.name[-1] + c,
+            name="Project-" + workspace.name[-1] + str(i),
             description="This is the project description",
             workspace=workspace,
             owner=random.choice(users),
         ) for workspace in workspaces
-        for c in "ABC"
+        for i in range(1, 4)
     ]
     for project in new_projects:
         project.save()
@@ -72,13 +74,13 @@ def init_tasks():
             type=random.choice(TaskType.choices)[0],
             priority=random.choice(TaskPriority.choices)[0],
             status=random.choice(TaskStatus.choices)[0],
-            title="Task-" + project.name[-2:] + chr(65 + i),
+            title=random.choice(planets) + " Job " + str(i),
             description="This is the task description",
             project=project,
             assignee=random.choice(users),
             reporter=random.choice(users),
         ) for project in projects
-        for i in range(random.randint(0, 20))
+        for i in range(1, random.randint(1, 20) + 1)
     ]
     for task in new_tasks:
         task.save()
