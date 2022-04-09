@@ -1,31 +1,57 @@
 import React from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import { ListItem, ListItemText, ListItemAvatar, Avatar, FormControl, InputLabel } from '@mui/material'
+import { ListItem, ListItemText, ListItemAvatar, Button } from '@mui/material'
 import ColoredAvatar from './ColoredAvatar'
+import { userFullname } from '../../utils/formats'
+import Box from '@mui/material/Box'
+import axios from 'axios'
 
 function UserRole (props) {
-  const [access, setAccess] = React.useState(' ')
+  const [userRole, setUserRole] = React.useState(props.user.role)
+  const [roleChanged, setRoleChanged] = React.useState(false)
 
-  const handleChangeAccess = (e) => {
-    setAccess(e.target.value)
+  React.useEffect(() => {
+    setUserRole(props.user.role)
+  }, [props.user.role])
+
+  const handleChange = (event) => {
+    const newRole = event.target.value
+    setUserRole(newRole)
+    setRoleChanged(newRole !== props.user.role)
+  }
+
+  const handleSave = (event) => {
+    event.preventDefault()
+    const payload = { [props.user.username]: userRole }
+    axios.put('/api/workspace/' + props.workspaceId + '/users', payload).then(resp => {
+        props.setAllUsers(resp.data)
+        setRoleChanged(false)
+      },
+    ).catch(console.error)
   }
 
   return (
-    <ListItem style={{ display: 'flex', alignItems: 'center' }}>
+    <ListItem key={props.user.username} style={{ display: 'flex', alignItems: 'center' }}>
       <ListItemAvatar>
-        <ColoredAvatar name={props.name}/>
+        <ColoredAvatar name={userFullname(props.user)}/>
       </ListItemAvatar>
-      <ListItemText primary={props.name} sx={{ mx: '3vw' }}/>
-      <FormControl sx={{ mx: '3vw', width: '20vw' }}>
-        <InputLabel>Access</InputLabel>
-        <Select defaultValue={{ role: `${props.role}` }} value={access} label="Access" onChange={handleChangeAccess}
-                sx={{ height: '8vh' }} disabled={props.disableEdit}>
-          <MenuItem value={'Admin'}>Admin</MenuItem>
-          <MenuItem value={'Editor'}>Editor</MenuItem>
-          <MenuItem value={'Viewer'}>Viewer</MenuItem>
+      <ListItemText primary={userFullname(props.user)} sx={{ mx: '5vw' }}/>
+      <Box component="form" onSubmit={handleSave} sx={{ mx: '10vw', width: '15vw', height: '8vh' }}>
+        <Select
+          id="access"
+          name="access"
+          value={userRole}
+          onChange={handleChange}
+          disabled={props.disabled}
+        >
+          <MenuItem key={'admin'} value={'admin'}>Admin</MenuItem>
+          <MenuItem key={'editor'} value={'editor'}>Editor</MenuItem>
+          <MenuItem key={'viewer'} value={'viewer'}>Viewer</MenuItem>
         </Select>
-      </FormControl>
+        <Button sx={{ ml: '3vw' }} variant="outlined" disabled={props.disabled || !roleChanged}
+                type="submit">save</Button>
+      </Box>
     </ListItem>
   )
 }

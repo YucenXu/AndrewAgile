@@ -5,22 +5,22 @@ import SearchIcon from '@mui/icons-material/Search'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
+import { userFullname } from '../../utils/formats'
 
 export const filterUsersBySearch = (allUsers, searchText) => {
-  return Object.values(allUsers).filter(
-    user => user.username.toLowerCase().includes(searchText.toLowerCase()),
+  return allUsers.filter(user =>
+    userFullname(user).toLowerCase().includes(searchText.toLowerCase()),
   )
 }
 
-export default function SearchBar () {
-  const [searchText, setSearchText] = React.useState('')
+export default function SearchBar (props) {
 
   const handleSearch = (event) => {
-    setSearchText(event.target.value)
+    props.setSearchText(event.target.value)
   }
 
   const handleCancelSearch = () => {
-    setSearchText('')
+    props.setSearchText('')
   }
 
   return (
@@ -41,7 +41,7 @@ export default function SearchBar () {
             inputProps={{ style: { textAlign: 'left', fontSize: '1.5vw' } }}
             onChange={handleSearch}
             fullWidth={true}
-            value={searchText}
+            value={props.searchText}
             sx={{ height: '5vh' }}
           />
         </Grid>

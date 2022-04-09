@@ -128,14 +128,19 @@ def workspace_users(request, wid):
                 perms = perm_query.filter(user__in=user_roles[UserRole.VIEWER])
                 perms.delete()
 
+    # return empty user list for unknown workspace
+    if not Workspace.objects.filter(id=wid):
+        return JsonResponse([], safe=False)
+
     # admin and editor permissions in DB
-    special_perms = list(Permission.objects.filter(workspace__id=wid).order_by('role', 'user__username'))
+    special_perms = list(Permission.objects.filter(workspace__id=wid))
     special_users = [perm.user.username for perm in special_perms]
     # viewer permissions generated ad-hoc
-    common_users = User.objects.exclude(username__in=special_users).order_by('username')
+    common_users = User.objects.exclude(username__in=special_users)
     common_perms = [Permission(user=user, role=UserRole.VIEWER) for user in common_users]
     # concatenate all permissions into payload
-    serializer = PermissionSerializer(special_perms + common_perms, many=True)
+    all_perms = sorted(special_perms + common_perms, key=lambda p: p.user.username)
+    serializer = PermissionSerializer(all_perms, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 

@@ -14,3 +14,7 @@ export function sanitizeBlank (inputStr) {
 export function capitalizeStr (str) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
+
+export function userFullname (user) {
+  return user.firstname + ' ' + user.lastname
+}
