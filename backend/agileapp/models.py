@@ -15,8 +15,8 @@ class Workspace(models.Model):
 
 class UserRole(models.TextChoices):
     ADMIN = 'admin'
-    VIEWER = 'viewer'
     EDITOR = 'editor'
+    VIEWER = 'viewer'
 
 
 class Permission(models.Model):

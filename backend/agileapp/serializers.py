@@ -268,7 +268,7 @@ class TaskDetailSerializer(TaskSerializer):
     project = ProjectSerializer()
     assignee = UserSerializer()
     reporter = UserSerializer()
-    comments = CommentSerializer(source='comment_set', many=True)
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
@@ -277,3 +277,7 @@ class TaskDetailSerializer(TaskSerializer):
             'project', 'assignee', 'reporter', 'createdAt', 'lastUpdatedAt',
             'comments',
         ]
+
+    def get_comments(self, task):
+        comments = task.comment_set.all().order_by('created_at')
+        return CommentSerializer(comments, many=True).data

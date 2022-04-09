@@ -45,7 +45,7 @@ def user_info(request):
 @login_required
 @require_GET
 def all_workspaces(request):
-    workspaces = Workspace.objects.all()
+    workspaces = Workspace.objects.all().order_by('name')
     serializer = WorkspaceSerializer(workspaces, many=True)
     return JsonResponse(serializer.data, safe=False)
 
@@ -129,10 +129,10 @@ def workspace_users(request, wid):
                 perms.delete()
 
     # admin and editor permissions in DB
-    special_perms = list(Permission.objects.filter(workspace__id=wid))
+    special_perms = list(Permission.objects.filter(workspace__id=wid).order_by('role', 'user__username'))
     special_users = [perm.user.username for perm in special_perms]
     # viewer permissions generated ad-hoc
-    common_users = User.objects.exclude(username__in=special_users)
+    common_users = User.objects.exclude(username__in=special_users).order_by('username')
     common_perms = [Permission(user=user, role=UserRole.VIEWER) for user in common_users]
     # concatenate all permissions into payload
     serializer = PermissionSerializer(special_perms + common_perms, many=True)
@@ -143,7 +143,7 @@ def workspace_users(request, wid):
 @require_http_methods(["GET", "POST"])
 def workspace_projects(request, wid):
     if request.method == "GET":
-        projects = Project.objects.filter(workspace__id=wid)
+        projects = Project.objects.filter(workspace__id=wid).order_by('name')
         serializer = ProjectSerializer(projects, many=True)
         return JsonResponse(serializer.data, safe=False)
     elif request.method == "POST":
@@ -190,7 +190,7 @@ def project_tasks(request, pid):
     if request.method == "GET":
         all_tasks = {}
         for status, _ in TaskStatus.choices:
-            tasks = Task.objects.filter(project__id=pid, status=status)
+            tasks = Task.objects.filter(project__id=pid, status=status).order_by('title')
             serializer = TaskSerializer(tasks, many=True)
             all_tasks[status] = serializer.data
         return JsonResponse(all_tasks)
