@@ -14,7 +14,7 @@ planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', '
 def init_users():
     new_users = [
         User(
-            username="user" + c,
+            username="user-" + c,
             password=make_password("password" + c),
             email="user" + c + "@gmail.com",
             first_name="User",
