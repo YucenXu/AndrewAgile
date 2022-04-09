@@ -56,7 +56,7 @@ def init_permissions():
 def init_projects():
     new_projects = [
         Project(
-            name="Project-" + workspace.name[-1] + str(i),
+            name="Project-" + str(i),
             description="This is the project description",
             workspace=workspace,
             owner=random.choice(users),
