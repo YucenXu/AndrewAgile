@@ -429,7 +429,7 @@ class TaskEdit extends Component {
                       sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
                   {
                     this.state.comments.map((comment) => {
-                      if (comment.user?.username === this.props.currentUser) {
+                      if (comment.user?.username === this.props.curUsername) {
                         return <Grid key={comment.id} item sx={{ mx: 'auto', width: '100%' }}>
                           <Grid container>
                             <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>{comment.content}</Typography>

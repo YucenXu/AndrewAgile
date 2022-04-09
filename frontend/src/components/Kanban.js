@@ -192,7 +192,7 @@ export default function Kanban () {
       {/* Task Edit Popup Dialog */}
       <TaskEdit open={editTaskOpen} setEditOpen={setEditTaskOpen} taskId={taskId} setTaskId={setTaskId}
                 curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
-                disableEdit={disableEdit} currentUser={auth.username}/>
+                disableEdit={disableEdit} curUsername={auth.username}/>
 
       {/* Debug info, will delete*/}
       {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}

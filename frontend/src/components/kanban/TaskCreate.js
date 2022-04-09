@@ -174,6 +174,7 @@ export default function TaskCreate(props) {
                   fullWidth
                   variant="standard"
                   required
+                  defaultValue=''
                 >
                   {
                     props.allUsers.map((user) => (
@@ -192,6 +193,7 @@ export default function TaskCreate(props) {
                   fullWidth
                   variant="standard"
                   required
+                  defaultValue=''
                 >
                   {
                     props.allUsers.map((user) => (
