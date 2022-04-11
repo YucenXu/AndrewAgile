@@ -15,6 +15,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import MenuBar from './MenuBar'
 import { AuthConsumer } from '../hooks/useAuth'
 import { useState } from 'react'
+import Notification from './Notification'
 
 const drawerWidth = 200
 
@@ -63,10 +64,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 )
 
 export default function Home ({ children }) {
-  const [open, setOpen] = useState(true)
-  const [unread, setUnread] = useState(3)
-  const toggleDrawer = () => setOpen(!open)
   const { auth } = AuthConsumer()
+  const [open, setOpen] = useState(true)
+
+  const [showMsg, setShowMsg] = useState(false)
+  const [unread, setUnread] = useState(0)
+
+  const toggleDrawer = () => setOpen(!open)
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -93,7 +97,7 @@ export default function Home ({ children }) {
           >
             Andrew Agile Platform
           </Typography>
-          <IconButton color="inherit" onClick={() => setUnread(0)}>
+          <IconButton color="inherit" onClick={() => setShowMsg(true)}>
             <Badge badgeContent={unread} color="secondary">
               <NotificationsIcon/>
             </Badge>
@@ -132,6 +136,7 @@ export default function Home ({ children }) {
         height: '100vh',
         overflow: 'auto',
       }}>
+        <Notification open={showMsg} setOpen={setShowMsg} unread={unread} setUnread={setUnread}/>
         {children}
       </Box>
     </Box>

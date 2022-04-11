@@ -13,7 +13,7 @@ from rest_framework.parsers import JSONParser
 
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
-
+from agileapp.messenger import Messenger, PermMessenger
 from agileapp.serializers import UserSerializer, WorkspaceSerializer, PermissionSerializer, \
     ProjectSerializer, TaskSerializer, CommentSerializer, TaskDetailSerializer
 
@@ -102,6 +102,8 @@ def workspace_users(request, wid):
             return JsonResponse(errors, status=400)
         else:
             workspace = Workspace.objects.get(id=wid)
+            changelist = PermMessenger.gen_perm_changelist(workspace.id, user_roles)
+
             perm_query = Permission.objects.select_for_update().filter(workspace=workspace)
             with transaction.atomic():
                 for role in (UserRole.ADMIN, UserRole.EDITOR):
@@ -127,6 +129,8 @@ def workspace_users(request, wid):
                 # batch delete withdrawn permission entries
                 perms = perm_query.filter(user__in=user_roles[UserRole.VIEWER])
                 perms.delete()
+
+            PermMessenger.send_perm_msgs(request.user, workspace, changelist)
 
     # return empty user list for unknown workspace
     if not Workspace.objects.filter(id=wid):
@@ -204,7 +208,7 @@ def project_tasks(request, pid):
         data['projectId'] = pid
         serializer = TaskSerializer(data=data)
         if serializer.validate(method='POST'):
-            serializer = TaskSerializer(serializer.save())
+            serializer = TaskSerializer(serializer.save(user=request.user))
             return JsonResponse(serializer.data, status=201)
         else:
             return JsonResponse(serializer.errors, status=400)
@@ -225,7 +229,7 @@ def task_api(request, tid):
         data['id'] = tid
         serializer = TaskSerializer(data=data)
         if serializer.validate(method='PUT'):
-            serializer = TaskSerializer(serializer.save())
+            serializer = TaskSerializer(serializer.save(user=request.user))
             return JsonResponse(serializer.data)
         else:
             return JsonResponse(serializer.errors, status=400)
@@ -272,3 +276,40 @@ def comment_api(request, cid):
             else:
                 comment.delete()
         return HttpResponse(status=200)
+
+
+@login_required
+@require_http_methods(["POST", "DELETE"])
+def watcher_api(request, tid):
+    task = Task.objects.filter(id=tid).first()
+    if not task:
+        return HttpResponse(status=404)
+    elif request.method == "POST":
+        task.watchers.add(request.user)
+    elif request.method == "DELETE":
+        task.watchers.remove(request.user)
+    return HttpResponse(status=200)
+
+
+@login_required
+@require_http_methods(["GET", "DELETE"])
+def message_api(request):
+    if request.method == "GET":
+        msgs = Messenger.pull_msgs(receiver=request.user.username)
+        return JsonResponse(msgs, safe=False)
+    elif request.method == "DELETE":
+        msg_ids = JSONParser().parse(request)
+        error_flag = False
+        if not isinstance(msg_ids, list):
+            error_flag = True
+        else:
+            for msg_id in msg_ids:
+                if not isinstance(msg_id, str):
+                    error_flag = True
+                    break
+        if error_flag:
+            error = {"error": "Json payload should be a list of string IDs."}
+            return JsonResponse(error, status=400)
+        else:
+            Messenger.ack_msgs(request.user.username, msg_ids)
+            return HttpResponse(status=200)

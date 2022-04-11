@@ -19,6 +19,10 @@ sudo apt install libmysqlclient-dev
 sudo -H pip3 install mysqlclient
 sudo apt install mysql-client-core-8.0
 
+# redis client
+sudo apt install redis-tools
+sudo -H pip3 install redis
+
 # apache server
 sudo apt install apache2
 sudo apt install libapache2-mod-wsgi-py3
@@ -33,7 +37,7 @@ Purchase a domain name at [GoDaddy](https://www.godaddy.com/), set your instance
 
 Choose an arbitrary hostname, for example "www" to your purchased domain name to form your **fully qualified domain name** `<hostname>.<domain-name>`. 
 
-Add two inbound security rules in the EC2 instance:
+Add two inbound security rules in the EC2 network:
 
 + type HTTP, port 80, allowed source 0.0.0.0/0
 + type HTTPS, port 443, allowed source 0.0.0.0/0
@@ -42,7 +46,7 @@ Add two inbound security rules in the EC2 instance:
 
 Create a new (or using exist) MySQL instance on [AWS RDS](https://aws.amazon.com/rds/).
 
-Add one inbound security rule in the RDS instance: type MYSQL/Aurora, port 3306, allowed source should be the security group of your EC2 instance.
+Add one inbound security rule in the RDS network: type MYSQL/Aurora, port 3306, allowed source should be the security group of your EC2 instance.
 
 Then connect to RDS within EC2 to create a new database for this project.
 
@@ -54,6 +58,18 @@ mysql -h <host> -P 3306 -u <user> -p
 ```mysql
 create database django character set utf8mb4;
 quit;
+```
+
+## AWS ElastiCache
+
+Create a new (or using exist) Redis instance on [AWS ElastiCache](https://aws.amazon.com/elasticache/).
+
+Add one inbound security rule in the Redis network: type TCP, port 6379, allowed source should be the security group of your EC2 instance.
+
+Then test the connection to Redis within EC2 by redis-cli.
+
+```shell
+redis-cli -c -h <host> -p 6379
 ```
 
 ## Google OAuth2

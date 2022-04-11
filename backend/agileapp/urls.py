@@ -25,4 +25,8 @@ urlpatterns = [
     # comment apis
     path('task/<int:tid>/comments', apis.task_comments),
     path('comment/<int:cid>', apis.comment_api),
+
+    # notification apis
+    path('task/<int:tid>/watchers', apis.watcher_api),
+    path('messages', apis.message_api),
 ]
