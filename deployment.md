@@ -57,6 +57,7 @@ mysql -h <host> -P 3306 -u <user> -p
 
 ```mysql
 create database django character set utf8mb4;
+# drop database django
 quit;
 ```
 
@@ -70,6 +71,7 @@ Then test the connection to Redis within EC2 by redis-cli.
 
 ```shell
 redis-cli -c -h <host> -p 6379
+# > flushall
 ```
 
 ## Google OAuth2
