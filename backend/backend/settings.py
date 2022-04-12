@@ -92,6 +92,22 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {'BACKEND': 'django.core.cache.backends.redis.RedisCache'},
+    'user': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://{CONFIG.get("Redis", "host")}:{CONFIG.get("Redis", "port")}',
+        'TIMEOUT': None,
+        'KEY_PREFIX': 'user',
+    },
+    'msg': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://{CONFIG.get("Redis", "host")}:{CONFIG.get("Redis", "port")}',
+        'TIMEOUT': 60 * 60 * 24,
+        'KEY_PREFIX': 'msg',
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 

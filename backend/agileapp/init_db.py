@@ -84,6 +84,8 @@ def init_tasks():
     ]
     for task in new_tasks:
         task.save()
+        task.watchers.add(task.assignee)
+        task.watchers.add(task.reporter)
     return new_tasks
 
 

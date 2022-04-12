@@ -14,6 +14,8 @@ import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import { sanitizeBlank } from '../../utils/formats'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 class TaskEdit extends Component {
   constructor (props) {
@@ -32,6 +34,7 @@ class TaskEdit extends Component {
       description: '',
       comments: [],
       newComment: '',
+      watching: false,
     }
   }
 
@@ -52,6 +55,7 @@ class TaskEdit extends Component {
       lastUpdatedAt: task.lastUpdatedAt,
       description: task.description,
       comments: task.comments,
+      watching: task.watchers?.includes(this.props.curUsername),
     })
 
   }
@@ -111,6 +115,18 @@ class TaskEdit extends Component {
         },
       ).catch(console.error),
     ).catch(console.error)
+  }
+
+  handleWatchTask = () => {
+    if (this.state.watching) {
+      axios.delete('/api/task/' + this.props.taskId + '/watchers').then(
+        () => this.setState({ watching: false }),
+      ).catch(() => this.setState({ watching: true }))
+    } else {
+      axios.post('/api/task/' + this.props.taskId + '/watchers').then(
+        () => this.setState({ watching: true }),
+      ).catch(() => this.setState({ watching: false }))
+    }
   }
 
   handleSetPriority = (event) => {
@@ -200,7 +216,15 @@ class TaskEdit extends Component {
                 sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
                 align="center">Task</Typography>
             </Grid>
-            <Grid item sx={{ ml: '3%', width: '20%' }}>
+            <Grid item sx={{ mx: '0vw', width: '2vw' }}>
+              <IconButton onClick={this.handleWatchTask} disabled={
+                // force task assignee and reporter to be watchers
+                [this.state.assignee, this.state.reporter].includes(this.props.curUsername)
+              }>
+                {this.state.watching ? <VisibilityIcon color="primary"/> : <VisibilityOffIcon/>}
+              </IconButton>
+            </Grid>
+            <Grid item sx={{ ml: '3%', width: '50%' }}>
               <InputBase
                 name="title"
                 id="title"

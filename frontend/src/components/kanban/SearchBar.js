@@ -14,6 +14,14 @@ export const filterTasksBySearch = (allTasks, searchText) => {
   )
 }
 
+export const filterTasksByWatch = (allTasks, curUsername) => {
+  return Object.values(allTasks).map(
+    tasks => tasks.filter(
+      task => task.watchers?.includes(curUsername),
+    ),
+  )
+}
+
 export default function SearchBar (props) {
 
   const handleSearch = (event) => {

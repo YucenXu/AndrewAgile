@@ -4,7 +4,7 @@
 
 A web application serves as an agile platform, with similar functionalities as Jira and Trello.
 
-Tech stack: [Django](https://www.djangoproject.com/), [React](https://reactjs.org/), [Material-UI](https://mui.com/)
+**Tech stack: Django, React, Material-UI, MySQL, Redis**
 
 ## Dependency
 
@@ -14,13 +14,22 @@ Suggested package versions, can be slightly different.
   + django 4.0+
   + social-auth-app-django 5.0.x
   + djangorestframework 3.13.x
+  + redis-py 4.2.x
   
 + node 17.6+
 + npm 8.5+
++ redis 6.2+
 
 ## Local Dev
 
-1. Initialize the backend database, rerun if models are changed.
+1. Start the local Redis server. Use the command line interface if needed.
+
+   ```shell
+   redis-server
+   # redis-cli
+   ```
+
+2. Initialize the backend database, rerun if models are changed.
 
    ```shell
    cd backend
@@ -29,14 +38,14 @@ Suggested package versions, can be slightly different.
    python3 manage.py shell < agileapp/init_db.py
    ```
 
-2. Start the backend server, code changes will trigger reload.
+3. Start the backend server, code changes will trigger reload.
 
    ```shell
    cd backend
    python3 manage.py runserver
    ```
 
-3. Install frontend node packages. Then start the frontend app, code changes will trigger reload.
+4. Install frontend node packages. Then start the frontend app, code changes will trigger reload.
 
    ```shell
    cd frontend
@@ -44,7 +53,7 @@ Suggested package versions, can be slightly different.
    npm start
    ```
 
-4. Open browser at http://localhost:3000/ to develop and test.
+5. Open browser at http://localhost:3000/ to develop and test.
 
 > Note: If you are logged out at localhost:3000, please go to localhost:8000 to login again.
 >

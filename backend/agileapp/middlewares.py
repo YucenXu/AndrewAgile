@@ -33,11 +33,17 @@ class UserPermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self._perm_url_pattern = re.compile("^/api/workspace/[0-9]+/users$")
+        self._watcher_url_pattern = re.compile("^/api/task/[0-9]+/watchers$")
+        self._message_url = "/api/messages"
 
     def __call__(self, request):
         return self.get_response(request)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
+        # bypass permission check of notification APIs
+        if self._watcher_url_pattern.match(request.path) or request.path == self._message_url:
+            return None
+
         if request.method in ("POST", "PUT", "DELETE"):
             workspace_id = self._parse_workspace_id(view_kwargs)
             if workspace_id and request.user.is_authenticated:

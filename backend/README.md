@@ -2,10 +2,11 @@
 
 ## API permission check
 
-Unsafe REST API methods such as POST, PUT, DELETE which modify backend data will have a pre-flight permission check serving as user access control. Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return **403** directly. A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions API](#update-user-permissions) for details.
+Unsafe REST API methods such as POST, PUT, DELETE which modify backend data will have a pre-flight permission check serving as user access control. Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return 403 directly. A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions API](#update-user-permissions) for details.
 
-```json
+```python
 {
+    # http status code = 403
     "error": "Only admins and editors can modify backend data."
 }
 ```
@@ -157,7 +158,7 @@ Method: PUT
 Request:
 
 ```python
-# required format: username-role key-value pairs
+# required format: a dict of (username,role) pairs
 {
     "testuser-1": "admin",
     "testuser-2": "viewer",
@@ -414,7 +415,8 @@ Response: 200
             "assigneeId": "testuser-3",
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110311-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110312-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110312-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         },
         {
             "id": 8,
@@ -427,7 +429,8 @@ Response: 200
             "assigneeId": "testuser-3",
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110349-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110350-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110350-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ],
     "todo": [
@@ -442,7 +445,8 @@ Response: 200
             "assigneeId": "testuser-3",
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110234-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110235-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110235-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ],
     "inprogress": [
@@ -457,7 +461,8 @@ Response: 200
             "assigneeId": "testuser-1",
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110292-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110293-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110293-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ],
     "done": [
@@ -472,7 +477,8 @@ Response: 200
             "assigneeId": "testuser-1",
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110210-04:00",
-            "lastUpdatedAt": "2022-04-06T16:44:45.064937-04:00"
+            "lastUpdatedAt": "2022-04-06T16:44:45.064937-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ]
 }
@@ -606,7 +612,8 @@ Response:
               "createdAt": "2022-03-27T22:52:32.256339-04:00",
               "lastUpdatedAt": "2022-03-27T22:52:32.256340-04:00"
           }
-      ]
+      ],
+      "watchers": ["user-a", "user-b", "user-c"]
   }
   ```
 
@@ -774,6 +781,123 @@ Response:
   ```json
   {
       "error": "Only the original commenter can delete."
+  }
+  ```
+
+## Notification API
+
+> Note: Notification APIs will bypass the user permission check mentioned at the beginning, even they use POST/PUT/DELETE methods.
+
+### Watch a task
+
+Path: /api/task/\<int:tid\>/watchers
+
+Method: POST
+
+Response: 
+
++ 200
++ 404
+
+### Unwatch a task
+
+Path: /api/task/\<int:tid\>/watchers
+
+Method: DELETE
+
+Response:
+
++ 200
+
++ 404
+
++ 403
+
+  ```json
+  {
+      "error": "Task assignee and reporter cannot unwatch."
+  }
+  ```
+
+### Pull user messages
+
+Path: /api/messages
+
+Method: GET
+
+Response: 200
+
+```json
+[
+    {
+        "type": "TaskCreated",
+        "operator": "User B",
+        "subject": "Workspace-1, Project-1, SampleTask-2",
+        "changelist": {
+            "type": "issue",
+            "status": "todo",
+            "priority": "normal",
+            "description": "task description",
+            "assignee": "user-a",
+            "reporter": "user-b"
+        },
+        "timestamp": "2022-04-11 02:22:46.635001+00:00",
+        "id": "807870fc-c435-4d57-8c51-2649efe2514b"
+    },
+    {
+        "type": "TaskUpdated",
+        "operator": "User C",
+        "subject": "Workspace-1, Project-1, SampleTask-1",
+        "changelist": {
+            "title": "SampleTask-1",
+            "description": "a new description"
+        },
+        "timestamp": "2022-04-11 02:20:10.046862+00:00",
+        "id": "4c13aaf2-dc79-4f6c-bf83-fde4126b74f9"
+    },
+    {
+        "type": "TaskDeleted",
+        "operator": "User D",
+        "subject": "Workspace-1, Project-1, SampleTask-3",
+        "timestamp": "2022-04-11 21:01:34.658551+00:00",
+        "id": "6cb09fed-05c4-469a-8b49-ca1e08f8fa0d"
+    },
+    {
+        "type": "Permission",
+        "operator": "User C",
+        "subject": "Your new user role at Workspace-1 is EDITOR",
+        "timestamp": "2022-04-11 02:18:59.117360+00:00",
+        "id": "56b89e6a-a785-4cfa-8de3-6ef5215076cc"
+    }
+]
+```
+
+### Ack user messages
+
+Path: /api/messages
+
+Method: DELETE
+
+Request:
+
+```python
+# required format: a list of message IDs
+[
+    "f29a0f0f-2f36-4efc-91f6-4796b4b6cfa7",
+    "56b89e6a-a785-4cfa-8de3-6ef5215076cc",
+    "187ab02b-aad1-4b8d-a511-aa5058ea88e5"
+]
+```
+
+Response:
+
++ 200
+
++ 400
+
+  ```json
+  {
+      "error": "Json payload should be a list of string IDs."
   }
   ```
 
