@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
-from agileapp.messenger import TaskMessenger
+from agileapp.messengers import TaskMessenger
 
 
 class MutableModelSerializer(serializers.ModelSerializer):
@@ -167,13 +167,19 @@ class TaskSerializer(MutableModelSerializer):
     reporterId = serializers.CharField(source='reporter.username')
     createdAt = serializers.DateTimeField(source='created_at')
     lastUpdatedAt = serializers.DateTimeField(source='last_updated_at')
+    watchers = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
         fields = [
             'id', 'type', 'priority', 'status', 'title', 'description',
-            'projectId', 'assigneeId', 'reporterId', 'createdAt', 'lastUpdatedAt'
+            'projectId', 'assigneeId', 'reporterId', 'createdAt', 'lastUpdatedAt',
+            'watchers',
         ]
+
+    def get_watchers(self, task):
+        watchers = task.watchers.order_by('username')
+        return list(watchers.values_list("username", flat=True))
 
     def _validate_create(self, data):
         errors = self._validate_fields([
@@ -230,6 +236,7 @@ class TaskSerializer(MutableModelSerializer):
 
         with transaction.atomic():
             super(TaskSerializer, self).save()
+            # automatically add assignee and reporter as watchers
             for watcher in ('assignee', 'reporter'):
                 if watcher in self._validated_data:
                     self._instance.watchers.add(self._validated_data[watcher])

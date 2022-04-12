@@ -13,7 +13,7 @@ from rest_framework.parsers import JSONParser
 
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
-from agileapp.messenger import Messenger, PermMessenger
+from agileapp.messengers import Messenger, PermMessenger, TaskMessenger
 from agileapp.serializers import UserSerializer, WorkspaceSerializer, PermissionSerializer, \
     ProjectSerializer, TaskSerializer, CommentSerializer, TaskDetailSerializer
 
@@ -236,6 +236,7 @@ def task_api(request, tid):
     elif request.method == "DELETE":
         task = Task.objects.filter(id=tid).first()
         if task:
+            TaskMessenger.send_task_msgs('TaskDeleted', request.user, task, None)
             task.delete()
         return HttpResponse(status=200)
 
@@ -287,7 +288,11 @@ def watcher_api(request, tid):
     elif request.method == "POST":
         task.watchers.add(request.user)
     elif request.method == "DELETE":
-        task.watchers.remove(request.user)
+        if task.assignee == request.user or task.reporter == request.user:
+            error = {"error": "Task assignee and reporter cannot unwatch."}
+            return JsonResponse(error, status=403)
+        else:
+            task.watchers.remove(request.user)
     return HttpResponse(status=200)
 
 

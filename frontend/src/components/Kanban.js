@@ -1,11 +1,11 @@
 import * as React from 'react'
 import Grid from '@mui/material/Grid'
-import { Button, FormControl } from '@mui/material'
+import { Button, FormControl, Switch } from '@mui/material'
 import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import SearchBar, { filterTasksBySearch } from './kanban/SearchBar'
+import SearchBar, { filterTasksBySearch, filterTasksByWatch } from './kanban/SearchBar'
 import TaskEdit from './kanban/TaskEdit'
 import TaskCreate from './kanban/TaskCreate'
 import ProjectCreate from './kanban/ProjectCreate'
@@ -14,6 +14,7 @@ import axios from 'axios'
 import { canModifyData } from '../hooks/useScope'
 import DragBoard from './kanban/DragBoard'
 import { AuthConsumer } from '../hooks/useAuth'
+import Typography from '@mui/material/Typography'
 
 const initialTasks = {
   backlog: [],
@@ -29,6 +30,7 @@ export default function Kanban () {
 
   const [allTasks, setAllTasks] = React.useState(initialTasks)
   const [searchText, setSearchText] = React.useState('')
+  const [showWatching, setShowWatching] = React.useState(false)
 
   const [workspaceId, setWorkspaceId] = React.useState(0)
   const [curWorkspace, setCurWorkspace] = React.useState({})
@@ -109,6 +111,10 @@ export default function Kanban () {
     setTaskId(taskId)
   }
 
+  const handleSwitchWatching = () => {
+    setShowWatching(showWatching => !showWatching)
+  }
+
   return (
     <Box>
       {/* Dropdown menus */}
@@ -167,7 +173,17 @@ export default function Kanban () {
         <Grid item sx={{ width: '25vw' }}>
           <SearchBar searchText={searchText} setSearchText={setSearchText}/>
         </Grid>
-        <Grid item sx={{ width: '44.5vw' }}/>
+        <Grid container item sx={{ ml: '2vw', width: '40vw' }} direction="column">
+          <Typography
+            sx={{ fontSize: '14px' }}
+            component="span"
+            variant="body"
+            color="text.primary"
+          >
+            Only show watching tasks
+          </Typography>
+          <Switch checked={showWatching} onChange={handleSwitchWatching} inputProps={{ 'aria-label': 'controlled' }}/>
+        </Grid>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
                   onClick={handleClickCreateTask}
@@ -176,8 +192,10 @@ export default function Kanban () {
       </Grid>
 
       {/* Board */}
-      <DragBoard statusList={Object.keys(allTasks)} allTasks={filterTasksBySearch(allTasks, searchText)}
-                 setAllTasks={setAllTasks} setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId}
+      <DragBoard statusList={Object.keys(allTasks)} allTasks={showWatching ?
+        filterTasksByWatch(filterTasksBySearch(allTasks, searchText), auth.username) :
+        filterTasksBySearch(allTasks, searchText)
+      } setAllTasks={setAllTasks} setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId}
                  refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={disableEdit}/>
 
       {/* Project Create Popup Dialog */}

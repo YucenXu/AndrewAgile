@@ -415,7 +415,8 @@ Response: 200
             "assigneeId": "testuser-3",
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110311-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110312-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110312-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         },
         {
             "id": 8,
@@ -428,7 +429,8 @@ Response: 200
             "assigneeId": "testuser-3",
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110349-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110350-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110350-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ],
     "todo": [
@@ -443,7 +445,8 @@ Response: 200
             "assigneeId": "testuser-3",
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110234-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110235-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110235-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ],
     "inprogress": [
@@ -458,7 +461,8 @@ Response: 200
             "assigneeId": "testuser-1",
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110292-04:00",
-            "lastUpdatedAt": "2022-04-06T14:21:42.110293-04:00"
+            "lastUpdatedAt": "2022-04-06T14:21:42.110293-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ],
     "done": [
@@ -473,7 +477,8 @@ Response: 200
             "assigneeId": "testuser-1",
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110210-04:00",
-            "lastUpdatedAt": "2022-04-06T16:44:45.064937-04:00"
+            "lastUpdatedAt": "2022-04-06T16:44:45.064937-04:00",
+            "watchers": ["user-a", "user-b", "user-c"]
         }
     ]
 }
@@ -607,7 +612,8 @@ Response:
               "createdAt": "2022-03-27T22:52:32.256339-04:00",
               "lastUpdatedAt": "2022-03-27T22:52:32.256340-04:00"
           }
-      ]
+      ],
+      "watchers": ["user-a", "user-b", "user-c"]
   }
   ```
 
@@ -802,7 +808,16 @@ Method: DELETE
 Response:
 
 + 200
+
 + 404
+
++ 403
+
+  ```json
+  {
+      "error": "Task assignee and reporter cannot unwatch."
+  }
+  ```
 
 ### Pull user messages
 
@@ -815,7 +830,7 @@ Response: 200
 ```json
 [
     {
-        "type": "TaskCreate",
+        "type": "TaskCreated",
         "operator": "User B",
         "subject": "Workspace-1, Project-1, SampleTask-2",
         "changelist": {
@@ -830,7 +845,7 @@ Response: 200
         "id": "807870fc-c435-4d57-8c51-2649efe2514b"
     },
     {
-        "type": "TaskUpdate",
+        "type": "TaskUpdated",
         "operator": "User C",
         "subject": "Workspace-1, Project-1, SampleTask-1",
         "changelist": {
@@ -839,6 +854,13 @@ Response: 200
         },
         "timestamp": "2022-04-11 02:20:10.046862+00:00",
         "id": "4c13aaf2-dc79-4f6c-bf83-fde4126b74f9"
+    },
+    {
+        "type": "TaskDeleted",
+        "operator": "User D",
+        "subject": "Workspace-1, Project-1, SampleTask-3",
+        "timestamp": "2022-04-11 21:01:34.658551+00:00",
+        "id": "6cb09fed-05c4-469a-8b49-ca1e08f8fa0d"
     },
     {
         "type": "Permission",

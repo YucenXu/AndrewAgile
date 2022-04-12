@@ -1,6 +1,6 @@
 import React from 'react'
 import Box from '@mui/material/Box'
-import { Checkbox, Collapse, Dialog } from '@mui/material'
+import { Button, Checkbox, Collapse, Dialog } from '@mui/material'
 import { Grid } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -18,42 +18,121 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import axios from 'axios'
+import useInterval from '../hooks/useInterval'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import { capitalizeStr, formatDateTime } from '../utils/formats'
+
+function TaskChangelist (props) {
+  if ('changelist' in props.msg) {
+    return (
+      <Collapse
+        key={props.msg.id}
+        in={props.collapsed.includes(props.msg.id)}
+        timeout="auto"
+        unmountOnExit
+        sx={{ ml: '4vw' }}
+      >
+        <Table sx={{ width: '40vw' }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="left" sx={{ width: '7vw', fontWeight: 'bold' }}>Task Attribute</TableCell>
+              <TableCell align="left" sx={{ fontWeight: 'bold' }}>New Value</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{
+            Object.keys(props.msg.changelist).map((fieldName, _) => (
+              <TableRow key={fieldName}>
+                <TableCell component="th" scope="row" align="left">
+                  {capitalizeStr(fieldName)}
+                </TableCell>
+                <TableCell align="left">
+                  {props.msg.changelist[fieldName]}
+                </TableCell>
+              </TableRow>
+            ))
+          }
+          </TableBody>
+        </Table>
+      </Collapse>
+    )
+  } else {
+    return null
+  }
+}
 
 export default function Notification (props) {
-  const [checked, setChecked] = React.useState([1])
+  const [msgs, setMsgs] = React.useState([])
+  const [selected, setSelected] = React.useState([])
+  const [selectAll, setSelectAll] = React.useState(false)
+  const [collapsed, setCollapsed] = React.useState([])
 
-  const handleClose = () => {
-    props.setOpen(false)
-    props.setUnread(3)
+  React.useEffect(() => pullUserMessages(), [])
+  useInterval(() => pullUserMessages(), 10000)
+
+  const pullUserMessages = () => {
+    axios.get('/api/messages').then(
+      resp => {
+        const newMsgs = resp.data
+        setMsgs(newMsgs)
+        props.setUnread(newMsgs.length)
+
+        const newMsgIds = newMsgs.map(msg => msg.id)
+        const newSelected = selected.filter(msgId => newMsgIds.includes(msgId))
+        const newCollapsed = collapsed.filter(msgId => newMsgIds.includes(msgId))
+
+        setSelected(newSelected)
+        setCollapsed(newCollapsed)
+        setSelectAll(newSelected.length === newMsgIds.length)
+      },
+    ).catch(console.error)
   }
 
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
+  const handleMarkAsRead = () => {
+    axios.delete('/api/messages', { data: selected }).then(
+      () => pullUserMessages(),
+    ).catch(console.error)
+  }
 
-    if (currentIndex === -1) {
-      newChecked.push(value)
+  const handleClose = () => props.setOpen(false)
+
+  const handleSelect = (msgId) => {
+    const currentIdx = selected.indexOf(msgId)
+    const newSelected = [...selected]
+
+    if (currentIdx === -1) {
+      newSelected.push(msgId)
     } else {
-      newChecked.splice(currentIndex, 1)
+      newSelected.splice(currentIdx, 1)
     }
 
-    setChecked(newChecked)
+    setSelected(newSelected)
+    setSelectAll(newSelected.length === msgs.length)
   }
 
-  function createData (name, value) {
-    return { name, value }
+  const handleSelectAll = () => {
+    if (!selectAll) {
+      setSelected(msgs.map(msg => msg.id))
+      setSelectAll(true)
+    } else {
+      setSelected([])
+      setSelectAll(false)
+    }
   }
 
-  const rows = [
-    { name: 'Type', value: 'Issue' },
-    { name: 'Status', value: 'Done' },
-    { name: 'Title', value: 'Task Title' },
-    {
-      name: 'Description', value: 'A very very very very very very very very very very very very very very very very' +
-        ' very very very very very very very very very very very very long sentence',
-    },
-    { name: 'Assignee', value: 'pzhao2' },
-  ]
+  const handleCollapse = (msgId) => {
+    const currentIdx = collapsed.indexOf(msgId)
+    const newCollapsed = [...collapsed]
+
+    if (currentIdx === -1) {
+      newCollapsed.push(msgId)
+    } else {
+      newCollapsed.splice(currentIdx, 1)
+    }
+
+    setCollapsed(newCollapsed)
+  }
 
   return (
     <Dialog
@@ -85,24 +164,64 @@ export default function Notification (props) {
 
       <Box sx={{ mb: '0%', width: '50vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
         <List sx={{ width: '50vw', bgcolor: 'background.paper' }}>
-          {[0, 1, 2].map((id) =>
-            <Box>
+          <ListItem style={{ display: 'flex' }}>
+            <Grid container item xs={8} justifyContent="flex-start">
+              <Typography
+                sx={{ fontWeight: 'bold', fontSize: '18px' }}
+                component="span"
+                variant="body"
+                color="text.primary"
+              >
+                {msgs.length > 0 ? 'Recent messages' : 'No new messages'}
+              </Typography>
+            </Grid>
+            <Grid container item xs={4} justifyContent="flex-end" direction="row"
+                  sx={{ visibility: msgs.length > 0 ? 'visible' : 'hidden' }}>
+              <Button variant="contained" style={{ width: '70%', height: '100%' }}
+                      onClick={handleMarkAsRead}>Mark as read</Button>
+              <Checkbox
+                onChange={handleSelectAll}
+                checked={selectAll}
+              />
+            </Grid>
+          </ListItem>
+
+          {msgs.map((msg) =>
+            <React.Fragment key={msg.id}>
               <ListItem
-                key={id}
+                key={msg.id}
                 secondaryAction={
                   <Checkbox
-                    onChange={handleToggle(id)}
-                    checked={checked.indexOf(id) !== -1}
-                    inputProps={{ 'aria-labelledby': id }}
+                    onChange={() => handleSelect(msg.id)}
+                    checked={selected.includes(msg.id)}
+                    inputProps={{ 'aria-labelledby': msg.id }}
                   />
                 }
               >
                 <ListItemAvatar>
-                  <ColoredAvatar name={'Peng Zhao'}/>
+                  <ColoredAvatar name={msg.operator}/>
                 </ListItemAvatar>
                 <ListItemText
-                  onClick={handleToggle(id)}
-                  primary="[TaskCreate] Workspace Workspace-1, Project Project-1, Task SampleTask-2"
+                  onClick={() => handleCollapse(msg.id)}
+                  primary={
+                    <>
+                      {`[${msg.type}] ${msg.subject}`}
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        sx={{
+                          visibility: 'changelist' in msg ? 'visible' : 'hidden',
+                          color: 'inherit',
+                        }}
+                      >
+                        {
+                          collapsed.includes(msg.id) ?
+                            <KeyboardArrowUpIcon/> :
+                            <KeyboardArrowDownIcon/>
+                        }
+                      </IconButton>
+                    </>
+                  }
                   secondary={
                     <Typography
                       sx={{ display: 'inline' }}
@@ -110,42 +229,16 @@ export default function Notification (props) {
                       variant="body2"
                       color="text.primary"
                     >
-                      Peng Zhao
+                      {`${msg.operator} — ${formatDateTime(msg.timestamp)}`}
                     </Typography>
                   }
                 />
               </ListItem>
-              <Collapse
-                key={id}
-                in={checked.indexOf(id) !== -1}
-                timeout="auto"
-                unmountOnExit
-                sx={{ ml: '4vw' }}
-              >
-                <Table sx={{ width: '36vw' }} size="small" aria-label="a dense table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="left" sx={{ width: '5vw' }}>Task Attribute</TableCell>
-                      <TableCell align="left">New Value</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map((row) => (
-                      <TableRow
-                        key={row.name}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
-                        <TableCell component="th" scope="row" align="left">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="left">{row.value}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Collapse>
+
+              <TaskChangelist msg={msg} collapsed={collapsed}/>
+
               <Divider variant="inset" component="li"/>
-            </Box>,
+            </React.Fragment>,
           )}
         </List>
       </Box>

@@ -133,7 +133,7 @@ Make a few changes to [settings.py](backend/backend/settings.py):
 
 + Make a copy of the [config.ini.sample](backend/config.ini.sample) file and rename the copy as `config.ini`.
 
-  Update with your own secrets for Django, GoogleOAuth2 and MySQL in `config.ini`.
+  Update with your own parameters for Django, GoogleOAuth2, MySQL, and Redis in `config.ini`.
 
   Switch the configuration file to the production version.
   

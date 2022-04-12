@@ -136,7 +136,7 @@ export default function Home ({ children }) {
         height: '100vh',
         overflow: 'auto',
       }}>
-        <Notification open={showMsg} setOpen={setShowMsg} unread={unread} setUnread={setUnread}/>
+        <Notification open={showMsg} setOpen={setShowMsg} setUnread={setUnread}/>
         {children}
       </Box>
     </Box>

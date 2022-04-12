@@ -70,13 +70,13 @@ class TaskMessenger(Messenger):
     def gen_task_changelist(cls, new_data):
         changelist = {}
         if 'id' in new_data:
-            msg_type = 'TaskUpdate'
+            msg_type = 'TaskUpdated'
             task = Task.objects.get(id=new_data['id'])
             for key, value in new_data.items():
                 if getattr(task, key) != new_data[key]:
                     changelist[key] = str(value)
         else:
-            msg_type = 'TaskCreate'
+            msg_type = 'TaskCreated'
             for key, value in new_data.items():
                 if key not in ('project', 'title'):
                     changelist[key] = str(value)
@@ -84,7 +84,8 @@ class TaskMessenger(Messenger):
 
     @classmethod
     def send_task_msgs(cls, msg_type, operator, task, changelist):
-        if len(changelist) == 0:
+        # message type is TaskCreate or TaskUpdate, but no changes
+        if changelist is not None and len(changelist) == 0:
             return
 
         subject = '%s, %s, %s' % (task.project.workspace.name, task.project.name, task.title)
@@ -92,9 +93,10 @@ class TaskMessenger(Messenger):
             'type': msg_type,
             'operator': operator.first_name + ' ' + operator.last_name,
             'subject': subject,
-            'changelist': changelist,
             'timestamp': str(timezone.now()),
         }
+        if changelist:
+            msg['changelist'] = changelist
 
         receivers = set(task.watchers.values_list("username", flat=True))
         receivers.discard(operator.username)

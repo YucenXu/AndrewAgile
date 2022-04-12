@@ -18,6 +18,7 @@ Suggested package versions, can be slightly different.
   
 + node 17.6+
 + npm 8.5+
++ redis 6.2+
 
 ## Local Dev
 
