@@ -4,9 +4,9 @@
 
 Unsafe REST API methods such as POST, PUT, DELETE which modify backend data will have a pre-flight permission check serving as user access control. Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return 403 directly. A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions API](#update-user-permissions) for details.
 
-```json
+```javascript
 {
-    # http status code = 403
+    // http status code = 403
     "error": "Only admins and editors can modify backend data."
 }
 ```
@@ -157,8 +157,8 @@ Method: PUT
 
 Request:
 
-```json
-# required format: a dict of (username,role) pairs
+```javascript
+// required format: a dict of (username,role) pairs
 {
     "testuser-1": "admin",
     "testuser-2": "viewer",
@@ -270,10 +270,10 @@ Method: POST
 
 Request:
 
-```json
+```javascript
 {
-    "name": "project name",  # required, non-blank
-    "description": "project description"  # optional
+    "name": "project name",  // required, non-blank
+    "description": "project description"  // optional
 }
 ```
 
@@ -346,10 +346,10 @@ Method: PUT
 
 Request:
 
-```json
+```javascript
 {
-    "name": "project name",  # optional, non-blank
-    "description": "project description"  # optional
+    "name": "project name",  // optional, non-blank
+    "description": "project description"  // optional
 }
 ```
 
@@ -499,15 +499,15 @@ Method: POST
 
 Request:
 
-```json
+```javascript
 {
-    "type": "story",  # required
-    "priority": "critical",  # optional, default normal
-    "status": "todo",  # optional, default backlog
-    "title": "task title",  # required, non-blank
-    "description": "task description",  # optional
-    "assigneeId": "userA",  # required, non-blank
-    "reporterId": "userB"  # required, non-blank
+    "type": "story",  // required
+    "priority": "critical",  // optional, default normal
+    "status": "todo",  // optional, default backlog
+    "title": "task title",  // required, non-blank
+    "description": "task description",  // optional
+    "assigneeId": "userA",  // required, non-blank
+    "reporterId": "userB"  // required, non-blank
 }
 ```
 
@@ -637,16 +637,16 @@ Method: PUT
 
 Request:
 
-```json
+```javascript
 {
-    "type": "story",  # optional
-    "priority": "critical",  # optional
-    "status": "todo",  # optional
-    "title": "task title",  # optional, non-blank
-    "description": "task description",  # optional
-    "assigneeId": "userA",  # optional, non-blank
-    "reporterId": "userB",  # optional, non-blank
-    "visible": false  # optional
+    "type": "story",  // optional
+    "priority": "critical",  // optional
+    "status": "todo",  // optional
+    "title": "task title",  // optional, non-blank
+    "description": "task description",  // optional
+    "assigneeId": "userA",  // optional, non-blank
+    "reporterId": "userB",  // optional, non-blank
+    "visible": false  // optional
 }
 ```
 
@@ -700,9 +700,9 @@ Method: POST
 
 Request:
 
-```json
+```javascript
 {
-    "content": "my comment"  # required, non-blank
+    "content": "my comment"  // required, non-blank
 }
 ```
 
@@ -743,9 +743,9 @@ Method: PUT
 
 Request:
 
-```json
+```javascript
 {
-    "content": "edited comment"  # optional, non-blank
+    "content": "edited comment"  // optional, non-blank
 }
 ```
 
@@ -876,6 +876,16 @@ Response: 200
         "id": "6cb09fed-05c4-469a-8b49-ca1e08f8fa0d"
     },
     {
+        "type": "NewComment",
+        "operator": "User C",
+        "subject": "Workspace-1, Project-1, SampleTask-1",
+        "changelist": {
+            "comment": "my new comment"
+        },
+        "timestamp": "2022-04-11 02:20:10.046862+00:00",
+        "id": "dajlw92k-389j-asdk-dj3s-3jdufjso4xkb"
+    },
+    {
         "type": "Permission",
         "operator": "User C",
         "subject": "Your new user role at Workspace-1 is EDITOR",
@@ -893,8 +903,8 @@ Method: DELETE
 
 Request:
 
-```json
-# required format: a list of message IDs
+```javascript
+// required format: a list of message IDs
 [
     "f29a0f0f-2f36-4efc-91f6-4796b4b6cfa7",
     "56b89e6a-a785-4cfa-8de3-6ef5215076cc",

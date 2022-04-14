@@ -8,8 +8,9 @@ A web application serves as an agile platform, with similar functionalities as J
 
 ## Documentation
 
++ [User Manual](user_manual.md)
++ [Deployment Guide](deployment.md)
 + [Backend API spec](backend/README.md)
-+ [Deployment guide](deployment.md)
 
 ## Requirements
 
