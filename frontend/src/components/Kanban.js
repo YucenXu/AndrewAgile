@@ -31,6 +31,7 @@ export default function Kanban () {
   const [allTasks, setAllTasks] = React.useState(initialTasks)
   const [searchText, setSearchText] = React.useState('')
   const [showWatching, setShowWatching] = React.useState(false)
+  const [showArchived, setShowArchived] = React.useState(false)
 
   const [workspaceId, setWorkspaceId] = React.useState(0)
   const [curWorkspace, setCurWorkspace] = React.useState({})
@@ -52,7 +53,7 @@ export default function Kanban () {
   React.useEffect(() => fetchAllWorkspaces(), [])
   React.useEffect(() => fetchAllProjects(), [workspaceId, refreshProjects])
   React.useEffect(() => fetchAllUsers(), [workspaceId])
-  React.useEffect(() => fetchAllTasks(), [projectId, refreshTasks])
+  React.useEffect(() => fetchAllTasks(), [projectId, refreshTasks, showArchived])
 
   useInterval(() => {
     fetchAllWorkspaces()
@@ -80,7 +81,8 @@ export default function Kanban () {
   }
 
   const fetchAllTasks = () => {
-    axios.get('/api/project/' + projectId + '/tasks').then(
+    axios.get('/api/project/' + projectId + '/tasks',
+      { params: { visible: !showArchived } }).then(
       resp => setAllTasks(resp.data),
     ).catch(console.error)
   }
@@ -113,6 +115,10 @@ export default function Kanban () {
 
   const handleSwitchWatching = () => {
     setShowWatching(showWatching => !showWatching)
+  }
+
+  const handleSwitchArchived = () => {
+    setShowArchived(showArchived => !showArchived)
   }
 
   return (
@@ -173,16 +179,27 @@ export default function Kanban () {
         <Grid item sx={{ width: '25vw' }}>
           <SearchBar searchText={searchText} setSearchText={setSearchText}/>
         </Grid>
-        <Grid container item sx={{ ml: '2vw', width: '40vw' }} direction="column">
+        <Grid container item sx={{ ml: '2vw', width: '8vw' }} direction="column">
           <Typography
             sx={{ fontSize: '14px' }}
             component="span"
             variant="body"
             color="text.primary"
           >
-            Only show watching tasks
+            Watching tasks
           </Typography>
           <Switch checked={showWatching} onChange={handleSwitchWatching} inputProps={{ 'aria-label': 'controlled' }}/>
+        </Grid>
+        <Grid container item sx={{ ml: '2vw', width: '32vw' }} direction="column">
+          <Typography
+            sx={{ fontSize: '14px' }}
+            component="span"
+            variant="body"
+            color="text.primary"
+          >
+            Archived tasks
+          </Typography>
+          <Switch checked={showArchived} onChange={handleSwitchArchived} inputProps={{ 'aria-label': 'controlled' }}/>
         </Grid>
         <Grid item sx={{ width: '10vw' }}>
           <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}

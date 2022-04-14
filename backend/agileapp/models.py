@@ -77,6 +77,7 @@ class Task(models.Model):
     assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='assignee')
     reporter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='reporter')
     watchers = models.ManyToManyField(User, related_name='watchers')
+    visible = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)
     last_updated_at = models.DateTimeField(default=timezone.now)
 

@@ -4,9 +4,9 @@
 
 Unsafe REST API methods such as POST, PUT, DELETE which modify backend data will have a pre-flight permission check serving as user access control. Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return 403 directly. A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions API](#update-user-permissions) for details.
 
-```python
+```javascript
 {
-    # http status code = 403
+    // http status code = 403
     "error": "Only admins and editors can modify backend data."
 }
 ```
@@ -157,8 +157,8 @@ Method: PUT
 
 Request:
 
-```python
-# required format: a dict of (username,role) pairs
+```javascript
+// required format: a dict of (username,role) pairs
 {
     "testuser-1": "admin",
     "testuser-2": "viewer",
@@ -270,10 +270,10 @@ Method: POST
 
 Request:
 
-```python
+```javascript
 {
-    "name": "project name",  # required, non-blank
-    "description": "project description"  # optional
+    "name": "project name",  // required, non-blank
+    "description": "project description"  // optional
 }
 ```
 
@@ -346,10 +346,10 @@ Method: PUT
 
 Request:
 
-```python
+```javascript
 {
-    "name": "project name",  # optional, non-blank
-    "description": "project description"  # optional
+    "name": "project name",  // optional, non-blank
+    "description": "project description"  // optional
 }
 ```
 
@@ -395,9 +395,11 @@ Response: 200
 
 ### Get all tasks of a project
 
-Path: /api/project/\<int:pid\>/tasks
+Path: /api/project/\<int:pid\>/tasks?visible=\<bool>
 
 Method: GET
+
+Request: optional query parameter `visible`, default value is `true`, set to `false` will show archived tasks.
 
 Response: 200
 
@@ -416,7 +418,8 @@ Response: 200
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110311-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110312-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         },
         {
             "id": 8,
@@ -430,7 +433,8 @@ Response: 200
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110349-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110350-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ],
     "todo": [
@@ -446,7 +450,8 @@ Response: 200
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110234-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110235-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ],
     "inprogress": [
@@ -462,7 +467,8 @@ Response: 200
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110292-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110293-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ],
     "done": [
@@ -478,7 +484,8 @@ Response: 200
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110210-04:00",
             "lastUpdatedAt": "2022-04-06T16:44:45.064937-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ]
 }
@@ -492,15 +499,15 @@ Method: POST
 
 Request:
 
-```python
+```javascript
 {
-    "type": "story",  # required
-    "priority": "critical",  # optional, default normal
-    "status": "todo",  # optional, default backlog
-    "title": "task title",  # required, non-blank
-    "description": "task description",  # optional
-    "assigneeId": "userA",  # required, non-blank
-    "reporterId": "userB"  # required, non-blank
+    "type": "story",  // required
+    "priority": "critical",  // optional, default normal
+    "status": "todo",  // optional, default backlog
+    "title": "task title",  // required, non-blank
+    "description": "task description",  // optional
+    "assigneeId": "userA",  // required, non-blank
+    "reporterId": "userB"  // required, non-blank
 }
 ```
 
@@ -520,7 +527,9 @@ Response:
       "assigneeId": "userA",
       "reporterId": "userB",
       "createdAt": "2022-04-01T22:42:41.664073-04:00",
-      "lastUpdatedAt": "2022-04-01T22:42:41.664085-04:00"
+      "lastUpdatedAt": "2022-04-01T22:42:41.664085-04:00",
+      "watchers": ["userA", "userB"],
+      "visible": true
   }
   ```
 
@@ -583,6 +592,8 @@ Response:
       },
       "createdAt": "2022-03-27T22:52:32.231983-04:00",
       "lastUpdatedAt": "2022-03-27T22:52:32.231984-04:00",
+      "watchers": ["userA", "userB", "userC"],
+      "visible": true,
       "comments": [
           {
               "id": 6,
@@ -612,8 +623,7 @@ Response:
               "createdAt": "2022-03-27T22:52:32.256339-04:00",
               "lastUpdatedAt": "2022-03-27T22:52:32.256340-04:00"
           }
-      ],
-      "watchers": ["user-a", "user-b", "user-c"]
+      ]
   }
   ```
 
@@ -627,15 +637,16 @@ Method: PUT
 
 Request:
 
-```python
+```javascript
 {
-    "type": "story",  # optional
-    "priority": "critical",  # optional
-    "status": "todo",  # optional
-    "title": "task title",  # optional, non-blank
-    "description": "task description",  # optional
-    "assigneeId": "userA",  # optional, non-blank
-    "reporterId": "userB"  # optional, non-blank
+    "type": "story",  // optional
+    "priority": "critical",  // optional
+    "status": "todo",  // optional
+    "title": "task title",  // optional, non-blank
+    "description": "task description",  // optional
+    "assigneeId": "userA",  // optional, non-blank
+    "reporterId": "userB",  // optional, non-blank
+    "visible": false  // optional
 }
 ```
 
@@ -655,7 +666,9 @@ Response:
       "assigneeId": "userA",
       "reporterId": "userB",
       "createdAt": "2022-03-27T22:52:32.231983-04:00",
-      "lastUpdatedAt": "2022-03-27T22:52:32.231984-04:00"
+      "lastUpdatedAt": "2022-03-27T22:52:32.231984-04:00",
+      "watchers": ["userA", "userB", "userC"],
+      "visible": true
   }
   ```
 
@@ -687,9 +700,9 @@ Method: POST
 
 Request:
 
-```python
+```javascript
 {
-    "content": "my comment"  # required, non-blank
+    "content": "my comment"  // required, non-blank
 }
 ```
 
@@ -730,9 +743,9 @@ Method: PUT
 
 Request:
 
-```python
+```javascript
 {
-    "content": "edited comment"  # optional, non-blank
+    "content": "edited comment"  // optional, non-blank
 }
 ```
 
@@ -863,6 +876,16 @@ Response: 200
         "id": "6cb09fed-05c4-469a-8b49-ca1e08f8fa0d"
     },
     {
+        "type": "NewComment",
+        "operator": "User C",
+        "subject": "Workspace-1, Project-1, SampleTask-1",
+        "changelist": {
+            "comment": "my new comment"
+        },
+        "timestamp": "2022-04-11 02:20:10.046862+00:00",
+        "id": "dajlw92k-389j-asdk-dj3s-3jdufjso4xkb"
+    },
+    {
         "type": "Permission",
         "operator": "User C",
         "subject": "Your new user role at Workspace-1 is EDITOR",
@@ -880,8 +903,8 @@ Method: DELETE
 
 Request:
 
-```python
-# required format: a list of message IDs
+```javascript
+// required format: a list of message IDs
 [
     "f29a0f0f-2f36-4efc-91f6-4796b4b6cfa7",
     "56b89e6a-a785-4cfa-8de3-6ef5215076cc",

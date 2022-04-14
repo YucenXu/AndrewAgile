@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
-from agileapp.messengers import TaskMessenger
+from agileapp.messengers import TaskMessenger, CommentMessenger
 
 
 class MutableModelSerializer(serializers.ModelSerializer):
@@ -84,13 +84,25 @@ class MutableModelSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         if 'id' in self._validated_data:
             self._instance = self.Meta.model.objects.get(id=self._validated_data['id'])
+            unchanged_fields = []
+
             for key, value in self._validated_data.items():
-                setattr(self._instance, key, value)
-            if len(self._validated_data) > 1 and "last_updated_at" in self._instance.__dict__:
+                if getattr(self._instance, key) != value:
+                    setattr(self._instance, key, value)
+                else:
+                    unchanged_fields.append(key)
+
+            for field in unchanged_fields:
+                del self._validated_data[field]
+
+            # only update timestamp if some fields have been changed
+            if self._validated_data and "last_updated_at" in self._instance.__dict__:
                 setattr(self._instance, "last_updated_at", timezone.now())
+                self._instance.save()
         else:
             self._instance = self.Meta.model(**self._validated_data)
-        self._instance.save()
+            self._instance.save()
+
         return self._instance
 
 
@@ -174,7 +186,7 @@ class TaskSerializer(MutableModelSerializer):
         fields = [
             'id', 'type', 'priority', 'status', 'title', 'description',
             'projectId', 'assigneeId', 'reporterId', 'createdAt', 'lastUpdatedAt',
-            'watchers',
+            'watchers', 'visible',
         ]
 
     def get_watchers(self, task):
@@ -216,6 +228,7 @@ class TaskSerializer(MutableModelSerializer):
             ('description', str, False, True),
             ('assigneeId', str, False, False),
             ('reporterId', str, False, False),
+            ('visible', bool, False, None),
         ], data)
 
         if not Task.objects.filter(id=data['id']):
@@ -232,16 +245,18 @@ class TaskSerializer(MutableModelSerializer):
         return self._validation_result(data, errors)
 
     def save(self, user):
-        msg_type, changelist = TaskMessenger.gen_task_changelist(self._validated_data)
+        msg_type = 'TaskUpdated' if 'id' in self._validated_data else 'TaskCreated'
 
         with transaction.atomic():
             super(TaskSerializer, self).save()
-            # automatically add assignee and reporter as watchers
+            # automatically add new assignee and reporter as watchers
             for watcher in ('assignee', 'reporter'):
                 if watcher in self._validated_data:
                     self._instance.watchers.add(self._validated_data[watcher])
 
+        changelist = TaskMessenger.gen_task_changelist(msg_type, self._validated_data)
         TaskMessenger.send_task_msgs(msg_type, user, self._instance, changelist)
+
         return self._instance
 
 
@@ -283,26 +298,26 @@ class CommentSerializer(MutableModelSerializer):
         del data['user']
         return self._validation_result(data, errors)
 
+    def save(self):
+        super(CommentSerializer, self).save()
+        CommentMessenger.send_comment_msgs(self._instance)
+        return self._instance
+
 
 class TaskDetailSerializer(TaskSerializer):
     project = ProjectSerializer()
     assignee = UserSerializer()
     reporter = UserSerializer()
     comments = serializers.SerializerMethodField()
-    watchers = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
         fields = [
             'id', 'type', 'priority', 'status', 'title', 'description',
             'project', 'assignee', 'reporter', 'createdAt', 'lastUpdatedAt',
-            'comments', 'watchers',
+            'watchers', 'visible', 'comments',
         ]
 
     def get_comments(self, task):
         comments = task.comment_set.all().order_by('created_at')
         return CommentSerializer(comments, many=True).data
-
-    def get_watchers(self, task):
-        watchers = task.watchers.order_by('username')
-        return list(watchers.values_list("username", flat=True))

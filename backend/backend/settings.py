@@ -103,7 +103,7 @@ CACHES = {
     'msg': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
         'LOCATION': f'redis://{CONFIG.get("Redis", "host")}:{CONFIG.get("Redis", "port")}',
-        'TIMEOUT': 60 * 60 * 24,
+        'TIMEOUT': 60 * 60 * 24 * 7,  # message expired after one week
         'KEY_PREFIX': 'msg',
     }
 }

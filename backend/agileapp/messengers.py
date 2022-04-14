@@ -67,20 +67,13 @@ class Messenger:
 
 class TaskMessenger(Messenger):
     @classmethod
-    def gen_task_changelist(cls, new_data):
+    def gen_task_changelist(cls, msg_type, new_data):
         changelist = {}
-        if 'id' in new_data:
-            msg_type = 'TaskUpdated'
-            task = Task.objects.get(id=new_data['id'])
-            for key, value in new_data.items():
-                if getattr(task, key) != new_data[key]:
-                    changelist[key] = str(value)
-        else:
-            msg_type = 'TaskCreated'
-            for key, value in new_data.items():
-                if key not in ('project', 'title'):
-                    changelist[key] = str(value)
-        return msg_type, changelist
+        for key, value in new_data.items():
+            if msg_type == 'TaskCreated' and key in ('project', 'title'):
+                continue
+            changelist[key] = str(value)
+        return changelist
 
     @classmethod
     def send_task_msgs(cls, msg_type, operator, task, changelist):
@@ -134,3 +127,24 @@ class PermMessenger(Messenger):
             for receiver in receivers
         ]
         cls._drop_msgs(receivers, is_same=False, msgs=msgs)
+
+
+class CommentMessenger(Messenger):
+    @classmethod
+    def send_comment_msgs(cls, comment):
+        subject = '%s, %s, %s' % (
+            comment.task.project.workspace.name,
+            comment.task.project.name,
+            comment.task.title,
+        )
+        msg = {
+            'type': 'NewComment',
+            'operator': comment.user.first_name + ' ' + comment.user.last_name,
+            'subject': subject,
+            'changelist': {'comment': comment.content},
+            'timestamp': str(timezone.now()),
+        }
+
+        receivers = set(comment.task.watchers.values_list("username", flat=True))
+        receivers.discard(comment.user.username)
+        cls._drop_msgs(list(receivers), is_same=True, msg=msg)
