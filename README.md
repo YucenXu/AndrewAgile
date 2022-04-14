@@ -6,7 +6,12 @@ A web application serves as an agile platform, with similar functionalities as J
 
 **Tech stack: Django, React, Material-UI, MySQL, Redis**
 
-## Dependency
+## Documentation
+
++ [Backend API spec](backend/README.md)
++ [Deployment guide](deployment.md)
+
+## Requirements
 
 Suggested package versions, can be slightly different.
 
@@ -58,15 +63,6 @@ Suggested package versions, can be slightly different.
 > Note: If you are logged out at localhost:3000, please go to localhost:8000 to login again.
 >
 > Then return to localhost:3000 for frontend development.
-
-
-## Production
-
-See the [deployment guide](deployment.md) for details.
-
-## Documentation
-
-+ [Backend API spec](backend/README.md)
 
 ## Developers
 

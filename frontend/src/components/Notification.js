@@ -37,7 +37,7 @@ function TaskChangelist (props) {
         <Table sx={{ width: '40vw' }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell align="left" sx={{ width: '7vw', fontWeight: 'bold' }}>Task Attribute</TableCell>
+              <TableCell align="left" sx={{ width: '7vw', fontWeight: 'bold' }}>Task Info</TableCell>
               <TableCell align="left" sx={{ fontWeight: 'bold' }}>New Value</TableCell>
             </TableRow>
           </TableHead>

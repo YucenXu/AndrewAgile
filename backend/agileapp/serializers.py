@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
-from agileapp.messengers import TaskMessenger
+from agileapp.messengers import TaskMessenger, CommentMessenger
 
 
 class MutableModelSerializer(serializers.ModelSerializer):
@@ -96,7 +96,7 @@ class MutableModelSerializer(serializers.ModelSerializer):
                 del self._validated_data[field]
 
             # only update timestamp if some fields have been changed
-            if len(self._validated_data) > 0 and "last_updated_at" in self._instance.__dict__:
+            if self._validated_data and "last_updated_at" in self._instance.__dict__:
                 setattr(self._instance, "last_updated_at", timezone.now())
                 self._instance.save()
         else:
@@ -248,7 +248,7 @@ class TaskSerializer(MutableModelSerializer):
 
         with transaction.atomic():
             super(TaskSerializer, self).save()
-            # automatically add assignee and reporter as watchers
+            # automatically add new assignee and reporter as watchers
             for watcher in ('assignee', 'reporter'):
                 if watcher in self._validated_data:
                     self._instance.watchers.add(self._validated_data[watcher])
@@ -296,6 +296,11 @@ class CommentSerializer(MutableModelSerializer):
 
         del data['user']
         return self._validation_result(data, errors)
+
+    def save(self):
+        super(CommentSerializer, self).save()
+        CommentMessenger.send_comment_msgs(self._instance)
+        return self._instance
 
 
 class TaskDetailSerializer(TaskSerializer):

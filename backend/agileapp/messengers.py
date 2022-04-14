@@ -127,3 +127,26 @@ class PermMessenger(Messenger):
             for receiver in receivers
         ]
         cls._drop_msgs(receivers, is_same=False, msgs=msgs)
+
+
+class CommentMessenger(Messenger):
+    @classmethod
+    def send_comment_msgs(cls, comment):
+        subject = '%s, %s, %s' % (
+            comment.task.project.workspace.name,
+            comment.task.project.name,
+            comment.task.title,
+        )
+        msg = {
+            'type': 'NewComment',
+            'operator': comment.user.first_name + ' ' + comment.user.last_name,
+            'subject': subject,
+            'changelist': {
+                'comment': comment.content,
+            },
+            'timestamp': str(timezone.now()),
+        }
+
+        receivers = set(comment.task.watchers.values_list("username", flat=True))
+        receivers.discard(comment.user.username)
+        cls._drop_msgs(list(receivers), is_same=True, msg=msg)
