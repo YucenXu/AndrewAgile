@@ -31,3 +31,6 @@ staticfiles
 # secret
 *.pem
 *.ini
+
+# redis
+dump.rdb
