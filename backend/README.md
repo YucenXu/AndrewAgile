@@ -4,7 +4,7 @@
 
 Unsafe REST API methods such as POST, PUT, DELETE which modify backend data will have a pre-flight permission check serving as user access control. Within each workspace, only Admin and Editor have the permission to call these APIs. Otherwise the APIs will return 403 directly. A user is Viewer of all workspaces by default. User permissions can be granted by Admin users of each workspace. See [Update user permissions API](#update-user-permissions) for details.
 
-```python
+```json
 {
     # http status code = 403
     "error": "Only admins and editors can modify backend data."
@@ -157,7 +157,7 @@ Method: PUT
 
 Request:
 
-```python
+```json
 # required format: a dict of (username,role) pairs
 {
     "testuser-1": "admin",
@@ -270,7 +270,7 @@ Method: POST
 
 Request:
 
-```python
+```json
 {
     "name": "project name",  # required, non-blank
     "description": "project description"  # optional
@@ -346,7 +346,7 @@ Method: PUT
 
 Request:
 
-```python
+```json
 {
     "name": "project name",  # optional, non-blank
     "description": "project description"  # optional
@@ -395,9 +395,11 @@ Response: 200
 
 ### Get all tasks of a project
 
-Path: /api/project/\<int:pid\>/tasks
+Path: /api/project/\<int:pid\>/tasks?visible=\<bool>
 
 Method: GET
+
+Request: optional query parameter `visible`, default value is `true`, set to `false` will show archived tasks.
 
 Response: 200
 
@@ -416,7 +418,8 @@ Response: 200
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110311-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110312-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         },
         {
             "id": 8,
@@ -430,7 +433,8 @@ Response: 200
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110349-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110350-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ],
     "todo": [
@@ -446,7 +450,8 @@ Response: 200
             "reporterId": "testuser-1",
             "createdAt": "2022-04-06T14:21:42.110234-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110235-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ],
     "inprogress": [
@@ -462,7 +467,8 @@ Response: 200
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110292-04:00",
             "lastUpdatedAt": "2022-04-06T14:21:42.110293-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ],
     "done": [
@@ -478,7 +484,8 @@ Response: 200
             "reporterId": "testuser-3",
             "createdAt": "2022-04-06T14:21:42.110210-04:00",
             "lastUpdatedAt": "2022-04-06T16:44:45.064937-04:00",
-            "watchers": ["user-a", "user-b", "user-c"]
+            "watchers": ["user-a", "user-b", "user-c"],
+            "visible": true
         }
     ]
 }
@@ -492,7 +499,7 @@ Method: POST
 
 Request:
 
-```python
+```json
 {
     "type": "story",  # required
     "priority": "critical",  # optional, default normal
@@ -520,7 +527,9 @@ Response:
       "assigneeId": "userA",
       "reporterId": "userB",
       "createdAt": "2022-04-01T22:42:41.664073-04:00",
-      "lastUpdatedAt": "2022-04-01T22:42:41.664085-04:00"
+      "lastUpdatedAt": "2022-04-01T22:42:41.664085-04:00",
+      "watchers": ["userA", "userB"],
+      "visible": true
   }
   ```
 
@@ -583,6 +592,8 @@ Response:
       },
       "createdAt": "2022-03-27T22:52:32.231983-04:00",
       "lastUpdatedAt": "2022-03-27T22:52:32.231984-04:00",
+      "watchers": ["userA", "userB", "userC"],
+      "visible": true,
       "comments": [
           {
               "id": 6,
@@ -612,8 +623,7 @@ Response:
               "createdAt": "2022-03-27T22:52:32.256339-04:00",
               "lastUpdatedAt": "2022-03-27T22:52:32.256340-04:00"
           }
-      ],
-      "watchers": ["user-a", "user-b", "user-c"]
+      ]
   }
   ```
 
@@ -627,7 +637,7 @@ Method: PUT
 
 Request:
 
-```python
+```json
 {
     "type": "story",  # optional
     "priority": "critical",  # optional
@@ -635,7 +645,8 @@ Request:
     "title": "task title",  # optional, non-blank
     "description": "task description",  # optional
     "assigneeId": "userA",  # optional, non-blank
-    "reporterId": "userB"  # optional, non-blank
+    "reporterId": "userB",  # optional, non-blank
+    "visible": false  # optional
 }
 ```
 
@@ -655,7 +666,9 @@ Response:
       "assigneeId": "userA",
       "reporterId": "userB",
       "createdAt": "2022-03-27T22:52:32.231983-04:00",
-      "lastUpdatedAt": "2022-03-27T22:52:32.231984-04:00"
+      "lastUpdatedAt": "2022-03-27T22:52:32.231984-04:00",
+      "watchers": ["userA", "userB", "userC"],
+      "visible": true
   }
   ```
 
@@ -687,7 +700,7 @@ Method: POST
 
 Request:
 
-```python
+```json
 {
     "content": "my comment"  # required, non-blank
 }
@@ -730,7 +743,7 @@ Method: PUT
 
 Request:
 
-```python
+```json
 {
     "content": "edited comment"  # optional, non-blank
 }
@@ -880,7 +893,7 @@ Method: DELETE
 
 Request:
 
-```python
+```json
 # required format: a list of message IDs
 [
     "f29a0f0f-2f36-4efc-91f6-4796b4b6cfa7",

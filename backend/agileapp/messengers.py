@@ -141,9 +141,7 @@ class CommentMessenger(Messenger):
             'type': 'NewComment',
             'operator': comment.user.first_name + ' ' + comment.user.last_name,
             'subject': subject,
-            'changelist': {
-                'comment': comment.content,
-            },
+            'changelist': {'comment': comment.content},
             'timestamp': str(timezone.now()),
         }
 

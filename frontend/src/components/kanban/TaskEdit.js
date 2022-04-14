@@ -35,6 +35,7 @@ class TaskEdit extends Component {
       comments: [],
       newComment: '',
       watching: false,
+      visible: true,
     }
   }
 
@@ -56,8 +57,8 @@ class TaskEdit extends Component {
       description: task.description,
       comments: task.comments,
       watching: task.watchers?.includes(this.props.curUsername),
+      visible: task.visible,
     })
-
   }
 
   handleCloseTask = () => {
@@ -66,12 +67,19 @@ class TaskEdit extends Component {
   }
 
   handleDeleteTask = async () => {
-    await axios.delete('/api/task/' + this.props.taskId).catch(err => {
-      // Todo
-    })
+    await axios.delete('/api/task/' + this.props.taskId).catch(console.error)
     this.props.setTaskId(0)
-    this.props.setRefresh(this.props.refresh + 1)
     this.props.setEditOpen(false)
+    this.props.setRefresh(this.props.refresh + 1)
+    this.clearState()
+  }
+
+  handleArchiveOrRestoreTask = async () => {
+    const payload = { visible: !this.state.visible }
+    await axios.put('/api/task/' + this.props.taskId, payload).catch(console.error)
+    this.props.setTaskId(0)
+    this.props.setEditOpen(false)
+    this.props.setRefresh(this.props.refresh + 1)
     this.clearState()
   }
 
@@ -83,9 +91,7 @@ class TaskEdit extends Component {
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    await axios.put('/api/task/' + this.props.taskId, payload).catch(err => {
-      // Todo
-    })
+    await axios.put('/api/task/' + this.props.taskId, payload).catch(console.error)
     this.props.setTaskId(0)
     this.props.setEditOpen(false)
     this.props.setRefresh(this.props.refresh + 1)
@@ -520,12 +526,29 @@ class TaskEdit extends Component {
           </Grid>
 
           <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
-            <Grid container sx={{ mx: '0vw', width: '40vw', height: '100%' }}/>
+            <Grid container sx={{ mx: '0vw', width: '30vw', height: '100%' }}/>
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
                   alignItems="center">
               <Button onClick={this.handleDeleteTask} variant="outlined" color="error" disabled={this.props.disableEdit}
                       style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
             </Grid>
+            {
+              this.state.visible ?
+                <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }}
+                      direction="column"
+                      alignItems="center">
+                  <Button onClick={this.handleArchiveOrRestoreTask} variant="outlined" color="success"
+                          disabled={this.props.disableEdit}
+                          style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Archive</Button>
+                </Grid> :
+                <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }}
+                      direction="column"
+                      alignItems="center">
+                  <Button onClick={this.handleArchiveOrRestoreTask} variant="outlined" color="warning"
+                          disabled={this.props.disableEdit}
+                          style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Restore</Button>
+                </Grid>
+            }
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
                   alignItems="center">
               <Button type="submit" variant="contained" disabled={this.props.disableEdit}

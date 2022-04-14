@@ -197,9 +197,10 @@ def project_api(request, pid):
 @require_http_methods(["GET", "POST"])
 def project_tasks(request, pid):
     if request.method == "GET":
+        visible = request.GET.get('visible', '') != 'false'
         all_tasks = {}
         for status, _ in TaskStatus.choices:
-            tasks = Task.objects.filter(project__id=pid, status=status).order_by('title')
+            tasks = Task.objects.filter(project__id=pid, status=status, visible=visible).order_by('title')
             serializer = TaskSerializer(tasks, many=True)
             all_tasks[status] = serializer.data
         return JsonResponse(all_tasks)

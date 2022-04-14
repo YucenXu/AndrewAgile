@@ -186,7 +186,7 @@ class TaskSerializer(MutableModelSerializer):
         fields = [
             'id', 'type', 'priority', 'status', 'title', 'description',
             'projectId', 'assigneeId', 'reporterId', 'createdAt', 'lastUpdatedAt',
-            'watchers',
+            'watchers', 'visible',
         ]
 
     def get_watchers(self, task):
@@ -228,6 +228,7 @@ class TaskSerializer(MutableModelSerializer):
             ('description', str, False, True),
             ('assigneeId', str, False, False),
             ('reporterId', str, False, False),
+            ('visible', bool, False, None),
         ], data)
 
         if not Task.objects.filter(id=data['id']):
@@ -308,20 +309,15 @@ class TaskDetailSerializer(TaskSerializer):
     assignee = UserSerializer()
     reporter = UserSerializer()
     comments = serializers.SerializerMethodField()
-    watchers = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
         fields = [
             'id', 'type', 'priority', 'status', 'title', 'description',
             'project', 'assignee', 'reporter', 'createdAt', 'lastUpdatedAt',
-            'comments', 'watchers',
+            'watchers', 'visible', 'comments',
         ]
 
     def get_comments(self, task):
         comments = task.comment_set.all().order_by('created_at')
         return CommentSerializer(comments, many=True).data
-
-    def get_watchers(self, task):
-        watchers = task.watchers.order_by('username')
-        return list(watchers.values_list("username", flat=True))
