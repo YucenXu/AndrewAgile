@@ -84,13 +84,25 @@ class MutableModelSerializer(serializers.ModelSerializer):
     def save(self, **kwargs):
         if 'id' in self._validated_data:
             self._instance = self.Meta.model.objects.get(id=self._validated_data['id'])
+            unchanged_fields = []
+
             for key, value in self._validated_data.items():
-                setattr(self._instance, key, value)
-            if len(self._validated_data) > 1 and "last_updated_at" in self._instance.__dict__:
+                if getattr(self._instance, key) != value:
+                    setattr(self._instance, key, value)
+                else:
+                    unchanged_fields.append(key)
+
+            for field in unchanged_fields:
+                del self._validated_data[field]
+
+            # only update timestamp if some fields have been changed
+            if len(self._validated_data) > 0 and "last_updated_at" in self._instance.__dict__:
                 setattr(self._instance, "last_updated_at", timezone.now())
+                self._instance.save()
         else:
             self._instance = self.Meta.model(**self._validated_data)
-        self._instance.save()
+            self._instance.save()
+
         return self._instance
 
 
@@ -232,7 +244,7 @@ class TaskSerializer(MutableModelSerializer):
         return self._validation_result(data, errors)
 
     def save(self, user):
-        msg_type, changelist = TaskMessenger.gen_task_changelist(self._validated_data)
+        msg_type = 'TaskUpdated' if 'id' in self._validated_data else 'TaskCreated'
 
         with transaction.atomic():
             super(TaskSerializer, self).save()
@@ -241,7 +253,9 @@ class TaskSerializer(MutableModelSerializer):
                 if watcher in self._validated_data:
                     self._instance.watchers.add(self._validated_data[watcher])
 
+        changelist = TaskMessenger.gen_task_changelist(msg_type, self._validated_data)
         TaskMessenger.send_task_msgs(msg_type, user, self._instance, changelist)
+
         return self._instance
 
 
