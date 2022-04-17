@@ -1,10 +1,8 @@
 import * as React from 'react'
 import Paper from '@mui/material/Paper'
-import Container from '@mui/material/Container'
 import InputLabel from '@mui/material/InputLabel'
 import Grid from '@mui/material/Grid'
 import FormControl from '@mui/material/FormControl'
-import NativeSelect from '@mui/material/NativeSelect'
 import axios from 'axios'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -17,23 +15,27 @@ import useInterval from '../hooks/useInterval'
 import { Select, MenuItem } from '@mui/material'
 
 export default function Progress() {
-  //call API to get
+  // call API to get
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
   // Store user action
   const [workspaceId, setWorkspaceId] = React.useState(0)
-
   // Table rows
   const [rows, setRows] = React.useState([])
+
   React.useEffect(() => fetchAllWorkspaces(), [])
   React.useEffect(() => fetchAllProjects(), [workspaceId])
+
   React.useEffect(async () => {
     const newRows = []
-    for (var i = 0; i < allProjects.length; i++) {
+    for (let i = 0; i < allProjects.length; i++) {
       const curProject = allProjects[i]
       const resp = await axios.get('/api/project/' + curProject.id + '/tasks').catch(console.error)
       const allTasks = resp.data
-      const newRow = createData(curProject.id, curProject.name, curProject.description, curProject.owner.username, allTasks.backlog.length, allTasks.todo.length, allTasks.inprogress.length, allTasks.done.length)
+      const newRow = createData(
+        curProject.id, curProject.name, curProject.description, curProject.owner.username,
+        allTasks.backlog.length, allTasks.todo.length, allTasks.inprogress.length, allTasks.done.length
+      )
       newRows.push(newRow)
     }
     setRows(newRows)
@@ -98,18 +100,26 @@ export default function Progress() {
             <Table stickyHeader sx={{ width: '100%' }} aria-label="simple table" >
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }}>Project ID</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">Name</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">Description</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">Owner</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">Backlog</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">Todo</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">In Progress</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">Done</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }}>
+                    Project ID</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                    Name</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                    Description</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                    Owner</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                    Backlog</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                    {"Todo"}</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                    In Progress</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                    Done</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {console.log(rows)}
+                {/*{console.log(rows)}*/}
                 {rows.map((row) => (
                   <TableRow
                     key={row.projectID}

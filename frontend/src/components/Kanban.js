@@ -177,7 +177,8 @@ export default function Kanban() {
         </Grid>
 
         {/* Search Bar, Icons, Create Button */}
-        <Grid container sx={{ my: '1vh', mx: 'auto', width: '95%', height: '6vh' }} style={{ backgroundColor: '#' }} direction="row" alignItems="center">
+        <Grid container sx={{ my: '1vh', mx: 'auto', width: '95%', height: '6vh' }} style={{ backgroundColor: '#' }}
+              direction="row" alignItems="center">
           {/* Search Bar */}
           <Grid item sx={{ width: '28%', height: '6vh' }}>
             <SearchBar searchText={searchText} setSearchText={setSearchText} />
@@ -185,14 +186,16 @@ export default function Kanban() {
           {/* Watching Icon */}
           <Grid container item sx={{ width: '15%' }} direction="column">
             <FormGroup>
-              <FormControlLabel control={<Switch checked={showWatching} onChange={handleSwitchWatching} inputProps={{ 'aria-label': 'controlled' }} />}
+              <FormControlLabel control={<Switch checked={showWatching} onChange={handleSwitchWatching}
+                                                 inputProps={{ 'aria-label': 'controlled' }} />}
                 label={<Typography sx={{ fontSize: '1vw' }}>Watching tasks</Typography>} />
             </FormGroup>
           </Grid>
           {/* Archive Icon */}
           <Grid container item sx={{ width: '15%' }} direction="column">
             <FormGroup>
-              <FormControlLabel control={<Switch checked={showArchived} onChange={handleSwitchArchived} inputProps={{ 'aria-label': 'controlled' }} />}
+              <FormControlLabel control={<Switch checked={showArchived} onChange={handleSwitchArchived}
+                                                 inputProps={{ 'aria-label': 'controlled' }} />}
                 label={<Typography sx={{ fontSize: '1vw' }}>Archived tasks</Typography>} />
             </FormGroup>
           </Grid>

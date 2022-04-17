@@ -40,9 +40,7 @@ class TaskEdit extends Component {
   }
 
   getCurTask = async () => {
-    const response = await axios.get('/api/task/' + this.props.taskId).catch(err => {
-      // Todo
-    })
+    const response = await axios.get('/api/task/' + this.props.taskId).catch(console.error)
     let task = response.data
     this.setState({
       title: task.title,
@@ -126,11 +124,17 @@ class TaskEdit extends Component {
   handleWatchTask = () => {
     if (this.state.watching) {
       axios.delete('/api/task/' + this.props.taskId + '/watchers').then(
-        () => this.setState({ watching: false }),
+        () => {
+          this.setState({ watching: false })
+          this.props.setRefresh(this.props.refresh + 1)
+        },
       ).catch(() => this.setState({ watching: true }))
     } else {
       axios.post('/api/task/' + this.props.taskId + '/watchers').then(
-        () => this.setState({ watching: true }),
+        () => {
+          this.setState({ watching: true })
+          this.props.setRefresh(this.props.refresh + 1)
+        },
       ).catch(() => this.setState({ watching: false }))
     }
   }
@@ -374,7 +378,7 @@ class TaskEdit extends Component {
                     required
                   >
                     <option value={'backlog'}>Backlog</option>
-                    <option value={'todo'}>Todo</option>
+                    <option value={'todo'}>{"Todo"}</option>
                     <option value={'inprogress'}>In Progress</option>
                     <option value={'done'}>Done</option>
                   </select>

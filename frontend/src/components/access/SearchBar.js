@@ -1,15 +1,13 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
-import SearchIcon from '@mui/icons-material/Search'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
-import { userFullname } from '../../utils/formats'
 
 export const filterUsersBySearch = (allUsers, searchText) => {
   return allUsers.filter(user =>
-    userFullname(user).toLowerCase().includes(searchText.toLowerCase()),
+    user.username.toLowerCase().includes(searchText.toLowerCase()),
   )
 }
 

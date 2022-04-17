@@ -6,7 +6,6 @@ import ColoredAvatar from './ColoredAvatar'
 import { userFullname } from '../../utils/formats'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import { Typography } from '@mui/material'
 import axios from 'axios'
 
 function UserRole(props) {
@@ -34,7 +33,8 @@ function UserRole(props) {
   }
 
   return (
-    <ListItem key={props.user.username} sx={{ my: '3vh', height: '5vh' }} style={{ display: 'flex', alignItems: 'center', backgroundColor: '#eeeeee' }}>
+    <ListItem key={props.user.username} sx={{ my: '3vh', height: '5vh' }}
+              style={{ display: 'flex', alignItems: 'center', backgroundColor: '#eeeeee' }}>
       {/* Avatar */}
       <Grid container sx={{ width: '3vw' }} style={{ backgroundColor: '#' }}>
         <ListItemAvatar>
@@ -43,10 +43,11 @@ function UserRole(props) {
       </Grid>
       {/* Username */}
       <Grid container sx={{ width: '20vw' }} style={{ backgroundColor: '#' }}>
-        <ListItemText primary={userFullname(props.user)} sx={{ mx: '2vw' }} />
+        <ListItemText primary={userFullname(props.user) + ' (' + props.user.username + ')'} sx={{ mx: '2vw' }} />
       </Grid>
       {/* Change Access */}
-      <Box component="form" onSubmit={handleSave} sx={{ width: '30vw', height: '5vh' }} style={{ backgroundColor: '#' }}>
+      <Box component="form" onSubmit={handleSave} sx={{ width: '30vw', height: '5vh' }} style={{ backgroundColor: '#' }}
+      >
         <Grid container sx={{ width: '30vw' }} style={{ backgroundColor: '#' }}>
           {/* Access Dropdown */}
           <Grid container sx={{ width: '10vw' }} style={{ backgroundColor: '#' }}>
@@ -65,12 +66,12 @@ function UserRole(props) {
           </Grid>
           {/* Save Button */}
           <Grid container sx={{ width: '15vw' }} style={{ backgroundColor: '#' }}>
-            <Button sx={{ ml: '3vw', width: '5vw', height: '5vh' }} variant="outlined" disabled={props.disabled || !roleChanged}
-              type="submit">save</Button>
+            <Button sx={{ ml: '3vw', width: '5vw', height: '5vh' }} variant="outlined"
+                    disabled={props.disabled || !roleChanged} type="submit">save</Button>
           </Grid>
         </Grid>
         {/* Placeholder */}
-        <Grid container sx={{ width: '5vw' }} style={{ backgroundColor: '#' }}></Grid>
+        <Grid container sx={{ width: '5vw' }} style={{ backgroundColor: '#' }}/>
       </Box>
     </ListItem>
   )

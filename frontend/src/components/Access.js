@@ -1,7 +1,6 @@
 import * as React from 'react'
 import InputLabel from '@mui/material/InputLabel'
 import { Grid, Select, FormControl, MenuItem } from '@mui/material'
-import Container from '@mui/material/Container'
 import SearchBar, { filterUsersBySearch } from './access/SearchBar'
 import List from '@mui/material/List'
 import UserRole from './access/UserRole'

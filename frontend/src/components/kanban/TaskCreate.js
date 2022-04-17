@@ -33,16 +33,13 @@ export default function TaskCreate(props) {
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    axios.post('/api/project/' + props.curProject.id + '/tasks', payload).catch(err => {
-      // Todo
-    }).then(() => {
-      props.setRefresh(props.refresh + 1)
+    axios.post('/api/project/' + props.curProject.id + '/tasks', payload).then(() => {
+      props.setRefresh(props.refresh + 1).catch(console.error)
       props.setCreateTaskOpen(false)
     })
   }
 
   const handleSetPriorityColor = (event) => {
-    // Todo
     let priority = event.target.value
 
     switch (priority) {
@@ -240,7 +237,7 @@ export default function TaskCreate(props) {
                   required
                 >
                   <option value={'backlog'}>Backlog</option>
-                  <option value={'todo'}>Todo</option>
+                  <option value={'todo'}>{"Todo"}</option>
                   <option value={'inprogress'}>In Progress</option>
                   <option value={'done'}>Done</option>
                 </select>

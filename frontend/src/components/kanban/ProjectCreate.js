@@ -9,8 +9,6 @@ import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import { sanitizeBlank } from '../../utils/formats'
@@ -32,12 +30,10 @@ export default function ProjectCreate(props) {
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    axios.post('/api/workspace/' + props.curWorkspace.id + '/projects', payload).catch(err => {
-      // Todo
-    }).then(() => {
+    axios.post('/api/workspace/' + props.curWorkspace.id + '/projects', payload).then(() => {
       props.setRefresh(props.refresh + 1)
       props.setCreateProjectOpen(false)
-    })
+    }).catch(console.error)
   }
 
   return (
@@ -171,7 +167,7 @@ export default function ProjectCreate(props) {
 
         {/* Save Button */}
         <Grid container sx={{ mb: '1vh', width: '40vw', height: '5vh', backgroundColor: '#' }}>
-          <Grid container sx={{ mx: '0vw', width: '32vw', height: '100%' }}></Grid>
+          <Grid container sx={{ mx: '0vw', width: '32vw', height: '100%' }}/>
           <Grid container sx={{ mx: '0vw', width: '8vw', height: '100%', backgroundColor: '#' }} direction="column"
             alignItems="center">
             <Button type="submit" variant="contained"
