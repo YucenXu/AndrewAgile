@@ -71,7 +71,7 @@ export default function Progress() {
       <Grid container sx={{ my: 'auto', mx: 'auto', width: '100%', height: '100vh' }} style={{ backgroundColor: '#' }}>
         {/* Dropdown menus */}
         <Grid container spacing={2} sx={{ mt: '10vh', mx: 'auto', width: '95%', height: '10vh' }}
-          style={{ backgroundColor: '#ffffff', alignItems: 'left' }} direction="row" alignItems="center">
+          style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
           {/* Workspace Dropdown */}
           <Grid item spacing={2} sx={{ width: '20%', height: '10vh' }}
             style={{ backgroundColor: '#', alignItems: 'left' }}>
@@ -93,7 +93,7 @@ export default function Progress() {
         </Grid>
         {/* Table Content */}
         <Grid container sx={{ my: '1vh', mx: 'auto', width: '95%', height: '70vh' }}
-          style={{ backgroundColor: '#ffffff' }} direction="column" alignItems="center">
+          style={{ backgroundColor: '#' }} direction="column" alignItems="center">
           <TableContainer sx={{ width: '95%' }} component={Paper}>
             <Table stickyHeader sx={{ width: '100%' }} aria-label="simple table" >
               <TableHead>
