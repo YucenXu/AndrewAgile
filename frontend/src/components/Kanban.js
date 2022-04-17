@@ -15,6 +15,7 @@ import { canModifyData } from '../hooks/useScope'
 import DragBoard from './kanban/DragBoard'
 import { AuthConsumer } from '../hooks/useAuth'
 import Typography from '@mui/material/Typography'
+import { FormGroup, FormControlLabel } from '@mui/material/'
 
 const initialTasks = {
   backlog: [],
@@ -23,7 +24,7 @@ const initialTasks = {
   done: [],
 }
 
-export default function Kanban () {
+export default function Kanban() {
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allUsers, setAllUsers] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
@@ -83,8 +84,8 @@ export default function Kanban () {
   const fetchAllTasks = () => {
     axios.get('/api/project/' + projectId + '/tasks',
       { params: { visible: !showArchived } }).then(
-      resp => setAllTasks(resp.data),
-    ).catch(console.error)
+        resp => setAllTasks(resp.data),
+      ).catch(console.error)
   }
 
   const handleChangeWorkspace = (event) => {
@@ -123,113 +124,115 @@ export default function Kanban () {
 
   return (
     <Box>
-      {/* Dropdown menus */}
-      <Grid container spacing={2} sx={{ mt: '13vh', mx: 'auto', width: '80vw', height: '12vh' }}
-            style={{ backgroundColor: '', alignItems: 'left' }}>
-        {/* Workspace Dropdown */}
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-              style={{ backgroundColor: '#', alignItems: 'left' }}>
-          <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-                       style={{ backgroundColor: '' }}>
-            <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
-            <Select
-              labelId="id-select-workspace-label"
-              label="workspaceId"
-              value={workspaceId}
-              onChange={handleChangeWorkspace}
-            >
-              {allWorkspaces.map((workspace) => (
-                <MenuItem key={workspace.id} value={workspace.id}>{workspace.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+      <Grid container sx={{ my: 'auto', mx: 'auto', width: '100%', height: '100vh' }} style={{ backgroundColor: '#' }}>
+
+        {/* Dropdown menus */}
+        <Grid container spacing={2} sx={{ mt: '10vh', mx: 'auto', width: '95%', height: '10vh' }}
+          style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+          {/* Workspace Dropdown */}
+          <Grid item spacing={2} sx={{ width: '20%', height: '10vh' }}
+            style={{ backgroundColor: '#', alignItems: 'left' }}>
+            <FormControl variant="standard" sx={{ width: '15vw' }}
+              style={{ backgroundColor: '' }}>
+              <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
+              <Select
+                labelId="id-select-workspace-label"
+                label="workspaceId"
+                value={workspaceId}
+                onChange={handleChangeWorkspace}
+              >
+                {allWorkspaces.map((workspace) => (
+                  <MenuItem key={workspace.id} value={workspace.id}>{workspace.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          {/* Project Dropdown */}
+          <Grid item spacing={2} sx={{ width: '20%', height: '10vh' }}
+            style={{ backgroundColor: '#', alignItems: 'left' }}>
+            <FormControl variant="standard" sx={{ width: '15vw' }}
+              style={{ backgroundColor: '' }}>
+              <InputLabel id="id-select-project-label">Project</InputLabel>
+              <Select
+                labelId="id-select-project-label"
+                label="projectId"
+                value={projectId}
+                onChange={handleChangeProject}
+              >
+                {allProjects.map((project) => (
+                  <MenuItem key={project.id} value={project.id}>{project.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          {/* Project Create Button */}
+          <Grid item spacing={2} sx={{ width: '10%', height: '100%' }}
+            style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+            <Button variant="contained" sx={{ width: '100%', height: '5vh' }}
+              onClick={handleClickCreateProject} disabled={disableEdit}>Create</Button>
+          </Grid>
+          {/* Placeholder */}
+          <Grid item spacing={2} sx={{ width: '50%', height: '10vh' }}
+            style={{ backgroundColor: '#', alignItems: 'left' }} />
         </Grid>
 
-        {/* Project Dropdown */}
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '16vw', height: '10vh' }}
-              style={{ backgroundColor: '#', alignItems: 'left' }}>
-          <FormControl variant="standard" sx={{ my: '0.5vh', ml: '0vw', width: '15vw' }}
-                       style={{ backgroundColor: '' }}>
-            <InputLabel id="id-select-project-label">Project</InputLabel>
-            <Select
-              labelId="id-select-project-label"
-              label="projectId"
-              value={projectId}
-              onChange={handleChangeProject}
-            >
-              {allProjects.map((project) => (
-                <MenuItem key={project.id} value={project.id}>{project.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        {/* Search Bar, Icons, Create Button */}
+        <Grid container sx={{ my: '1vh', mx: 'auto', width: '95%', height: '6vh' }} style={{ backgroundColor: '#' }}
+              direction="row" alignItems="center">
+          {/* Search Bar */}
+          <Grid item sx={{ width: '28%', height: '6vh' }}>
+            <SearchBar searchText={searchText} setSearchText={setSearchText} />
+          </Grid>
+          {/* Watching Icon */}
+          <Grid container item sx={{ width: '15%' }} direction="column">
+            <FormGroup>
+              <FormControlLabel control={<Switch checked={showWatching} onChange={handleSwitchWatching}
+                                                 inputProps={{ 'aria-label': 'controlled' }} />}
+                label={<Typography sx={{ fontSize: '1vw' }}>Watching tasks</Typography>} />
+            </FormGroup>
+          </Grid>
+          {/* Archive Icon */}
+          <Grid container item sx={{ width: '15%' }} direction="column">
+            <FormGroup>
+              <FormControlLabel control={<Switch checked={showArchived} onChange={handleSwitchArchived}
+                                                 inputProps={{ 'aria-label': 'controlled' }} />}
+                label={<Typography sx={{ fontSize: '1vw' }}>Archived tasks</Typography>} />
+            </FormGroup>
+          </Grid>
+          {/* Placeholder */}
+          <Grid item sx={{ width: '32%' }} />
+          {/* Create Task */}
+          <Grid item sx={{ width: '10%', height: '100%' }} style={{ backgroundColor: '#' }}>
+            <Button variant="contained" sx={{ width: '100%', height: '5vh' }}
+              onClick={handleClickCreateTask}
+              disabled={projectId === 0 || disableEdit}>Create</Button>
+          </Grid>
         </Grid>
 
-        {/* Project Create Button */}
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '12vw', height: '10vh' }}
-              style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
-          <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-                  onClick={handleClickCreateProject} disabled={disableEdit}>Create</Button>
+        {/* Board */}
+        <Grid container sx={{ my: '1vh', mx: 'auto', width: '95%', height: '65vh' }} style={{ backgroundColor: '#' }}>
+          <DragBoard statusList={Object.keys(allTasks)} allTasks={showWatching ?
+            filterTasksByWatch(filterTasksBySearch(allTasks, searchText), auth.username) :
+            filterTasksBySearch(allTasks, searchText)
+          } setAllTasks={setAllTasks} setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId}
+            refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={disableEdit} />
         </Grid>
-        <Grid container spacing={2} sx={{ mt: '1vh', mx: '0.5vw', width: '32vw', height: '10vh' }}
-              style={{ backgroundColor: '#', alignItems: 'left' }}/>
+        {/* Project Create Popup Dialog */}
+        <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}
+          allUsers={allUsers} refresh={refreshProjects} setRefresh={setRefreshProjects} />
+
+        {/* Task Create Popup Dialog */}
+        <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
+          allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks} />
+
+        {/* Task Edit Popup Dialog */}
+        <TaskEdit open={editTaskOpen} setEditOpen={setEditTaskOpen} taskId={taskId} setTaskId={setTaskId}
+          curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
+          disableEdit={disableEdit} curUsername={auth.username} />
+
+        {/* Debug info, will delete*/}
+        {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
       </Grid>
-
-      {/* Search Bar, Create Button */}
-      <Grid container sx={{ my: '1vh', mx: 'auto', width: '80vw', height: '6vh' }} style={{ backgroundColor: '' }}>
-        <Grid item sx={{ width: '25vw' }}>
-          <SearchBar searchText={searchText} setSearchText={setSearchText}/>
-        </Grid>
-        <Grid container item sx={{ ml: '2vw', width: '8vw' }} direction="column">
-          <Typography
-            sx={{ fontSize: '14px' }}
-            component="span"
-            variant="body"
-            color="text.primary"
-          >
-            Watching tasks
-          </Typography>
-          <Switch checked={showWatching} onChange={handleSwitchWatching} inputProps={{ 'aria-label': 'controlled' }}/>
-        </Grid>
-        <Grid container item sx={{ ml: '2vw', width: '32vw' }} direction="column">
-          <Typography
-            sx={{ fontSize: '14px' }}
-            component="span"
-            variant="body"
-            color="text.primary"
-          >
-            Archived tasks
-          </Typography>
-          <Switch checked={showArchived} onChange={handleSwitchArchived} inputProps={{ 'aria-label': 'controlled' }}/>
-        </Grid>
-        <Grid item sx={{ width: '10vw' }}>
-          <Button variant="contained" sx={{ mr: '0.5vw', width: '10vw', height: '6vh' }}
-                  onClick={handleClickCreateTask}
-                  disabled={projectId === 0 || disableEdit}>Create</Button>
-        </Grid>
-      </Grid>
-
-      {/* Board */}
-      <DragBoard statusList={Object.keys(allTasks)} allTasks={showWatching ?
-        filterTasksByWatch(filterTasksBySearch(allTasks, searchText), auth.username) :
-        filterTasksBySearch(allTasks, searchText)
-      } setAllTasks={setAllTasks} setEditTaskOpen={setEditTaskOpen} setTaskId={setTaskId}
-                 refresh={refreshTasks} setRefresh={setRefreshTasks} disableEdit={disableEdit}/>
-
-      {/* Project Create Popup Dialog */}
-      <ProjectCreate open={createProjectOpen} setCreateProjectOpen={setCreateProjectOpen} curWorkspace={curWorkspace}
-                     allUsers={allUsers} refresh={refreshProjects} setRefresh={setRefreshProjects}/>
-
-      {/* Task Create Popup Dialog */}
-      <TaskCreate open={createTaskOpen} setCreateTaskOpen={setCreateTaskOpen} curProject={curProject}
-                  allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}/>
-
-      {/* Task Edit Popup Dialog */}
-      <TaskEdit open={editTaskOpen} setEditOpen={setEditTaskOpen} taskId={taskId} setTaskId={setTaskId}
-                curProject={curProject} allUsers={allUsers} refresh={refreshTasks} setRefresh={setRefreshTasks}
-                disableEdit={disableEdit} curUsername={auth.username}/>
-
-      {/* Debug info, will delete*/}
-      {/* <Typography>Workspace:{workspaceId} Project:{projectId}</Typography> */}
     </Box>
   )
 }

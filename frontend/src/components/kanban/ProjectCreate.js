@@ -9,8 +9,6 @@ import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CloseIcon from '@mui/icons-material/Close'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import { sanitizeBlank } from '../../utils/formats'
@@ -32,12 +30,10 @@ export default function ProjectCreate(props) {
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    axios.post('/api/workspace/' + props.curWorkspace.id + '/projects', payload).catch(err => {
-      // Todo
-    }).then(() => {
+    axios.post('/api/workspace/' + props.curWorkspace.id + '/projects', payload).then(() => {
       props.setRefresh(props.refresh + 1)
       props.setCreateProjectOpen(false)
-    })
+    }).catch(console.error)
   }
 
   return (
@@ -48,13 +44,13 @@ export default function ProjectCreate(props) {
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
       maxWidth="lg"
-      PaperProps={{ sx: { height: '80vh', width: '50vw' } }}
+      PaperProps={{ sx: { height: '60vh', width: '40vw' } }}
     >
       {/* Bar */}
-      <Grid container sx={{ mt: 0, mb: '0%', width: '50vw', height: '10vh', backgroundColor: '#eeeeee' }}>
+      <Grid container sx={{ mt: 0, mb: '0%', width: '40vw', height: '10vh', backgroundColor: '#eeeeee' }}>
         <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <Typography sx={{ flex: 1, fontWeight: 'bold' }} variant="h6" component="div">
+          <Toolbar sx={{ height: '10vh' }} >
+            <Typography sx={{ flex: 1, fontSize: '1.5vw', fontWeight: 'bold' }} variant="h6" component="div">
               Create Project
             </Typography>
 
@@ -71,24 +67,23 @@ export default function ProjectCreate(props) {
       </Grid>
 
       <Box component="form" onSubmit={handleSaveProject}
-        sx={{ mb: '0%', width: '50vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
+        sx={{ mb: '0%', width: '40vw', height: '50vh', backgroundColor: '#f2f4f4' }}>
         {/* Workspace Info */}
-        <Grid container sx={{ mb: '0%', width: '50vw', height: '10vh', backgroundColor: '#' }}
+        <Grid container sx={{ mb: '0%', width: '40vw', height: '10vh', backgroundColor: '#' }}
           direction="row" alignItems="center">
           <Grid item sx={{ mx: '2vw', width: '10vw' }}>
             <Typography
               sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
               align="center">Workspace</Typography>
           </Grid>
-          <Grid item sx={{ width: '36vw' }}>
+          <Grid item sx={{ width: '26vw' }}>
             <Typography sx={{ fontSize: '1.5vw', fontWeight: 'bold' }}>{props.curWorkspace.name}</Typography>
           </Grid>
         </Grid>
 
         {/* Project Info */}
-        <Grid container sx={{ width: '50vw', height: '53vh', backgroundColor: '#' }}>
+        <Grid container sx={{ width: '40vw', height: '25vh', backgroundColor: '#' }}>
 
-          {/* Detail */}
           <Grid container sx={{
             mx: 'auto',
             width: '100%',
@@ -105,10 +100,6 @@ export default function ProjectCreate(props) {
               <Grid container sx={{ width: '100%', height: '50%' }} style={{ fontSize: '1.2vw' }} direction="row"
                 alignItems="center">
                 Project Name
-              </Grid>
-              <Grid container sx={{ width: '100%', height: '50%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                alignItems="center">
-                {/* Owner */}
               </Grid>
 
             </Grid>
@@ -162,7 +153,7 @@ export default function ProjectCreate(props) {
                 label="Description"
                 sx={{ mx: 'auto', width: '90%' }}
                 placeholder="Description..."
-                rows={5}
+                rows={window.innerHeight / 200 | 0}
                 multiline
                 focused
               />
@@ -171,9 +162,13 @@ export default function ProjectCreate(props) {
           </Grid>
         </Grid>
 
-        <Grid container sx={{ mt: '1vh', mb: '1vh', width: '50vw', height: '5vh', backgroundColor: '#' }}>
-          <Grid container sx={{ mx: '0vw', width: '40vw', height: '100%' }}></Grid>
-          <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
+        {/* Placeholder */}
+        <Grid container sx={{ width: '40vw', height: '8vh', backgroundColor: '#' }} />
+
+        {/* Save Button */}
+        <Grid container sx={{ mb: '1vh', width: '40vw', height: '5vh', backgroundColor: '#' }}>
+          <Grid container sx={{ mx: '0vw', width: '32vw', height: '100%' }}/>
+          <Grid container sx={{ mx: '0vw', width: '8vw', height: '100%', backgroundColor: '#' }} direction="column"
             alignItems="center">
             <Button type="submit" variant="contained"
               style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>

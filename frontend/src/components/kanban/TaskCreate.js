@@ -33,16 +33,13 @@ export default function TaskCreate(props) {
     for (const param of params) {
       payload[param] = form.get(param)
     }
-    axios.post('/api/project/' + props.curProject.id + '/tasks', payload).catch(err => {
-      // Todo
-    }).then(() => {
-      props.setRefresh(props.refresh + 1)
+    axios.post('/api/project/' + props.curProject.id + '/tasks', payload).then(() => {
+      props.setRefresh(props.refresh + 1).catch(console.error)
       props.setCreateTaskOpen(false)
     })
   }
 
   const handleSetPriorityColor = (event) => {
-    // Todo
     let priority = event.target.value
 
     switch (priority) {
@@ -74,8 +71,8 @@ export default function TaskCreate(props) {
       {/* Bar */}
       <Grid container sx={{ mt: 0, mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#eeeeee' }}>
         <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <Typography sx={{ flex: 1, fontWeight: 'bold' }} variant="h6" component="div">
+          <Toolbar sx={{ height: '10vh' }} >
+            <Typography sx={{ flex: 1, fontSize: '1.5vw', fontWeight: 'bold' }} variant="h6" component="div">
               Create Task
             </Typography>
 
@@ -160,7 +157,7 @@ export default function TaskCreate(props) {
                   placeholder="Task Title"
                   value={title}
                   onChange={event => setTitle(sanitizeBlank(event.target.value))}
-                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw', backgroundColor:"#e0e0e0" } }}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1.2vw', backgroundColor: "#e0e0e0" } }}
                   required
                 />
               </Grid>
@@ -240,7 +237,7 @@ export default function TaskCreate(props) {
                   required
                 >
                   <option value={'backlog'}>Backlog</option>
-                  <option value={'todo'}>Todo</option>
+                  <option value={'todo'}>{"Todo"}</option>
                   <option value={'inprogress'}>In Progress</option>
                   <option value={'done'}>Done</option>
                 </select>
@@ -289,7 +286,7 @@ export default function TaskCreate(props) {
         </Grid>
 
         <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
-          <Grid container sx={{ mx: '0vw', width: '50vw', height: '100%' }}/>
+          <Grid container sx={{ mx: '0vw', width: '50vw', height: '100%' }} />
           <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
             alignItems="center">
             <Button type="submit" variant="contained"

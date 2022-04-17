@@ -12,20 +12,20 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   margin: `0 0 ${8}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? 'lightgreen' : '#f2f4f4',
+  background: isDragging ? '#e3f2fd' : '#f2f4f4',
 
   // styles we need to apply on draggable
   ...draggableStyle,
 })
 
 const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : '#e0e0e0',
+  background: isDraggingOver ? '#b1bfca' : '#e0e0e0',
   padding: 8,
   overflow: 'auto',
 })
 
 // Ref: https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/about/examples.md
-export default function DragBoard (props) {
+export default function DragBoard(props) {
   const [startInd, setStartInd] = useState(-1)
 
   const move = (source, destination, droppableSource, droppableDestination) => {
@@ -84,15 +84,15 @@ export default function DragBoard (props) {
 
   return (
     <Grid container
-          sx={{ my: '2vh', mx: 'auto', width: '80vw', height: '60vh', backgroundColor: 'ffebee' }}
-          style={{ alignItems: 'center' }}
+      sx={{ my: '2vh', mx: 'auto', width: '100%', height: '60vh', backgroundColor: '#' }}
+      style={{ alignItems: 'center' }}
     >
       {/* Status Title */}
       {props.statusList.map(status => (
         <Grid
           container
           key={status}
-          sx={{ my: '0vh', mx: 'auto', width: '19vw', height: '8vh', background: '#bdbdbd' }}
+          sx={{ my: '0vh', mx: 'auto', width: '24%', height: '8vh', background: '#bdbdbd' }}
           direction="row"
           alignItems="center"
         >
@@ -109,10 +109,10 @@ export default function DragBoard (props) {
           <Droppable key={ind} droppableId={`${ind}`} isDropDisabled={ind === startInd}>
             {(provided, snapshot) => (
               <Grid item
-                    sx={{ my: '0vh', mx: 'auto', width: '19vw', height: '52vh' }}
-                    ref={provided.innerRef}
-                    style={getListStyle(snapshot.isDraggingOver)}
-                    {...provided.droppableProps}
+                sx={{ my: '0vh', mx: 'auto', width: '24%', height: '52vh' }}
+                ref={provided.innerRef}
+                style={getListStyle(snapshot.isDraggingOver)}
+                {...provided.droppableProps}
               >
                 {/* Task Cards*/}
                 {tasks.map((item, index) => (

@@ -18,7 +18,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
 class TaskEdit extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.props = props
     this.state = {
@@ -40,9 +40,7 @@ class TaskEdit extends Component {
   }
 
   getCurTask = async () => {
-    const response = await axios.get('/api/task/' + this.props.taskId).catch(err => {
-      // Todo
-    })
+    const response = await axios.get('/api/task/' + this.props.taskId).catch(console.error)
     let task = response.data
     this.setState({
       title: task.title,
@@ -114,11 +112,11 @@ class TaskEdit extends Component {
     event.preventDefault()
     axios.delete('/api/comment/' + commentId).then(() =>
       axios.get('/api/task/' + this.props.taskId).then(resp => {
-          const task = resp.data
-          this.setState({
-            comments: task.comments,
-          })
-        },
+        const task = resp.data
+        this.setState({
+          comments: task.comments,
+        })
+      },
       ).catch(console.error),
     ).catch(console.error)
   }
@@ -126,11 +124,17 @@ class TaskEdit extends Component {
   handleWatchTask = () => {
     if (this.state.watching) {
       axios.delete('/api/task/' + this.props.taskId + '/watchers').then(
-        () => this.setState({ watching: false }),
+        () => {
+          this.setState({ watching: false })
+          this.props.setRefresh(this.props.refresh + 1)
+        },
       ).catch(() => this.setState({ watching: true }))
     } else {
       axios.post('/api/task/' + this.props.taskId + '/watchers').then(
-        () => this.setState({ watching: true }),
+        () => {
+          this.setState({ watching: true })
+          this.props.setRefresh(this.props.refresh + 1)
+        },
       ).catch(() => this.setState({ watching: false }))
     }
   }
@@ -158,29 +162,29 @@ class TaskEdit extends Component {
 
   clearState = () => {
     this.setState({
-        title: '',
-        assignee: '',
-        reporter: '',
-        type: '',
-        status: '',
-        priority: '',
-        priorityColor: '',
-        createdAt: '',
-        lastUpdatedAt: '',
-        description: '',
-        comments: [],
-        newComment: '',
-      },
+      title: '',
+      assignee: '',
+      reporter: '',
+      type: '',
+      status: '',
+      priority: '',
+      priorityColor: '',
+      createdAt: '',
+      lastUpdatedAt: '',
+      description: '',
+      comments: [],
+      newComment: '',
+    },
     )
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.taskId !== prevProps.taskId && this.props.taskId !== 0) {
       this.getCurTask()
     }
   }
 
-  render () {
+  render() {
     return (
       <Dialog
         open={this.props.open}
@@ -193,10 +197,10 @@ class TaskEdit extends Component {
       >
 
         {/* Bar */}
-        <Grid container sx={{ mt: 0, mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#eeeeee' }}>
+        <Grid container sx={{ width: '60vw', height: '10vh', backgroundColor: '#ffffff' }}>
           <AppBar sx={{ position: 'relative' }}>
-            <Toolbar>
-              <Typography sx={{ flex: 1, fontWeight: 'bold' }} variant="h6" component="div">
+            <Toolbar sx={{ height: '10vh' }} >
+              <Typography sx={{ flex: 1, fontSize: '1.5vw', fontWeight: 'bold' }} variant="h6" component="div">
                 {this.props.curProject.name}
               </Typography>
 
@@ -206,17 +210,17 @@ class TaskEdit extends Component {
                 onClick={this.handleCloseTask}
                 aria-label="close"
               >
-                <CloseIcon/>
+                <CloseIcon />
               </IconButton>
             </Toolbar>
           </AppBar>
         </Grid>
 
         <Box component="form" onSubmit={this.handleSaveTask}
-             sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
+          sx={{ mb: '0%', width: '60vw', height: '70vh', backgroundColor: '#f2f4f4' }}>
           {/* Task Title */}
           <Grid container sx={{ mb: '0%', width: '60vw', height: '10vh', backgroundColor: '#' }}
-                direction="row" alignItems="center">
+            direction="row" alignItems="center">
             <Grid item sx={{ mx: '3%', width: '8vw' }}>
               <Typography
                 sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
@@ -227,7 +231,7 @@ class TaskEdit extends Component {
                 // force task assignee and reporter to be watchers
                 [this.state.assignee, this.state.reporter].includes(this.props.curUsername)
               }>
-                {this.state.watching ? <VisibilityIcon color="primary"/> : <VisibilityOffIcon/>}
+                {this.state.watching ? <VisibilityIcon color="primary" /> : <VisibilityOffIcon />}
               </IconButton>
             </Grid>
             <Grid item sx={{ ml: '3%', width: '50%' }}>
@@ -259,33 +263,33 @@ class TaskEdit extends Component {
             }}>
               {/* Index Column */}
               <Grid container
-                    sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
+                sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Assignee
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Reporter
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Type
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Status
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Priority
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Createed at
                 </Grid>
                 <Grid container sx={{ width: '100%', height: '14%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   Last updated at
                 </Grid>
               </Grid>
@@ -295,7 +299,7 @@ class TaskEdit extends Component {
 
                 {/* Assignee */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Select
                     name="assigneeId"
                     id="assigneeId"
@@ -315,7 +319,7 @@ class TaskEdit extends Component {
 
                 {/* Reporter */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Select
                     name="reporterId"
                     id="reporterId"
@@ -335,7 +339,7 @@ class TaskEdit extends Component {
 
                 {/* Type */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="type"
                     id="type"
@@ -358,7 +362,7 @@ class TaskEdit extends Component {
 
                 {/* Status */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="status"
                     id="status"
@@ -374,7 +378,7 @@ class TaskEdit extends Component {
                     required
                   >
                     <option value={'backlog'}>Backlog</option>
-                    <option value={'todo'}>Todo</option>
+                    <option value={'todo'}>{"Todo"}</option>
                     <option value={'inprogress'}>In Progress</option>
                     <option value={'done'}>Done</option>
                   </select>
@@ -382,7 +386,7 @@ class TaskEdit extends Component {
 
                 {/* Priority */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <select
                     name="priority"
                     id="priority"
@@ -406,7 +410,7 @@ class TaskEdit extends Component {
 
                 {/* Create Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Typography
                     sx={{
                       fontSize: '1vw',
@@ -416,7 +420,7 @@ class TaskEdit extends Component {
 
                 {/* Last Update Time */}
                 <Grid container sx={{ width: '80%', height: '14%', backgroundColor: '#' }} direction="row"
-                      alignItems="center">
+                  alignItems="center">
                   <Typography
                     sx={{
                       fontSize: '1vw',
@@ -436,27 +440,27 @@ class TaskEdit extends Component {
                   id="description"
                   label="Description"
                   sx={{ mx: 'auto', width: '90%' }}
+                  inputProps={{ style: { textAlign: 'left', fontSize: '1vw' } }}
                   placeholder="Task Description..."
                   value={this.state.description}
                   onChange={event => this.setState({ description: event.target.value })}
-                  rows={2}
+                  rows={window.innerHeight / 300 | 0}
                   multiline
                   focused
                 />
-                {/* </Grid> */}
               </Grid>
 
               {/* Comments */}
               <Grid container sx={{ width: '100%', height: '70%', backgroundColor: 'e1f5fe' }}>
                 {/* Comment Title */}
                 <Grid item
-                      sx={{ mx: 'auto', width: '95%', height: '15%', backgroundColor: 'e8f5e9', overflow: 'auto' }}>
+                  sx={{ mx: 'auto', width: '95%', height: '15%', backgroundColor: 'e8f5e9', overflow: 'auto' }}>
                   <Typography
                     sx={{ mx: '5%', fontSize: '1.5vw', fontWeight: 'bold', color: '#1976d2' }}>Comments</Typography>
                 </Grid>
                 {/* Current Comments */}
                 <Grid item
-                      sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
+                  sx={{ mx: 'auto', width: '95%', height: '55%', backgroundColor: '#eeeeee', overflow: 'auto' }}>
                   {
                     this.state.comments.map((comment) => {
                       if (comment.user?.username === this.props.curUsername) {
@@ -464,7 +468,7 @@ class TaskEdit extends Component {
                           <Grid container>
                             <Typography sx={{ mx: '5%', fontSize: '0.8vw' }}>{comment.content}</Typography>
                             <button onClick={(event) => this.handleDeleteComment(event, comment.id)}
-                                    style={{ fontSize: '0.8vw' }} disabled={this.props.disableEdit}>Delete
+                              style={{ fontSize: '0.8vw' }} disabled={this.props.disableEdit}>Delete
                             </button>
                           </Grid>
                           <Typography sx={{ mx: '5%', fontSize: '0.8vw' }} style={{ textAlign: 'right' }}>
@@ -486,18 +490,18 @@ class TaskEdit extends Component {
                 {/* Add Comment */}
                 {/* Title */}
                 <Grid container
-                      sx={{ mx: 'auto', width: '95%', height: '10%', backgroundColor: 'e8f5e9', overflow: 'auto' }}
-                      direction="row"
-                      alignItems="center">
+                  sx={{ mx: 'auto', width: '95%', height: '10%', backgroundColor: 'e8f5e9', overflow: 'auto' }}
+                  direction="row"
+                  alignItems="center">
                   <Grid item sx={{ my: 'auto', width: '100%' }}>
                     <Typography sx={{ mx: '5%', fontSize: '1vw', color: '#1976d2' }}>Add a comment</Typography>
                   </Grid>
                 </Grid>
                 <Grid container
-                      sx={{ mx: 'auto', width: '95%', height: '20%', backgroundColor: 'fff3e0', overflow: 'auto' }}>
+                  sx={{ mx: 'auto', width: '95%', height: '20%', backgroundColor: 'fff3e0', overflow: 'auto' }}>
                   {/* Comment Input */}
                   <Grid item
-                        sx={{ mx: 'auto', width: '80%', height: '100%', backgroundColor: 'e1f5fe', overflow: 'auto' }}>
+                    sx={{ mx: 'auto', width: '80%', height: '100%', backgroundColor: 'e1f5fe', overflow: 'auto' }}>
                     <InputBase
                       variant="outlined"
                       name="comment"
@@ -514,9 +518,9 @@ class TaskEdit extends Component {
                   </Grid>
                   {/* Button */}
                   <Grid item
-                        sx={{ mx: 'auto', width: '20%', height: '100%', backgroundColor: 'ffebee', overflow: 'auto' }}>
+                    sx={{ mx: 'auto', width: '20%', height: '100%', backgroundColor: 'ffebee', overflow: 'auto' }}>
                     <button onClick={this.handleAddComment} style={{ fontSize: '1vw' }}
-                            disabled={this.props.disableEdit}>Add
+                      disabled={this.props.disableEdit}>Add
                     </button>
                   </Grid>
                 </Grid>
@@ -526,33 +530,33 @@ class TaskEdit extends Component {
           </Grid>
 
           <Grid container sx={{ mt: '1vh', mb: '1vh', width: '60vw', height: '5vh', backgroundColor: '#' }}>
-            <Grid container sx={{ mx: '0vw', width: '30vw', height: '100%' }}/>
+            <Grid container sx={{ mx: '0vw', width: '30vw', height: '100%' }} />
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-                  alignItems="center">
+              alignItems="center">
               <Button onClick={this.handleDeleteTask} variant="outlined" color="error" disabled={this.props.disableEdit}
-                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
+                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Delete</Button>
             </Grid>
             {
               this.state.visible ?
                 <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }}
-                      direction="column"
-                      alignItems="center">
+                  direction="column"
+                  alignItems="center">
                   <Button onClick={this.handleArchiveOrRestoreTask} variant="outlined" color="success"
-                          disabled={this.props.disableEdit}
-                          style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Archive</Button>
+                    disabled={this.props.disableEdit}
+                    style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Archive</Button>
                 </Grid> :
                 <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }}
-                      direction="column"
-                      alignItems="center">
+                  direction="column"
+                  alignItems="center">
                   <Button onClick={this.handleArchiveOrRestoreTask} variant="outlined" color="warning"
-                          disabled={this.props.disableEdit}
-                          style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Restore</Button>
+                    disabled={this.props.disableEdit}
+                    style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Restore</Button>
                 </Grid>
             }
             <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }} direction="column"
-                  alignItems="center">
+              alignItems="center">
               <Button type="submit" variant="contained" disabled={this.props.disableEdit}
-                      style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
+                style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
             </Grid>
           </Grid>
         </Box>
