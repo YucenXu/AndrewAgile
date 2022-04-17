@@ -33,7 +33,7 @@ export default function Progress() {
       const curProject = allProjects[i]
       const resp = await axios.get('/api/project/' + curProject.id + '/tasks').catch(console.error)
       const allTasks = resp.data
-      const newRow = createData(i, curProject.id, curProject.name, curProject.description, curProject.owner.username, allTasks.backlog.length, allTasks.todo.length, allTasks.inprogress.length, allTasks.done.length)
+      const newRow = createData(curProject.id, curProject.name, curProject.description, curProject.owner.username, allTasks.backlog.length, allTasks.todo.length, allTasks.inprogress.length, allTasks.done.length)
       newRows.push(newRow)
     }
     setRows(newRows)
@@ -115,15 +115,13 @@ export default function Progress() {
                     key={row.projectID}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
+                    <TableCell component="th" scope="row">{row.projectID}</TableCell>
+                    <TableCell component="th" scope="row">{row.name}</TableCell>
                     <TableCell align="right">{row.description}</TableCell>
                     <TableCell align="right">{row.owner}</TableCell>
                     <TableCell align="right">{row.Backlog}</TableCell>
                     <TableCell align="right">{row.todo}</TableCell>
                     <TableCell align="right">{row.inprogress}</TableCell>
-                    <TableCell align="right">{row.name}</TableCell>
                     <TableCell align="right">{row.done}</TableCell>
                   </TableRow>
                 ))}
