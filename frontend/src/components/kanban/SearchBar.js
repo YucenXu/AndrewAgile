@@ -36,29 +36,32 @@ export default function SearchBar (props) {
     <Box>
       <Grid container sx={{
         mx: '0.5vw',
-        width: '25vw',
+        width: '23vw',
         height: '6vh',
         backgroundColor: '#',
       }} direction="column" justifyContent="center">
-        <Grid container sx={{ width: '2vw', height: '5vh', mx: 'auto', my: 'auto', backgroundColor: '' }}
-              direction="column" justifyContent="center">
-          <SearchIcon sx={{ width: '2vw', mt: '0.5vh' }}/>
-        </Grid>
+        
         <Grid container sx={{ width: '18vw', height: '5vh', mx: 'auto', backgroundColor: '#' }}>
+          {/* Search text */}
           <TextField
             placeholder="Search Task…"
-            inputProps={{ style: { textAlign: 'left', fontSize: '1.5vw' } }}
+            inputProps={{ style: { textAlign: 'left', fontSize: '1vw', height: "1vh" } }}
             onChange={handleSearch}
             fullWidth={true}
             value={props.searchText}
-            sx={{ height: '5vh' }}
           />
         </Grid>
+        {/* Cancel Icon */}
         <Grid container sx={{ width: '2vw', height: '5vh', mx: 'auto', my: 'auto', backgroundColor: '' }}
               direction="column" justifyContent="center">
           <IconButton sx={{ p: '10px', width: '2vw', height: '2vw' }} onClick={handleCancelSearch}>
             <CloseOutlinedIcon sx={{ width: '2vw', mt: '0.5vh' }}/>
           </IconButton>
+        </Grid>
+        {/* Search */}
+        <Grid container sx={{ width: '2vw', height: '5vh', mx: 'auto', my: 'auto', backgroundColor: '' }}
+              direction="column" justifyContent="center">
+          {/* <SearchIcon sx={{ width: '2vw', mt: '0.5vh' }}/> */}
         </Grid>
       </Grid>
 
