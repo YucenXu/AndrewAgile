@@ -2,7 +2,7 @@
 
 ## AWS EC2
 
-Create a new Ubuntu instance on [AWS EC2](https://aws.amazon.com/ec2/). Connect to the instance and install dependencies.
+Create a new Ubuntu(20.04) instance on [AWS EC2](https://aws.amazon.com/ec2/). Connect to the instance and install dependencies.
 
 ```shell
 sudo apt update
