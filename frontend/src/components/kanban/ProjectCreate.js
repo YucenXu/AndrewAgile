@@ -88,7 +88,6 @@ export default function ProjectCreate(props) {
             mx: 'auto',
             width: '100%',
             height: '30%',
-            // border: 2,
             borderColor: '#',
             borderRadius: 1,
             backgroundColor: '#',

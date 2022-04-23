@@ -74,7 +74,7 @@ def init_tasks():
             type=random.choice(TaskType.choices)[0],
             priority=random.choice(TaskPriority.choices)[0],
             status=random.choice(TaskStatus.choices)[0],
-            title=random.choice(planets) + " Job " + str(i),
+            title=random.choice(planets) + " Task " + str(i),
             description="This is the task description",
             project=project,
             assignee=random.choice(users),

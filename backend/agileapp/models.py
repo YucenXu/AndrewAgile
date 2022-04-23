@@ -20,7 +20,7 @@ class UserRole(models.TextChoices):
 
 
 class Permission(models.Model):
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, null=True)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     role = models.CharField(choices=UserRole.choices, max_length=6)
     granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='granted_by')
@@ -37,7 +37,7 @@ class Project(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=300)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     last_updated_at = models.DateTimeField(default=timezone.now)
 
@@ -74,8 +74,8 @@ class Task(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=300)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='assignee')
-    reporter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='reporter')
+    assignee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assignee')
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reporter')
     watchers = models.ManyToManyField(User, related_name='watchers')
     visible = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now)

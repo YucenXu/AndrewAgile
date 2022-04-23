@@ -14,7 +14,7 @@ import Box from '@mui/material/Box'
 import useInterval from '../hooks/useInterval'
 import { Select, MenuItem } from '@mui/material'
 
-export default function Progress() {
+export default function Progress () {
   // call API to get
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
   const [allProjects, setAllProjects] = React.useState([])
@@ -34,7 +34,7 @@ export default function Progress() {
       const allTasks = resp.data
       const newRow = createData(
         curProject.id, curProject.name, curProject.description, curProject.owner.username,
-        allTasks.backlog.length, allTasks.todo.length, allTasks.inprogress.length, allTasks.done.length
+        allTasks.backlog.length, allTasks.todo.length, allTasks.inprogress.length, allTasks.done.length,
       )
       newRows.push(newRow)
     }
@@ -58,8 +58,8 @@ export default function Progress() {
     ).catch(console.error)
   }
 
-  function createData(projectID, name, description, owner, Backlog, todo, inprogress, done) {
-    return { projectID, name, description, owner, Backlog, todo, inprogress, done };
+  function createData (projectID, name, description, owner, backlog, todo, inprogress, done) {
+    return { projectID, name, description, owner, backlog, todo, inprogress, done }
   }
 
   const handleChangeWorkspace = (event) => {
@@ -73,12 +73,12 @@ export default function Progress() {
       <Grid container sx={{ my: 'auto', mx: 'auto', width: '100%', height: '100vh' }} style={{ backgroundColor: '#' }}>
         {/* Dropdown menus */}
         <Grid container spacing={2} sx={{ mt: '10vh', mx: 'auto', width: '95%', height: '10vh' }}
-          style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
+              style={{ backgroundColor: '#', alignItems: 'left' }} direction="row" alignItems="center">
           {/* Workspace Dropdown */}
           <Grid item spacing={2} sx={{ width: '20%', height: '10vh' }}
-            style={{ backgroundColor: '#', alignItems: 'left' }}>
+                style={{ backgroundColor: '#', alignItems: 'left' }}>
             <FormControl variant="standard" sx={{ width: '15vw' }}
-              style={{ backgroundColor: '' }}>
+                         style={{ backgroundColor: '' }}>
               <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
               <Select
                 labelId="id-select-workspace-label"
@@ -95,26 +95,26 @@ export default function Progress() {
         </Grid>
         {/* Table Content */}
         <Grid container sx={{ my: '1vh', mx: 'auto', width: '95%', height: '70vh' }}
-          style={{ backgroundColor: '#' }} direction="column" alignItems="center">
+              style={{ backgroundColor: '#' }} direction="column" alignItems="center">
           <TableContainer sx={{ width: '95%' }} component={Paper}>
-            <Table stickyHeader sx={{ width: '100%' }} aria-label="simple table" >
+            <Table stickyHeader sx={{ width: '100%' }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }}>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }}>
                     Project ID</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }} align="right">
                     Name</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }} align="right">
                     Description</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }} align="right">
                     Owner</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }} align="right">
                     Backlog</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
-                    {"Todo"}</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }} align="right">
+                    {'Todo'}</TableCell>
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }} align="right">
                     In Progress</TableCell>
-                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold', }} align="right">
+                  <TableCell style={{ backgroundColor: '#e8eaf6', fontWeight: 'bold' }} align="right">
                     Done</TableCell>
                 </TableRow>
               </TableHead>
@@ -129,7 +129,7 @@ export default function Progress() {
                     <TableCell component="th" scope="row">{row.name}</TableCell>
                     <TableCell align="right">{row.description}</TableCell>
                     <TableCell align="right">{row.owner}</TableCell>
-                    <TableCell align="right">{row.Backlog}</TableCell>
+                    <TableCell align="right">{row.backlog}</TableCell>
                     <TableCell align="right">{row.todo}</TableCell>
                     <TableCell align="right">{row.inprogress}</TableCell>
                     <TableCell align="right">{row.done}</TableCell>

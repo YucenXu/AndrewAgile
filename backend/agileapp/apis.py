@@ -133,15 +133,16 @@ def workspace_users(request, wid):
             PermMessenger.send_perm_msgs(request.user, workspace, changelist)
 
     # return empty user list for unknown workspace
-    if not Workspace.objects.filter(id=wid):
+    workspace = Workspace.objects.filter(id=wid).first()
+    if not workspace:
         return JsonResponse([], safe=False)
 
     # admin and editor permissions in DB
-    special_perms = list(Permission.objects.filter(workspace__id=wid))
+    special_perms = list(Permission.objects.filter(workspace=workspace))
     special_users = [perm.user.username for perm in special_perms]
     # viewer permissions generated ad-hoc
     common_users = User.objects.exclude(username__in=special_users)
-    common_perms = [Permission(user=user, role=UserRole.VIEWER) for user in common_users]
+    common_perms = [Permission(workspace=workspace, user=user, role=UserRole.VIEWER) for user in common_users]
     # concatenate all permissions into payload
     all_perms = sorted(special_perms + common_perms, key=lambda p: p.user.username)
     serializer = PermissionSerializer(all_perms, many=True)

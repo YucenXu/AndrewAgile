@@ -4,8 +4,12 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { capitalizeStr } from '../../utils/formats'
 import axios from 'axios'
+import { priorityColorDict } from './TaskEdit'
+import BugReport from '@mui/icons-material/BugReport'
+import BuildIcon from '@mui/icons-material/Build'
+import StickyNote2Icon from '@mui/icons-material/StickyNote2'
 
-const getItemStyle = (isDragging, draggableStyle) => ({
+const getItemStyle = (isDragging, priority, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
   padding: 8 * 2,
@@ -13,6 +17,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
   // change background colour if dragging
   background: isDragging ? '#e3f2fd' : '#f2f4f4',
+  backgroundColor: priorityColorDict[priority],
 
   // styles we need to apply on draggable
   ...draggableStyle,
@@ -24,8 +29,14 @@ const getListStyle = isDraggingOver => ({
   overflow: 'auto',
 })
 
+const taskTypeIconDict = {
+  story: <StickyNote2Icon/>,
+  issue: <BugReport/>,
+  action: <BuildIcon fontSize="small"/>,
+}
+
 // Ref: https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/about/examples.md
-export default function DragBoard(props) {
+export default function DragBoard (props) {
   const [startInd, setStartInd] = useState(-1)
 
   const move = (source, destination, droppableSource, droppableDestination) => {
@@ -84,8 +95,8 @@ export default function DragBoard(props) {
 
   return (
     <Grid container
-      sx={{ my: '2vh', mx: 'auto', width: '100%', height: '60vh', backgroundColor: '#' }}
-      style={{ alignItems: 'center' }}
+          sx={{ my: '2vh', mx: 'auto', width: '100%', height: '60vh', backgroundColor: '#' }}
+          style={{ alignItems: 'center' }}
     >
       {/* Status Title */}
       {props.statusList.map(status => (
@@ -96,7 +107,7 @@ export default function DragBoard(props) {
           direction="row"
           alignItems="center"
         >
-          <Typography sx={{ mx: '1vw', my: 'auto', width: '22%', fontSize: 18, fontWeight: 700 }} color="#000000">
+          <Typography sx={{ mx: '1vw', my: 'auto', width: '22%', fontSize: 20, fontWeight: 700 }} color="#000000">
             {capitalizeStr(status)}
           </Typography>
         </Grid>
@@ -109,10 +120,10 @@ export default function DragBoard(props) {
           <Droppable key={ind} droppableId={`${ind}`} isDropDisabled={ind === startInd}>
             {(provided, snapshot) => (
               <Grid item
-                sx={{ my: '0vh', mx: 'auto', width: '24%', height: '52vh' }}
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-                {...provided.droppableProps}
+                    sx={{ my: '0vh', mx: 'auto', width: '24%', height: '52vh' }}
+                    ref={provided.innerRef}
+                    style={getListStyle(snapshot.isDraggingOver)}
+                    {...provided.droppableProps}
               >
                 {/* Task Cards*/}
                 {tasks.map((item, index) => (
@@ -129,6 +140,7 @@ export default function DragBoard(props) {
                         {...provided.dragHandleProps}
                         style={getItemStyle(
                           snapshot.isDragging,
+                          item.priority,
                           provided.draggableProps.style,
                         )}
                         onClick={() => handleClickTask(item.id)}
@@ -136,10 +148,11 @@ export default function DragBoard(props) {
                         <div
                           style={{
                             display: 'flex',
-                            justifyContent: 'space-around',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}
                         >
-                          {item.title}
+                          {taskTypeIconDict[item.type]} [{capitalizeStr(item.type)}] {item.title}
                         </div>
                       </div>
                     )}
