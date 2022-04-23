@@ -18,11 +18,13 @@ function ColoredAvatar (props) {
   }
 
   function stringAvatar (name) {
+    const firstInitial = name.split(' ')[0].length > 0 ? name.split(' ')[0][0] : ''
+    const lastInitial = name.split(' ')[1].length > 0 ? name.split(' ')[1][0] : ''
     return {
       sx: {
         bgcolor: stringToColor(name),
       },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+      children: `${firstInitial}${lastInitial}`,
     }
   }
 
