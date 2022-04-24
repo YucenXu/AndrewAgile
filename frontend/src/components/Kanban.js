@@ -100,14 +100,19 @@ export default function Kanban () {
   }
 
   const getCurrentWorkspace = () => {
-    axios.get('/api/workspace/' + workspaceId).then(
-      resp => setCurWorkspace(resp.data),
-    )
+    if (workspaceId > 0) {
+      axios.get('/api/workspace/' + workspaceId).then(
+        resp => setCurWorkspace(resp.data),
+      ).catch(console.error)
+    }
   }
 
   const getCurrentProject = () => {
-    axios.get('/api/project/' + projectId).then(
-      resp => setCurProject(resp.data))
+    if (projectId > 0) {
+      axios.get('/api/project/' + projectId).then(
+        resp => setCurProject(resp.data),
+      ).catch(console.error)
+    }
   }
 
   const handleChangeWorkspace = (event) => {
