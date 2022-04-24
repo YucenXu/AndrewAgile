@@ -195,6 +195,14 @@ def project_api(request, pid):
 
 
 @login_required
+@require_GET
+def workspace_tasks(request, wid):
+    tasks = Task.objects.filter(project__workspace__id=wid).order_by('title')
+    serializer = TaskSerializer(tasks, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@login_required
 @require_http_methods(["GET", "POST"])
 def project_tasks(request, pid):
     if request.method == "GET":

@@ -1,303 +1,131 @@
-import * as React from "react";
-import Paper from "@mui/material/Paper";
-import InputLabel from "@mui/material/InputLabel";
-import Grid from "@mui/material/Grid";
-import FormControl from "@mui/material/FormControl";
-import axios from "axios";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Box from "@mui/material/Box";
-import { Select, MenuItem, Button } from "@mui/material";
-import SearchBar from "./progress/SearchBar";
-import ProjectChart from "./progress/ProjectChart";
-import Modal from "@mui/material/Modal";
+import { Box, Container, FormControl, Grid } from '@mui/material'
+import { NumberCard, PercentageCard } from './progress/ProgressCards'
+import { TasksByStatus } from './progress/TasksByStatus'
+import { TasksByType } from './progress/TasksByType'
+import { RecentTasks } from './progress/RecentTasks'
+import * as React from 'react'
+import useInterval from '../hooks/useInterval'
+import axios from 'axios'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
-export default function Progress() {
-  // call API to get
-  const [allWorkspaces, setAllWorkspaces] = React.useState([]);
-  const [allProjects, setAllProjects] = React.useState([]);
-  // Store user action
-  const [workspaceId, setWorkspaceId] = React.useState(0);
-  // Table rows
-  const [rows, setRows] = React.useState([]);
-  // search project
-  const [searchText, setSearchText] = React.useState("");
-  // open Modal
-  const [open, setOpen] = React.useState(false);
-  //chart
-  const [chartData, setChartData] = React.useState(null);
+// Ref: https://github.com/devias-io/material-kit-react
+export default function Progress () {
+  const [allWorkspaces, setAllWorkspaces] = React.useState([])
+  const [workspaceId, setWorkspaceId] = React.useState(localStorage.getItem('progress_wid') ?? 0)
 
-  React.useEffect(() => fetchAllWorkspaces(), []);
-  React.useEffect(() => fetchAllProjects(), [workspaceId]);
+  const [allProjects, setAllProjects] = React.useState([])
+  const [allTasks, setAllTasks] = React.useState([])
 
-  React.useEffect(async () => {
-    const newRows = [];
-    for (let i = 0; i < allProjects.length; i++) {
-      const curProject = allProjects[i];
-      const resp = await axios
-        .get("/api/project/" + curProject.id + "/tasks")
-        .catch(console.error);
-      const allTasks = resp.data;
-      const newRow = createData(
-        curProject.id,
-        curProject.name,
-        curProject.description,
-        curProject.owner.username,
-        allTasks.backlog.length,
-        allTasks.todo.length,
-        allTasks.inprogress.length,
-        allTasks.done.length
-      );
-      newRows.push(newRow);
-    }
-    setRows(newRows);
-  }, [allProjects, searchText]);
+  React.useEffect(() => fetchAllWorkspaces(), [])
+  React.useEffect(() => {
+    fetchAllProjects()
+    fetchAllTasks()
+  }, [workspaceId])
 
-  // useInterval(() => {
-  //   fetchAllWorkspaces()
-  //   fetchAllProjects()
-  // }, 10000)
+  useInterval(() => fetchAllWorkspaces(), 10000)
 
   const fetchAllWorkspaces = () => {
-    axios
-      .get("/api/workspaces")
-      .then((resp) => setAllWorkspaces(resp.data))
-      .catch(console.error);
-  };
+    axios.get('/api/workspaces').then(
+      resp => setAllWorkspaces(resp.data),
+    ).catch(console.error)
+  }
 
   const fetchAllProjects = () => {
-    axios
-      .get("/api/workspace/" + workspaceId + "/projects")
-      .then((resp) => setAllProjects(resp.data))
-      .catch(console.error);
-  };
+    axios.get('/api/workspace/' + workspaceId + '/projects').then(
+      resp => setAllProjects(resp.data),
+    ).catch(console.error)
+  }
 
-  function createData(
-    projectID,
-    name,
-    description,
-    owner,
-    Backlog,
-    todo,
-    inprogress,
-    done
-  ) {
-    return {
-      projectID,
-      name,
-      description,
-      owner,
-      Backlog,
-      todo,
-      inprogress,
-      done,
-    };
+  const fetchAllTasks = () => {
+    axios.get('/api/workspace/' + workspaceId + '/tasks').then(
+      resp => setAllTasks(resp.data.map(task => {
+        if (!task.visible) {
+          task.status = 'archived'
+        }
+        return task
+      })),
+    ).catch(console.error)
   }
 
   const handleChangeWorkspace = (event) => {
-    let id = event.target.value;
-    setWorkspaceId(id);
-  };
+    let wid = event.target.value
+    setWorkspaceId(wid)
+    localStorage.setItem('progress_wid', wid)
+  }
 
-  return (
-    // <Container maxWidth="sx" sx={{ mt: 12 }} >
-    <Box>
-      <Grid
-        container
-        sx={{ my: "auto", mx: "auto", width: "100%", height: "100vh" }}
-        style={{ backgroundColor: "#" }}
-      >
-        {/* Dropdown menus */}
-        <Grid
-          container
-          spacing={2}
-          sx={{ mt: "10vh", mx: "auto", width: "95%", height: "10vh" }}
-          style={{ backgroundColor: "#", alignItems: "left" }}
-          direction='row'
-          alignItems='center'
-        >
-          {/* Workspace Dropdown */}
-          <Grid
-            item
-            spacing={2}
-            sx={{ width: "20%", height: "10vh" }}
-            style={{ backgroundColor: "#", alignItems: "left" }}
-          >
-            <FormControl
-              variant='standard'
-              sx={{ width: "15vw" }}
-              style={{ backgroundColor: "" }}
-            >
-              <InputLabel id='id-select-workspace-label'>Workspace</InputLabel>
-              <Select
-                labelId='id-select-workspace-label'
-                label='workspaceId'
-                value={workspaceId}
-                onChange={handleChangeWorkspace}
-              >
-                {allWorkspaces.map((workspace) => (
-                  <MenuItem key={workspace.id} value={workspace.id}>
-                    {workspace.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-        {/* Search Bar */}
-        <Grid
-          container
-          sx={{ my: "1vh", mx: "auto", width: "95%", height: "8vh" }}
-          style={{ backgroundColor: "#" }}
-          direction='row'
-          alignItems='center'
-        >
-          <Grid item sx={{ width: "28%", height: "6vh" }}>
-            <SearchBar
-              searchText={searchText}
-              searchBlur={() => {
-                let dmp = [];
-                rows.map((item) => {
-                  if (searchText === item.name) {
-                    dmp.push(item);
-                  }
-                  console.log(item.name, searchText);
-                });
-                setTimeout(() => {
-                  setRows([...dmp]);
-                }, 500);
-              }}
-              setSearchText={(e) => {
-                setSearchText(e);
-              }}
-            />
-          </Grid>
-        </Grid>
+  const calcCompletedPercent = () => {
+    if (allTasks.length === 0) {
+      return 0
+    } else {
+      return allTasks.filter(task => task.status === 'done').length / allTasks.length * 100
+    }
+  }
 
-        {/* Table Content */}
-        <Grid
-          container
-          sx={{ my: "1vh", mx: "auto", width: "95%", height: "70vh" }}
-          style={{ backgroundColor: "#" }}
-          direction='column'
-          alignItems='center'
+  const calcArchivedPercent = () => {
+    if (allTasks.length === 0) {
+      return 0
+    } else {
+      return allTasks.filter(task => !task.visible).length / allTasks.length * 100
+    }
+  }
+
+  return <Box component="main" sx={{ mt: 3, flexGrow: 1, py: 8 }}>
+    {/* Workspace Dropdown */}
+    <Grid item spacing={2} sx={{ mt: '2vh', mx: '2vw', width: '20%', height: '10vh' }}
+          style={{ backgroundColor: '#', alignItems: 'left' }}>
+      <FormControl variant="standard" sx={{ width: '15vw' }}
+                   style={{ backgroundColor: '' }}>
+        <InputLabel id="id-select-workspace-label">Workspace</InputLabel>
+        <Select
+          labelId="id-select-workspace-label"
+          label="workspaceId"
+          value={workspaceId}
+          onChange={handleChangeWorkspace}
         >
-          <TableContainer sx={{ width: "95%" }} component={Paper}>
-            <Table
-              stickyHeader
-              sx={{ width: "100%" }}
-              aria-label='simple table'
-            >
-              <TableHead>
-                <TableRow>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                  >
-                    Project ID
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    Name
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    Description
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    Owner
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    Backlog
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    {"Todo"}
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    In Progress
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    Done
-                  </TableCell>
-                  <TableCell
-                    style={{ backgroundColor: "#e8eaf6", fontWeight: "bold" }}
-                    align='right'
-                  >
-                    Analysis
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {/*{console.log(rows)}*/}
-                {rows.map((row) => (
-                  <TableRow
-                    key={row.projectID}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component='th' scope='row'>
-                      {row.projectID}
-                    </TableCell>
-                    <TableCell component='th' scope='row'>
-                      {row.name}
-                    </TableCell>
-                    <TableCell align='right'>{row.description}</TableCell>
-                    <TableCell align='right'>{row.owner}</TableCell>
-                    <TableCell align='right'>{row.Backlog}</TableCell>
-                    <TableCell align='right'>{row.todo}</TableCell>
-                    <TableCell align='right'>{row.inprogress}</TableCell>
-                    <TableCell align='right'>{row.done}</TableCell>
-                    <TableCell align='right'>
-                      {" "}
-                      <Button
-                        onClick={() => {
-                          setOpen(true);
-                          setChartData(row);
-                        }}
-                      >
-                        Click
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {allWorkspaces.map((workspace) => (
+            <MenuItem key={workspace.id} value={workspace.id}>{workspace.name}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Grid>
+
+    <Container maxWidth={false}>
+      <Grid container spacing={3}>
+        <Grid item lg={3} sm={6} xl={3} xs={12}>
+          <NumberCard title="Total Projects" number={allProjects.length} sx={{ height: '100%' }}/>
         </Grid>
-        {/* </Container> */}
-        <Modal
-          open={open}
-          onClose={() => {
-            setOpen(false);
-          }}
-          aria-labelledby='modal-modal-title'
-          aria-describedby='modal-modal-description'
-          style={{ width: "50%", position: "absolute", left: "20%", top: "5%" }}
-        >
-          <ProjectChart data={chartData} />
-        </Modal>
+        <Grid item xl={3} lg={3} sm={6} xs={12}>
+          <NumberCard title="Total Tasks" number={allTasks.length} sx={{ height: '100%' }}/>
+        </Grid>
+        <Grid item xl={3} lg={3} sm={6} xs={12}>
+          <PercentageCard title="Completed Tasks" percent={calcCompletedPercent()} color="success"/>
+        </Grid>
+        <Grid item xl={3} lg={3} sm={6} xs={12}>
+          <PercentageCard title="Archived Tasks" percent={calcArchivedPercent()} color="secondary"/>
+        </Grid>
+        <Grid item lg={8} md={12} xl={9} xs={12}>
+          <TasksByStatus projects={allProjects} tasks={allTasks}/>
+        </Grid>
+        <Grid item lg={4} md={6} xl={3} xs={12}>
+          <TasksByType tasks={allTasks}/>
+        </Grid>
+        <Grid item xs={12}>
+          <RecentTasks
+            projects={
+              allProjects.reduce((dict, project) => {
+                dict[project.id] = project.name
+                return dict
+              }, {})
+            }
+            tasks={
+              allTasks.sort(
+                (t1, t2) => new Date(t2.lastUpdatedAt) - new Date(t1.lastUpdatedAt),
+              ).slice(0, 10)
+            }/>
+        </Grid>
       </Grid>
-    </Box>
-  );
+    </Container>
+  </Box>
 }

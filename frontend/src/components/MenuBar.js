@@ -14,8 +14,9 @@ import axios from 'axios'
 const MenuBar = () => {
   const { setAuth } = AuthConsumer()
 
-  const handleClick = event => {
+  const handleLogout = event => {
     event.preventDefault()
+    localStorage.clear()
     axios.post('/api/logout').then(() => {
       setAuth({ ...initialAuth.auth })
       // reload the web page to trigger Google OAuth2
@@ -25,31 +26,31 @@ const MenuBar = () => {
 
   return (
     <List component="nav">
-      <ListItemButton component="a" href="/">
+      <ListItemButton component="a" href="/" selected={window.location.pathname === '/'}>
         <ListItemIcon>
           <ViewKanbanIcon/>
         </ListItemIcon>
         <ListItemText primary="Kanban"/>
       </ListItemButton>
-      <ListItemButton component="a" href="/progress">
+      <ListItemButton component="a" href="/progress" selected={window.location.pathname === '/progress'}>
         <ListItemIcon>
           <AutoGraphIcon/>
         </ListItemIcon>
         <ListItemText primary="Progress"/>
       </ListItemButton>
-      <ListItemButton component="a" href="/access">
+      <ListItemButton component="a" href="/access" selected={window.location.pathname === '/access'}>
         <ListItemIcon>
           <PeopleIcon/>
         </ListItemIcon>
         <ListItemText primary="Access"/>
       </ListItemButton>
-      <ListItemButton component="a" href="/help">
+      <ListItemButton component="a" href="/help" selected={window.location.pathname === '/help'}>
         <ListItemIcon>
           <HelpIcon/>
         </ListItemIcon>
         <ListItemText primary="Help"/>
       </ListItemButton>
-      <ListItemButton onClick={handleClick}>
+      <ListItemButton onClick={handleLogout}>
         <ListItemIcon>
           <LogoutIcon/>
         </ListItemIcon>

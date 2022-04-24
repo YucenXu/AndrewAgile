@@ -17,7 +17,7 @@ import { sanitizeBlank } from '../../utils/formats'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
-export const typeColorDict = {
+const typeColorDict = {
   story: 'rgba(74,128,231,0.4)',
   issue: 'rgba(246,124,106,0.4)',
   action: 'rgba(236,236,118,0.6)',
@@ -28,6 +28,7 @@ export const statusColorDict = {
   todo: 'rgba(236,236,118,0.6)',
   inprogress: 'rgba(246,124,106,0.4)',
   done: 'rgba(140,222,168,0.5)',
+  archived: 'rgba(128,128,128,0.4)',
 }
 
 export const priorityColorDict = {
@@ -537,7 +538,7 @@ class TaskEdit extends Component {
                 <Grid container sx={{ mx: '0vw', width: '10vw', height: '100%', backgroundColor: '#' }}
                       direction="column"
                       alignItems="center">
-                  <Button onClick={this.handleArchiveOrRestoreTask} variant="outlined" color="success"
+                  <Button onClick={this.handleArchiveOrRestoreTask} variant="outlined" color="secondary"
                           disabled={this.props.disableEdit}
                           style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Archive</Button>
                 </Grid> :

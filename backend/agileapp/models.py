@@ -23,7 +23,7 @@ class Permission(models.Model):
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     role = models.CharField(choices=UserRole.choices, max_length=6)
-    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='granted_by')
+    granted_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='granted_by')
     created_at = models.DateTimeField(default=timezone.now)
     last_updated_at = models.DateTimeField(default=timezone.now)
 

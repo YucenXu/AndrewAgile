@@ -79,8 +79,9 @@ def init_tasks():
             project=project,
             assignee=random.choice(users),
             reporter=random.choice(users),
+            visible=random.random() < 0.7
         ) for project in projects
-        for i in range(1, random.randint(1, 20) + 1)
+        for i in range(1, random.randint(15, 25) + 1)
     ]
     for task in new_tasks:
         task.save()

@@ -19,6 +19,7 @@ urlpatterns = [
     path('project/<int:pid>', apis.project_api),
 
     # task apis
+    path('workspace/<int:wid>/tasks', apis.workspace_tasks),
     path('project/<int:pid>/tasks', apis.project_tasks),
     path('task/<int:tid>', apis.task_api),
 

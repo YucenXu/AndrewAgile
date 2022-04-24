@@ -35,9 +35,9 @@ export default function Kanban () {
   const [showArchived, setShowArchived] = React.useState(false)
   const [showImportant, setShowImportant] = React.useState(false)
 
-  const [workspaceId, setWorkspaceId] = React.useState(0)
+  const [workspaceId, setWorkspaceId] = React.useState(localStorage.getItem('kanban_wid') ?? 0)
   const [curWorkspace, setCurWorkspace] = React.useState({})
-  const [projectId, setProjectId] = React.useState(0)
+  const [projectId, setProjectId] = React.useState(localStorage.getItem('kanban_pid') ?? 0)
   const [curProject, setCurProject] = React.useState({})
   const [taskId, setTaskId] = React.useState(0)
 
@@ -92,6 +92,8 @@ export default function Kanban () {
   const handleChangeWorkspace = (event) => {
     let id = event.target.value
     setWorkspaceId(id)
+    localStorage.setItem('kanban_wid', id)
+    localStorage.removeItem('kanban_pid')
     axios.get('/api/workspace/' + id).then(resp => {
       setCurWorkspace(resp.data)
       setProjectId(0)
@@ -101,6 +103,7 @@ export default function Kanban () {
   const handleChangeProject = (event) => {
     let id = event.target.value
     setProjectId(id)
+    localStorage.setItem('kanban_pid', id)
     axios.get('/api/project/' + id).then(resp => {
       setCurProject(resp.data)
     })
@@ -196,20 +199,20 @@ export default function Kanban () {
                                 label={<Typography sx={{ fontSize: '1vw' }}>Show Watching</Typography>}/>
             </FormGroup>
           </Grid>
-          {/* Archive Switch */}
-          <Grid container item sx={{ width: '15%' }} direction="column">
-            <FormGroup>
-              <FormControlLabel control={<Switch checked={showArchived} onChange={handleSwitchArchived}
-                                                 inputProps={{ 'aria-label': 'controlled' }}/>}
-                                label={<Typography sx={{ fontSize: '1vw' }}>Show Archived</Typography>}/>
-            </FormGroup>
-          </Grid>
           {/* Importance Switch */}
           <Grid container item sx={{ width: '15%' }} direction="column">
             <FormGroup>
               <FormControlLabel control={<Switch checked={showImportant} onChange={handleSwitchImportant}
                                                  inputProps={{ 'aria-label': 'controlled' }}/>}
                                 label={<Typography sx={{ fontSize: '1vw' }}>Show Important</Typography>}/>
+            </FormGroup>
+          </Grid>
+          {/* Archive Switch */}
+          <Grid container item sx={{ width: '15%' }} direction="column">
+            <FormGroup>
+              <FormControlLabel control={<Switch checked={showArchived} onChange={handleSwitchArchived}
+                                                 inputProps={{ 'aria-label': 'controlled' }}/>}
+                                label={<Typography sx={{ fontSize: '1vw' }}>Show Archived</Typography>}/>
             </FormGroup>
           </Grid>
           {/* Placeholder */}

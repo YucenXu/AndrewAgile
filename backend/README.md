@@ -393,6 +393,74 @@ Response: 200
 
 ## Task API
 
+### Get all tasks of a workspace
+
+Path: /api/workspace/\<int:wid\>/tasks
+
+Method: GET
+
+Response: 200
+
+```json
+[
+    {
+        "id": 2,
+        "type": "action",
+        "priority": "normal",
+        "status": "todo",
+        "title": "Mercury Task 2",
+        "description": "This is the task description",
+        "projectId": 1,
+        "assigneeId": "user-d",
+        "reporterId": "user-c",
+        "createdAt": "2022-04-23T01:31:11.063709-04:00",
+        "lastUpdatedAt": "2022-04-23T15:07:42.600462-04:00",
+        "watchers": [
+            "user-c",
+            "user-d"
+        ],
+        "visible": true
+    },
+    {
+        "id": 4,
+        "type": "story",
+        "priority": "low",
+        "status": "inprogress",
+        "title": "Uranus Task 4",
+        "description": "This is the task description",
+        "projectId": 1,
+        "assigneeId": "user-c",
+        "reporterId": "user-d",
+        "createdAt": "2022-04-23T01:31:11.063752-04:00",
+        "lastUpdatedAt": "2022-04-23T15:07:41.048712-04:00",
+        "watchers": [
+            "user-c",
+            "user-d"
+        ],
+        "visible": true
+    },
+    {
+        "id": 9,
+        "type": "action",
+        "priority": "important",
+        "status": "todo",
+        "title": "Saturn Task 9",
+        "description": "This is the task 2",
+        "projectId": 1,
+        "assigneeId": "user-c",
+        "reporterId": "user-a",
+        "createdAt": "2022-04-23T01:31:11.063854-04:00",
+        "lastUpdatedAt": "2022-04-23T01:40:48.760849-04:00",
+        "watchers": [
+            "user-a",
+            "user-b",
+            "user-c"
+        ],
+        "visible": true
+    }
+]
+```
+
 ### Get all tasks of a project
 
 Path: /api/project/\<int:pid\>/tasks?visible=\<bool>

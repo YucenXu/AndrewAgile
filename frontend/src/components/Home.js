@@ -93,7 +93,7 @@ export default function Home ({ children }) {
             variant="h5"
             color="inherit"
             noWrap
-            sx={{ flexGrow: 1 }}
+            sx={{ flexGrow: 1, fontWeight: 'bold' }}
           >
             Andrew Agile Platform
           </Typography>
