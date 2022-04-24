@@ -10,7 +10,7 @@ import Box from '@mui/material/Box'
 import axios from 'axios'
 
 export default function Access () {
-  const [workspaceId, setWorkspaceId] = React.useState(localStorage.getItem('access_wid') ?? 0)
+  const [workspaceId, setWorkspaceId] = React.useState(Number(localStorage.getItem('access_wid') ?? 0))
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
 
   const [allUsers, setAllUsers] = React.useState([])

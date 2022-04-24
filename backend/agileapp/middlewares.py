@@ -5,7 +5,7 @@ from agileapp.models import Workspace, Permission, Project, Task, Comment
 from agileapp.models import UserRole, TaskType, TaskPriority, TaskStatus
 
 
-# a backdoor middleware to automatically grant full access to admin site for developers
+# a backdoor middleware to automatically grant full access for developers
 class DeveloperAccountMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -19,12 +19,32 @@ class DeveloperAccountMiddleware:
 
     def __call__(self, request):
         user = request.user
-        if user.is_authenticated and user.email in self._developer_list and not user.is_staff:
-            # user can log into admin site
-            user.is_staff = True
-            # user has all permissions without explicitly assigning them
-            user.is_superuser = True
-            user.save()
+        if not user.is_authenticated:
+            return self.get_response(request)
+
+        if user.email in self._developer_list:
+            if not user.is_staff or not user.is_superuser:
+                # user can log into admin site
+                user.is_staff = True
+                # user has all permissions without explicitly assigning them
+                user.is_superuser = True
+                user.save()
+
+            # grant user admin role for all workspaces
+            workspaces = Workspace.objects.all()
+            for workspace in workspaces:
+                perm = Permission.objects.filter(workspace=workspace, user=user).first()
+                if not perm:
+                    perm = Permission(
+                        workspace=workspace,
+                        user=user,
+                        role=UserRole.ADMIN,
+                        granted_by=user,
+                    )
+                    perm.save()
+                elif perm.role != UserRole.ADMIN:
+                    perm.role = UserRole.ADMIN
+                    perm.save()
 
         return self.get_response(request)
 

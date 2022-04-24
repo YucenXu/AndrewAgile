@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 // Ref: https://github.com/devias-io/material-kit-react
 export default function Progress () {
   const [allWorkspaces, setAllWorkspaces] = React.useState([])
-  const [workspaceId, setWorkspaceId] = React.useState(localStorage.getItem('progress_wid') ?? 0)
+  const [workspaceId, setWorkspaceId] = React.useState(Number(localStorage.getItem('progress_wid') ?? 0))
 
   const [allProjects, setAllProjects] = React.useState([])
   const [allTasks, setAllTasks] = React.useState([])

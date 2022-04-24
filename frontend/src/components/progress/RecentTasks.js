@@ -54,38 +54,33 @@ export const RecentTasks = (props) => (
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
                 Project
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
                 Title
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
                 Type
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
                 Priority
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
                 Assignee
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
                 Reporter
               </TableCell>
-              <TableCell sortDirection="desc">
-                <Tooltip
-                  enterDelay={300}
-                  title="Sort"
+              <TableCell sortDirection="desc" sx={{ fontWeight: 'bold' }}>
+                <TableSortLabel
+                  active
+                  direction="desc"
                 >
-                  <TableSortLabel
-                    active
-                    direction="desc"
-                  >
-                    Last Updated At
-                  </TableSortLabel>
-                </Tooltip>
+                  Last Updated At
+                </TableSortLabel>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>
                 Status
               </TableCell>
             </TableRow>

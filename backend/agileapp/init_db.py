@@ -24,7 +24,7 @@ def init_users():
     ]
     for user in new_users:
         user.save()
-    return new_users[:4]
+    return new_users
 
 
 def init_workspaces():
@@ -46,7 +46,7 @@ def init_permissions():
             user=user,
             role=random.choice([UserRole.ADMIN, UserRole.EDITOR]),
         ) for workspace in workspaces
-        for user in users
+        for user in random.sample(users, 4)
     ]
     for perm in new_perms:
         perm.save()
@@ -71,7 +71,7 @@ def init_projects():
 def init_tasks():
     new_tasks = [
         Task(
-            type=random.choice(TaskType.choices)[0],
+            type=random.choices(TaskType.choices, weights=[5, 3, 2], k=1)[0][0],
             priority=random.choice(TaskPriority.choices)[0],
             status=random.choice(TaskStatus.choices)[0],
             title=random.choice(planets) + " Task " + str(i),
@@ -79,7 +79,7 @@ def init_tasks():
             project=project,
             assignee=random.choice(users),
             reporter=random.choice(users),
-            visible=random.random() < 0.7
+            visible=random.random() < 0.8
         ) for project in projects
         for i in range(1, random.randint(15, 25) + 1)
     ]

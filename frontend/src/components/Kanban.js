@@ -35,9 +35,9 @@ export default function Kanban () {
   const [showArchived, setShowArchived] = React.useState(false)
   const [showImportant, setShowImportant] = React.useState(false)
 
-  const [workspaceId, setWorkspaceId] = React.useState(localStorage.getItem('kanban_wid') ?? 0)
+  const [workspaceId, setWorkspaceId] = React.useState(Number(localStorage.getItem('kanban_wid') ?? 0))
   const [curWorkspace, setCurWorkspace] = React.useState({})
-  const [projectId, setProjectId] = React.useState(localStorage.getItem('kanban_pid') ?? 0)
+  const [projectId, setProjectId] = React.useState(Number(localStorage.getItem('kanban_pid') ?? 0))
   const [curProject, setCurProject] = React.useState({})
   const [taskId, setTaskId] = React.useState(0)
 
