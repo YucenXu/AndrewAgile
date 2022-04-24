@@ -9,6 +9,13 @@ import BugReport from '@mui/icons-material/BugReport'
 import BuildIcon from '@mui/icons-material/Build'
 import StickyNote2Icon from '@mui/icons-material/StickyNote2'
 
+const priorityDraggingColorDict = {
+  critical: 'rgb(246,124,106)',
+  important: 'rgb(236,236,118)',
+  normal: 'rgb(74,128,231)',
+  low: 'rgb(140,222,168)',
+}
+
 const getItemStyle = (isDragging, priority, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: 'none',
@@ -16,8 +23,7 @@ const getItemStyle = (isDragging, priority, draggableStyle) => ({
   margin: `0 0 ${8}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? '#e3f2fd' : '#f2f4f4',
-  backgroundColor: priorityColorDict[priority],
+  background: isDragging ? priorityDraggingColorDict[priority] : priorityColorDict[priority],
 
   // styles we need to apply on draggable
   ...draggableStyle,

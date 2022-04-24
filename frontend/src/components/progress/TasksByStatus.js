@@ -69,14 +69,14 @@ export const TasksByStatus = (props) => {
       return {
         backgroundColor: statusColorDict[status],
         barPercentage: 0.5,
-        barThickness: 30,
+        barThickness: Math.max(25 - props.projects.length, 1),
         borderRadius: 4,
         categoryPercentage: 0.5,
         data: props.projects.map(project =>
           props.tasks.filter(task => task.projectId === project.id && task.status === status).length,
         ),
         label: capitalizeStr(status),
-        maxBarThickness: 20,
+        maxBarThickness: 25,
       }
     }),
     labels: props.projects.map(project => project.name),

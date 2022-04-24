@@ -35,9 +35,9 @@ export default function Kanban () {
   const [showArchived, setShowArchived] = React.useState(false)
   const [showImportant, setShowImportant] = React.useState(false)
 
-  const [workspaceId, setWorkspaceId] = React.useState(Number(localStorage.getItem('kanban_wid') ?? 0))
+  const [workspaceId, setWorkspaceId] = React.useState(0)
   const [curWorkspace, setCurWorkspace] = React.useState({})
-  const [projectId, setProjectId] = React.useState(Number(localStorage.getItem('kanban_pid') ?? 0))
+  const [projectId, setProjectId] = React.useState(0)
   const [curProject, setCurProject] = React.useState({})
   const [taskId, setTaskId] = React.useState(0)
 
@@ -52,9 +52,19 @@ export default function Kanban () {
 
   const { auth } = AuthConsumer()
 
+  React.useEffect(() => {
+    setWorkspaceId(Number(localStorage.getItem('kanban_wid') ?? 0))
+    setProjectId(Number(localStorage.getItem('kanban_pid') ?? 0))
+  }, [])
+
   React.useEffect(() => fetchAllWorkspaces(), [])
   React.useEffect(() => fetchAllProjects(), [workspaceId, refreshProjects])
-  React.useEffect(() => fetchAllUsers(), [workspaceId])
+  React.useEffect(() => {
+    fetchAllUsers()
+    getCurrentWorkspace()
+  }, [workspaceId])
+
+  React.useEffect(() => getCurrentProject(), [projectId])
   React.useEffect(() => fetchAllTasks(), [projectId, refreshTasks, showArchived])
 
   useInterval(() => {
@@ -89,24 +99,29 @@ export default function Kanban () {
     ).catch(console.error)
   }
 
+  const getCurrentWorkspace = () => {
+    axios.get('/api/workspace/' + workspaceId).then(
+      resp => setCurWorkspace(resp.data),
+    )
+  }
+
+  const getCurrentProject = () => {
+    axios.get('/api/project/' + projectId).then(
+      resp => setCurProject(resp.data))
+  }
+
   const handleChangeWorkspace = (event) => {
-    let id = event.target.value
-    setWorkspaceId(id)
-    localStorage.setItem('kanban_wid', id)
+    let wid = event.target.value
+    setWorkspaceId(wid)
+    setProjectId(0)
+    localStorage.setItem('kanban_wid', wid)
     localStorage.removeItem('kanban_pid')
-    axios.get('/api/workspace/' + id).then(resp => {
-      setCurWorkspace(resp.data)
-      setProjectId(0)
-    })
   }
 
   const handleChangeProject = (event) => {
-    let id = event.target.value
-    setProjectId(id)
-    localStorage.setItem('kanban_pid', id)
-    axios.get('/api/project/' + id).then(resp => {
-      setCurProject(resp.data)
-    })
+    let pid = event.target.value
+    setProjectId(pid)
+    localStorage.setItem('kanban_pid', pid)
   }
 
   const handleClickCreateProject = () => {
