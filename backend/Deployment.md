@@ -57,7 +57,7 @@ mysql -h <host> -P 3306 -u <user> -p
 
 ```mysql
 create database django character set utf8mb4;
-# drop database django
+# drop database django;
 quit;
 ```
 
