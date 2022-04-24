@@ -13,7 +13,7 @@ import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import { sanitizeBlank } from '../../utils/formats'
 
-export default function ProjectCreate(props) {
+export default function ProjectCreate (props) {
   const [name, setName] = React.useState('')
 
   const handleCloseProject = () => {
@@ -49,7 +49,7 @@ export default function ProjectCreate(props) {
       {/* Bar */}
       <Grid container sx={{ mt: 0, mb: '0%', width: '40vw', height: '10vh', backgroundColor: '#eeeeee' }}>
         <AppBar sx={{ position: 'relative' }}>
-          <Toolbar sx={{ height: '10vh' }} >
+          <Toolbar sx={{ height: '10vh' }}>
             <Typography sx={{ flex: 1, fontSize: '1.5vw', fontWeight: 'bold' }} variant="h6" component="div">
               Create Project
             </Typography>
@@ -60,17 +60,17 @@ export default function ProjectCreate(props) {
               onClick={handleCloseProject}
               aria-label="close"
             >
-              <CloseIcon />
+              <CloseIcon/>
             </IconButton>
           </Toolbar>
         </AppBar>
       </Grid>
 
       <Box component="form" onSubmit={handleSaveProject}
-        sx={{ mb: '0%', width: '40vw', height: '50vh', backgroundColor: '#f2f4f4' }}>
+           sx={{ mb: '0%', width: '40vw', height: '50vh', backgroundColor: '#f2f4f4' }}>
         {/* Workspace Info */}
         <Grid container sx={{ mb: '0%', width: '40vw', height: '10vh', backgroundColor: '#' }}
-          direction="row" alignItems="center">
+              direction="row" alignItems="center">
           <Grid item sx={{ mx: '2vw', width: '10vw' }}>
             <Typography
               sx={{ fontSize: '1.5vw', fontWeight: 'bold', backgroundColor: '#1976d2', color: '#ffffff' }}
@@ -95,9 +95,9 @@ export default function ProjectCreate(props) {
 
             {/* Index Column */}
             <Grid container
-              sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
+                  sx={{ ml: '5%', width: '35%', height: '100%', backgroundColor: '#', fontWeight: 'bold' }}>
               <Grid container sx={{ width: '100%', height: '50%' }} style={{ fontSize: '1.2vw' }} direction="row"
-                alignItems="center">
+                    alignItems="center">
                 Project Name
               </Grid>
 
@@ -107,7 +107,7 @@ export default function ProjectCreate(props) {
             <Grid container sx={{ mx: '1%', width: '58%', height: '100%', backgroundColor: '#' }}>
               {/* Project Name */}
               <Grid container sx={{ width: '80%', height: '50%', backgroundColor: '#' }} direction="row"
-                alignItems="center">
+                    alignItems="center">
                 <InputBase
                   name="name"
                   id="name"
@@ -123,7 +123,7 @@ export default function ProjectCreate(props) {
 
               {/* Owner Don't need now, owner is current user */}
               <Grid container sx={{ width: '80%', height: '50%', backgroundColor: '#' }} direction="row"
-                alignItems="center">
+                    alignItems="center">
                 {/* <Select
                   name="owner"
                   id="owner"
@@ -144,7 +144,7 @@ export default function ProjectCreate(props) {
 
           {/* Description */}
           <Grid container sx={{ width: '100%', height: '60%', backgroundColor: '#' }} style={{ alignItems: 'left' }}
-            direction="row" alignItems="center">
+                direction="row" alignItems="center">
             <Grid item sx={{ mx: 'auto', width: '90%', height: '90%', backgroundColor: '#' }}>
               <TextField
                 name="description"
@@ -162,15 +162,15 @@ export default function ProjectCreate(props) {
         </Grid>
 
         {/* Placeholder */}
-        <Grid container sx={{ width: '40vw', height: '8vh', backgroundColor: '#' }} />
+        <Grid container sx={{ width: '40vw', height: '8vh', backgroundColor: '#' }}/>
 
         {/* Save Button */}
         <Grid container sx={{ mb: '1vh', width: '40vw', height: '5vh', backgroundColor: '#' }}>
           <Grid container sx={{ mx: '0vw', width: '32vw', height: '100%' }}/>
           <Grid container sx={{ mx: '0vw', width: '8vw', height: '100%', backgroundColor: '#' }} direction="column"
-            alignItems="center">
+                alignItems="center">
             <Button type="submit" variant="contained"
-              style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
+                    style={{ minWidth: '80%', maxWidth: '80%', height: '100%' }}>Save</Button>
           </Grid>
         </Grid>
       </Box>

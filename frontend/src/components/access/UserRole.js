@@ -8,7 +8,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
 
-function UserRole(props) {
+function UserRole (props) {
   const [userRole, setUserRole] = React.useState(props.user.role)
   const [roleChanged, setRoleChanged] = React.useState(false)
 
@@ -26,9 +26,9 @@ function UserRole(props) {
     event.preventDefault()
     const payload = { [props.user.username]: userRole }
     axios.put('/api/workspace/' + props.workspaceId + '/users', payload).then(resp => {
-      props.setAllUsers(resp.data)
-      setRoleChanged(false)
-    },
+        props.setAllUsers(resp.data)
+        setRoleChanged(false)
+      },
     ).catch(console.error)
   }
 
@@ -38,12 +38,12 @@ function UserRole(props) {
       {/* Avatar */}
       <Grid container sx={{ width: '3vw' }} style={{ backgroundColor: '#' }}>
         <ListItemAvatar>
-          <ColoredAvatar name={userFullname(props.user)} />
+          <ColoredAvatar name={userFullname(props.user)}/>
         </ListItemAvatar>
       </Grid>
       {/* Username */}
       <Grid container sx={{ width: '20vw' }} style={{ backgroundColor: '#' }}>
-        <ListItemText primary={userFullname(props.user) + ' (' + props.user.username + ')'} sx={{ mx: '2vw' }} />
+        <ListItemText primary={userFullname(props.user) + ' (' + props.user.username + ')'} sx={{ mx: '2vw' }}/>
       </Grid>
       {/* Change Access */}
       <Box component="form" onSubmit={handleSave} sx={{ width: '30vw', height: '5vh' }} style={{ backgroundColor: '#' }}

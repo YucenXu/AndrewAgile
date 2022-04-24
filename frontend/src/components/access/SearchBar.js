@@ -11,7 +11,7 @@ export const filterUsersBySearch = (allUsers, searchText) => {
   )
 }
 
-export default function SearchBar(props) {
+export default function SearchBar (props) {
 
   const handleSearch = (event) => {
     props.setSearchText(event.target.value)
@@ -41,14 +41,14 @@ export default function SearchBar(props) {
         </Grid>
         {/* Cancel Icon */}
         <Grid container sx={{ width: '2vw', height: '5vh', mx: 'auto', my: 'auto', backgroundColor: '' }}
-          direction="column" justifyContent="center">
+              direction="column" justifyContent="center">
           <IconButton sx={{ p: '10px', width: '2vw', height: '2vw' }} onClick={handleCancelSearch}>
-            <CloseOutlinedIcon sx={{ width: '2vw', mt: '0.5vh' }} />
+            <CloseOutlinedIcon sx={{ width: '2vw', mt: '0.5vh' }}/>
           </IconButton>
         </Grid>
         {/* Search */}
         <Grid container sx={{ width: '2vw', height: '5vh', mx: 'auto', my: 'auto', backgroundColor: '' }}
-          direction="column" justifyContent="center">
+              direction="column" justifyContent="center">
           {/* <SearchIcon sx={{ width: '2vw', mt: '0.5vh' }} /> */}
         </Grid>
       </Grid>

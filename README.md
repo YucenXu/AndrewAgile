@@ -4,12 +4,12 @@
 
 A web application serves as an agile platform, with similar functionalities as Jira and Trello.
 
-**Tech stack: Django, React, Material-UI, MySQL, Redis**
+**Tech stack: Django, React, Material UI, MySQL, Redis, AWS, Google OAuth**
 
 ## Documentation
 
-+ [User Manual](user_manual.md)
-+ [Deployment Guide](deployment.md)
++ [User Manual](frontend/src/UserManual.md)
++ [Deployment Guide](backend/Deployment.md)
 + [Backend API spec](backend/README.md)
 
 ## Requirements
