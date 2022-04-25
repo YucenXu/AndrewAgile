@@ -17,7 +17,7 @@ import { sanitizeBlank } from '../../utils/formats'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
-const typeColorDict = {
+export const typeColorDict = {
   story: 'rgba(74,128,231,0.4)',
   issue: 'rgba(246,124,106,0.4)',
   action: 'rgba(236,236,118,0.6)',

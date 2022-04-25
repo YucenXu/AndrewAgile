@@ -14,20 +14,29 @@ import Select from '@mui/material/Select'
 import InputBase from '@mui/material/InputBase'
 import axios from 'axios'
 import { sanitizeBlank } from '../../utils/formats'
+import { typeColorDict, statusColorDict, priorityColorDict } from './TaskEdit'
 
 export default function TaskCreate (props) {
   const [title, setTitle] = React.useState('')
-  const [priorityColor, setPriorityColor] = React.useState('#ffcdd2')
+  const [type, setType] = React.useState('story')
+  const [status, setStatus] = React.useState('backlog')
+  const [priority, setPriority] = React.useState('normal')
+
+  const resetNewTaskStates = () => {
+    setTitle('')
+    setType('story')
+    setStatus('backlog')
+    setPriority('normal')
+  }
 
   const handleCloseTask = () => {
-    setTitle('')
+    resetNewTaskStates()
     props.setCreateTaskOpen(false)
   }
 
   const handleSaveTask = (event) => {
     event.preventDefault()
     const form = new FormData(event.target)
-    setTitle('')
     const params = ['title', 'assigneeId', 'reporterId', 'type', 'status', 'priority', 'description']
     const payload = {}
     for (const param of params) {
@@ -37,25 +46,7 @@ export default function TaskCreate (props) {
       props.setRefresh(props.refresh + 1)
       props.setCreateTaskOpen(false)
     }).catch(console.error)
-  }
-
-  const handleSetPriorityColor = (event) => {
-    let priority = event.target.value
-
-    switch (priority) {
-      case 'critical':
-        setPriorityColor('#ffcdd2')
-        break
-      case 'important':
-        setPriorityColor('#ffcc80')
-        break
-      case 'normal':
-        setPriorityColor('#fff59d')
-        break
-      case 'low':
-        setPriorityColor('#dcedc8')
-        break
-    }
+    resetNewTaskStates()
   }
 
   return (
@@ -211,8 +202,10 @@ export default function TaskCreate (props) {
                     width: '8ch',
                     border: 0,
                     textAlign: 'left',
-                    backgroundColor: '#e0e0e0',
+                    backgroundColor: typeColorDict[type],
                   }}
+                  value={type}
+                  onChange={event => setType(event.target.value)}
                   required
                 >
                   <option value={'story'}>Story</option>
@@ -232,8 +225,10 @@ export default function TaskCreate (props) {
                     width: '12ch',
                     border: 0,
                     textAlign: 'left',
-                    backgroundColor: '#e0e0e0',
+                    backgroundColor: statusColorDict[status],
                   }}
+                  value={status}
+                  onChange={event => setStatus(event.target.value)}
                   required
                 >
                   <option value={'backlog'}>Backlog</option>
@@ -253,10 +248,11 @@ export default function TaskCreate (props) {
                     fontSize: '1.5vw',
                     width: '12ch',
                     border: 0,
-                    backgroundColor: priorityColor,
+                    backgroundColor: priorityColorDict[priority],
                     textAlign: 'left',
                   }}
-                  onChange={handleSetPriorityColor}
+                  value={priority}
+                  onChange={event => setPriority(event.target.value)}
                   required
                 >
                   <option value={'critical'} style={{ backgroundColor: '#e0e0e0' }}>Critical</option>
