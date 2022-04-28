@@ -1,4 +1,4 @@
-# Deployment
+# Deployment Guide
 
 ## AWS EC2
 
@@ -94,7 +94,7 @@ Add two entries to "Authorized redirect URIs":
 In your local dev environment, build the React bundle in production mode.
 
 ```shell
-cd s22_team_26/frontend
+cd AndrewAgile/frontend
 npm install
 npm run build
 rm -rf ../backend/ui_build && mv build ../backend/ui_build
@@ -103,7 +103,7 @@ rm -rf ../backend/ui_build && mv build ../backend/ui_build
 Push all the UI changes to the GitHub repository.
 
 ```shell
-cd s22_team_26
+cd AndrewAgile
 git add .
 git commit -m "update UI build"
 git push
@@ -146,7 +146,7 @@ Make a few changes to [settings.py](backend/backend/settings.py):
 Finally, migrate the backend database and collect static files.
 
 ```shell
-cd s22_team_26/backend
+cd AndrewAgile/backend
 python3 manage.py makemigrations agileapp
 python3 manage.py migrate
 # python3 manage.py shell < agileapp/init_db.py
@@ -174,14 +174,14 @@ Comment out default mapping for "/" url at line 159.
 Set script alias for "/" url and the project path.
 
 ```
-WSGIScriptAlias / /home/ubuntu/s22_team_26/backend/backend/wsgi.py
-WSGIPythonPath /home/ubuntu/s22_team_26/backend
+WSGIScriptAlias / /home/ubuntu/AndrewAgile/backend/backend/wsgi.py
+WSGIPythonPath /home/ubuntu/AndrewAgile/backend
 ```
 
 Add permissions for the project directory files.
 
 ```
-<Directory /home/ubuntu/s22_team_26/backend>
+<Directory /home/ubuntu/AndrewAgile/backend>
     <Files wsgi.py>
         Require all granted
     </Files>
@@ -191,9 +191,9 @@ Add permissions for the project directory files.
 Add alias and permissions for static folder.
 
 ```
-Alias /static /home/ubuntu/s22_team_26/backend/staticfiles
+Alias /static /home/ubuntu/AndrewAgile/backend/staticfiles
 
-<Directory /home/ubuntu/s22_team_26/backend/staticfiles>
+<Directory /home/ubuntu/AndrewAgile/backend/staticfiles>
     Order allow,deny
     Allow from all
 </Directory>
@@ -203,8 +203,8 @@ Fix permissions on the directories and restart Apache server.
 
 ```shell
 cd /home/ubuntu
-sudo chgrp -R www-data s22_team_26/backend
-sudo chmod -R g+w s22_team_26/backend
+sudo chgrp -R www-data AndrewAgile/backend
+sudo chmod -R g+w AndrewAgile/backend
 sudo apache2ctl restart
 ```
 
