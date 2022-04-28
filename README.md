@@ -35,6 +35,8 @@ Suggested dependency versions, can be slightly different.
 1. Refer to [Google OAuth2 guide](backend/Deployment.md#google-oauth2), register another OAuth client for your local dev environment.
 
    "Authorized redirect URIs": `http://localhost:8000/oauth/complete/google-oauth2/`
+   
+   Then add the generated client ID and secret in [config.ini.sample](backend/config.ini.sample#L10)
 
 2. Start the local Redis server. Use the command line interface if needed.
 
