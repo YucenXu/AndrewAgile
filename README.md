@@ -4,7 +4,7 @@
 
 A web application serves as an agile platform, with similar functionalities as Jira and Trello.
 
-[Click to view the live demo of the web application.](https://www.andrewagile.com/)
+[Click to view the live demo of the web application](https://www.andrewagile.com/)
 
 **Tech stack: Django, React, Material UI, MySQL, Redis, AWS, Google OAuth**
 
