@@ -26,7 +26,7 @@ CONFIG.read(BASE_DIR / "config.ini.sample")
 SECRET_KEY = CONFIG.get("Django", "secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Allowed hosts whitelist
 ALLOWED_HOSTS = []
