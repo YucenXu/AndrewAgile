@@ -11,7 +11,6 @@ class DeveloperAccountMiddleware:
         self.get_response = get_response
 
         self._developer_list = (
-            'pzhao2@andrew.cmu.edu'
             # TODO: add the email address of your google account
         )
 
