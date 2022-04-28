@@ -4,9 +4,9 @@
 
 A web application serves as an agile platform, with similar functionalities as Jira and Trello.
 
-[Click to view the live demo of the web application](https://www.andrewagile.com/)
-
 **Tech stack: Django, React, Material UI, MySQL, Redis, AWS, Google OAuth**
+
+**[View the live demo](https://www.andrewagile.com/)**
 
 ## Documentation
 
@@ -20,15 +20,15 @@ A web application serves as an agile platform, with similar functionalities as J
 
 Suggested dependency versions, can be slightly different.
 
-+ python 3.8+
++ Python 3.8+
   + django 4.0+
   + social-auth-app-django 5.0.x
   + djangorestframework 3.13.x
   + redis-py 4.2.x
   
-+ node 17.6+
++ Node.js 17.6+
 + npm 8.5+
-+ redis 6.2+
++ Redis 6.2+
 
 ## Get started
 
