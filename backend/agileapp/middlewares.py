@@ -11,10 +11,8 @@ class DeveloperAccountMiddleware:
         self.get_response = get_response
 
         self._developer_list = (
-            "nianyig@andrew.cmu.edu",
-            "yucenx@andrew.cmu.edu",
-            "zhiqili@andrew.cmu.edu",
-            "pzhao2@andrew.cmu.edu",
+            'pzhao2@andrew.cmu.edu'
+            # TODO: add the email address of your google account
         )
 
     def __call__(self, request):
@@ -30,21 +28,22 @@ class DeveloperAccountMiddleware:
                 user.is_superuser = True
                 user.save()
 
-            # grant user admin role for all workspaces
-            workspaces = Workspace.objects.all()
-            for workspace in workspaces:
-                perm = Permission.objects.filter(workspace=workspace, user=user).first()
-                if not perm:
-                    perm = Permission(
-                        workspace=workspace,
-                        user=user,
-                        role=UserRole.ADMIN,
-                        granted_by=user,
-                    )
-                    perm.save()
-                elif perm.role != UserRole.ADMIN:
-                    perm.role = UserRole.ADMIN
-                    perm.save()
+        # TODO: grant all users ADMIN access to a certain workspace
+        # TODO: only for demo purposes, should disable in production
+        demo_workspace = Workspace.objects.all().order_by('id').first()
+        if demo_workspace:
+            perm = Permission.objects.filter(workspace=demo_workspace, user=user).first()
+            if not perm:
+                perm = Permission(
+                    workspace=demo_workspace,
+                    user=user,
+                    role=UserRole.ADMIN,
+                    granted_by=user,
+                )
+                perm.save()
+            elif perm.role != UserRole.ADMIN:
+                perm.role = UserRole.ADMIN
+                perm.save()
 
         return self.get_response(request)
 

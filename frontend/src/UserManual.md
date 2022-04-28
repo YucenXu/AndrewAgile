@@ -87,14 +87,3 @@ For permission related messages, the user whose role is changed by admins will r
 ### User identity
 
 Users need a valid Google account to register and login to the platform.
-
-## Contact
-
-+ [Nianyi Guo](https://github.com/jujujulia123)
-
-+ [Yucen Xu](https://github.com/YucenXu)
-
-+ [Zhiqi Li](https://github.com/Angelica-Lee)
-
-+ [Peng Zhao](https://github.com/zp9763)
-

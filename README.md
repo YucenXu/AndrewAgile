@@ -1,20 +1,22 @@
-# 17637 S22 Team 26 [AndrewAgile](https://www.andrewagile.com/)
+# AndrewAgile
 
 ## Overview
 
 A web application serves as an agile platform, with similar functionalities as Jira and Trello.
 
+[Click to view the live demo of the web application.](https://www.andrewagile.com/)
+
 **Tech stack: Django, React, Material UI, MySQL, Redis, AWS, Google OAuth**
 
 ## Documentation
 
-+ [User Manual](frontend/src/UserManual.md)
-+ [Deployment Guide](backend/Deployment.md)
++ [User manual](frontend/src/UserManual.md)
++ [Cloud deployment](backend/Deployment.md)
 + [Backend API spec](backend/README.md)
 
-## Requirements
+## Prerequisites
 
-Suggested package versions, can be slightly different.
+Suggested dependency versions, can be slightly different.
 
 + python 3.8+
   + django 4.0+
@@ -26,7 +28,7 @@ Suggested package versions, can be slightly different.
 + npm 8.5+
 + redis 6.2+
 
-## Local Dev
+## Get started
 
 1. Start the local Redis server. Use the command line interface if needed.
 
@@ -64,17 +66,4 @@ Suggested package versions, can be slightly different.
 > Note: If you are logged out at localhost:3000, please go to localhost:8000 to login again.
 >
 > Then return to localhost:3000 for frontend development.
-
-## Developers
-
-+ [Nianyi Guo](https://github.com/jujujulia123)
-+ [Yucen Xu](https://github.com/YucenXu)
-+ [Zhiqi Li](https://github.com/Angelica-Lee) 
-+ [Peng Zhao](https://github.com/zp9763)
-
-## Acknowledge
-
-We used some Django code from Professor Eppinger's class demos.
-
-We used some MUI template code from their official documentation.
 
