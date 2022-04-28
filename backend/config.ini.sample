@@ -8,8 +8,8 @@
 secret = @dv8n!%%c5ob+qjg6zeox3&pv^o5w=q%%0i6ji4+ntlm$6n+3@%%^
 
 [GoogleOAuth2]
-key = 771416912063-at7l8culi6839a00q7dcpqqpj6ncour5.apps.googleusercontent.com
-secret = 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
+key =
+secret =
 
 [MySQL]
 host =
