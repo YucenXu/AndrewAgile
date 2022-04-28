@@ -32,14 +32,18 @@ Suggested dependency versions, can be slightly different.
 
 ## Get started
 
-1. Start the local Redis server. Use the command line interface if needed.
+1. Refer to [Google OAuth2 guide](backend/Deployment.md#google-oauth2), register another OAuth client for your local dev environment.
+
+   "Authorized redirect URIs": `http://localhost:8000/oauth/complete/google-oauth2/`
+
+2. Start the local Redis server. Use the command line interface if needed.
 
    ```shell
    redis-server
    # redis-cli
    ```
 
-2. Initialize the backend database, rerun if models are changed.
+3. Initialize the backend database, rerun if models are changed.
 
    ```shell
    cd backend
@@ -48,14 +52,14 @@ Suggested dependency versions, can be slightly different.
    python3 manage.py shell < agileapp/init_db.py
    ```
 
-3. Start the backend server, code changes will trigger reload.
+4. Start the backend server, code changes will trigger reload.
 
    ```shell
    cd backend
    python3 manage.py runserver
    ```
 
-4. Install frontend node packages. Then start the frontend app, code changes will trigger reload.
+5. Install frontend node packages. Then start the frontend app, code changes will trigger reload.
 
    ```shell
    cd frontend
@@ -63,7 +67,7 @@ Suggested dependency versions, can be slightly different.
    npm start
    ```
 
-5. Open browser at http://localhost:3000/ to develop and test.
+6. Open browser at http://localhost:3000/ to develop and test.
 
 > Note: If you are logged out at localhost:3000, please go to localhost:8000 to login again.
 >
