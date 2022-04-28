@@ -10,9 +10,11 @@ A web application serves as an agile platform, with similar functionalities as J
 
 ## Documentation
 
-+ [User manual](frontend/src/UserManual.md)
-+ [Cloud deployment](backend/Deployment.md)
-+ [Backend API spec](backend/README.md)
+[User manual](frontend/src/UserManual.md)
+
+[Cloud deployment](backend/Deployment.md)
+
+[Backend API spec](backend/README.md)
 
 ## Prerequisites
 
