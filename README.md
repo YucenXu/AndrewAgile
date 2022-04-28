@@ -6,13 +6,13 @@ A web application serves as an agile platform, with similar functionalities as J
 
 **Tech stack: Django, React, Material UI, MySQL, Redis, AWS, Google OAuth**
 
-**[Explore the demo website!](https://www.andrewagile.com/)**
+**[Explore our demo website!](https://www.andrewagile.com/)**
 
 ## Documentation
 
 [User manual](frontend/src/UserManual.md)
 
-[Cloud deployment](backend/Deployment.md)
+[Deployment guide](backend/Deployment.md)
 
 [Backend API spec](backend/README.md)
 
