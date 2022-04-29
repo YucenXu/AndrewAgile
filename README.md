@@ -8,6 +8,10 @@ A web application serves as an agile platform, with similar functionalities as J
 
 **[Explore our demo website!](https://www.andrewagile.com/)**
 
+## Tech design
+
+<img src="Design.png">
+
 ## Documentation
 
 [User manual](frontend/src/UserManual.md)
