@@ -10,7 +10,7 @@ A web application serves as an agile platform, with similar functionalities as J
 
 ## Tech design
 
-<img src="Design.png">
+<img src="TechDesign.png">
 
 ## Documentation
 
